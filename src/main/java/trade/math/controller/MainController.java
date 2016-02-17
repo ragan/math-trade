@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MainController {
 
-    private String dyndanieWithSpring="";
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
     public String main() {
         return "index";
     }
