@@ -1,12 +1,20 @@
 package trade.math.form;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by karol on 17.02.16.
  */
 public class NewTradeItemForm {
 
+    @NotNull
     private int bggId;
 
+    @NotEmpty
+    @Max(128)
     private String description;
 
     public NewTradeItemForm() {

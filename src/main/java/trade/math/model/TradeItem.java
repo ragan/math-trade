@@ -1,5 +1,6 @@
 package trade.math.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,14 +12,18 @@ public class TradeItem {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String description;
 
     private String imgUrl;
 
+    @Column(nullable = false)
     private boolean forTrade;
 
+    @Column(nullable = false)
     private int bggId;
 
     public Long getId() {

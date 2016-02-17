@@ -15,10 +15,13 @@ import java.util.List;
 public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeItemRepository tradeItemRepository;
+    private final BggIdToTitleService bggIdToTitleService;
 
     @Autowired
-    public SimpleTradeItemService(TradeItemRepository tradeItemRepository) {
+    public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
+                                  BggIdToTitleService bggIdToTitleService) {
         this.tradeItemRepository = tradeItemRepository;
+        this.bggIdToTitleService = bggIdToTitleService;
     }
 
     @Override
@@ -27,6 +30,7 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeItem.setBggId(tradeItemForm.getBggId());
         tradeItem.setDescription(tradeItemForm.getDescription());
         tradeItem.setForTrade(false);
+        tradeItem.setTitle(bggIdToTitleService.getTitle(tradeItemForm.getBggId()));
         return tradeItemRepository.save(tradeItem);
     }
 

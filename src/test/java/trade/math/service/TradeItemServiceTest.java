@@ -41,5 +41,7 @@ public class TradeItemServiceTest extends TestCase {
         TradeItem foundItem = tradeItemService.findById(itemId);
         assertNotNull(foundItem);
         assertTrue(foundItem.getDescription().equals("description"));
+
+        System.out.println(foundItem.getTitle());
     }
 }
