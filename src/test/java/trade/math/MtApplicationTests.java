@@ -29,6 +29,11 @@ public class MtApplicationTests {
         this.mockMvc.perform(get("/")
                 .accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void testSite() throws Exception {
         this.mockMvc.perform(get("/signUp")
                 .accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk());
