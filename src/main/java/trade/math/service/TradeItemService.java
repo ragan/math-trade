@@ -14,5 +14,7 @@ public interface TradeItemService {
 
     List<TradeItem> findAll();
 
+    List<TradeItem> findWithPagination(int page, int itemPerPage);
+
     TradeItem findById(Long itemId);
 }

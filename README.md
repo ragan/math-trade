@@ -1,3 +1,11 @@
+### IN PROGRESS
+- lista gier
+    - wyciąganie listy gier z bazy danych
+    - testy wyciągania
+    - paginacja z wyborem liczby gier na stronę
+    - testy paginacji
+    - wyświetlanie listy na stronie
+
 ###TODO:
 - model gry (jako TRADE_ITEM)
 - lista gier
