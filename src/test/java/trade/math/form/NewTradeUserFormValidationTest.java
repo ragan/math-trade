@@ -54,12 +54,31 @@ public class NewTradeUserFormValidationTest extends TestCase {
 
     @Test
     public void testEmailMustBeValid() throws Exception {
-        assertEmailValid("a@b.c");
+        assertEmailValid("a@b.c", true);
+        assertEmailValid("a@b", true);
+
+        assertEmailValid("a@b,c", false);
+        assertEmailValid("a@", false);
+        assertEmailValid("a", false);
     }
 
-    private void assertEmailValid(String email) {
+    private void assertEmailValid(String email, boolean valid) {
         newTradeUserForm.setEmail(email);
+        assertTrue(validator.validate(newTradeUserForm).isEmpty() == valid);
+    }
+
+    @Test
+    public void testPasswordMustNotBeEmpty() throws Exception {
+        newTradeUserForm.setPassword("");
+        assertFalse(validator.validate(newTradeUserForm).isEmpty());
+        newTradeUserForm.setPassword("password123");
         assertTrue(validator.validate(newTradeUserForm).isEmpty());
+    }
+
+    public void testPasswordConfirmationMustBeSameAsPassword() throws Exception {
+        newTradeUserForm.setPassword("password");
+        newTradeUserForm.setPasswordConfirmation("somethingElse");
+        assertFalse(validator.validate(newTradeUserForm).isEmpty());
     }
 
     private void assertUsernameInvalid(String username) {

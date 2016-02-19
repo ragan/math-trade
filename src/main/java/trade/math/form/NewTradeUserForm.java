@@ -21,6 +21,7 @@ public class NewTradeUserForm {
 
     @NotEmpty
     @Size(min = 6, max = 128)
+    @MatchesConfirmation
     private String password;
 
     @NotEmpty
