@@ -1,16 +1,29 @@
 package trade.math.form;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 /**
  * Created by karol on 18.02.16.
  */
 public class NewTradeUserForm {
 
+    @NotEmpty
+    @Size(min = 3, max = 32)
+    @Pattern(regexp = "^[a-zA-Z0-9_-]{3,32}$")
     private String username;
 
+    @Email
     private String email;
 
+    @NotEmpty
+    @Size(min = 6, max = 128)
     private String password;
 
+    @NotEmpty
     private String passwordConfirmation;
 
     public String getUsername() {
