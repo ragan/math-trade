@@ -1,6 +1,5 @@
 package trade.math.service;
 
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,13 +10,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.form.NewTradeUserForm;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Created by karol on 18.02.16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MtApplication.class)
 @ActiveProfiles("test")
-public class TradeUserServiceTest extends TestCase {
+public class TradeUserServiceTest {
 
     @Autowired
     private TradeUserService tradeUserService;

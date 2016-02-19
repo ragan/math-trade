@@ -1,6 +1,5 @@
 package trade.math.form;
 
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,10 +7,13 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Created by karol on 18.02.16.
  */
-public class NewTradeUserFormValidationTest extends TestCase {
+public class NewTradeUserFormValidationTest {
 
     private Validator validator;
     private NewTradeUserForm newTradeUserForm;
