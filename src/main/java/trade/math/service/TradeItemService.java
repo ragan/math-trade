@@ -18,5 +18,9 @@ public interface TradeItemService {
 
     List<TradeItem> findWithPagination(int page, int itemPerPage);
 
+    int getPageCount(int itemsPerPage);
+
+    List<Integer> getPaginationList(int activePage, int itemsPerPage, int paginatorLength);
+
     void clearTradeItems();
 }

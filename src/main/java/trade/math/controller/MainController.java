@@ -37,27 +37,13 @@ public class MainController {
     public String main(HttpServletRequest request, HttpServletResponse response, ServletContext context) {
         prepareTradeList();
 
-        List<TradeItem> list = tradeItemService.findWithPagination(0, 10);
+        List<TradeItem> list = tradeItemService.findWithPagination(1, 10);
 
         WebContext webContext = new WebContext(request, response, context);
 
         webContext.setVariable("mainList", list);
 
         return "index";
-    }
-
-//TODO: usunąć po dodaniu możliwości dodwania gier
-
-    private void prepareTradeList() {
-        tradeItemService.clearTradeItems();
-
-        for (int i = 0; i < 100; i++) {
-            NewTradeItemForm form = new NewTradeItemForm();
-            form.setDescription("desc" + i);
-            form.setBggId(i);
-
-            tradeItemService.save(form);
-        }
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
@@ -76,6 +62,21 @@ public class MainController {
             return "addItem";
         tradeItemService.save(newTradeItemForm);
         return "redirect:/addItem";
+    }
+
+
+//TODO: usunąć po dodaniu możliwości dodwania gier
+
+    private void prepareTradeList() {
+        tradeItemService.clearTradeItems();
+
+        for (int i = 0; i < 100; i++) {
+            NewTradeItemForm form = new NewTradeItemForm();
+            form.setDescription("desc" + i);
+            form.setBggId(i);
+
+            tradeItemService.save(form);
+        }
     }
 
 }
