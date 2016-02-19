@@ -72,6 +72,7 @@ public class NewTradeUserFormValidationTest extends TestCase {
         newTradeUserForm.setPassword("");
         assertFalse(validator.validate(newTradeUserForm).isEmpty());
         newTradeUserForm.setPassword("password123");
+        newTradeUserForm.setPasswordConfirmation("password123");
         assertTrue(validator.validate(newTradeUserForm).isEmpty());
     }
 
@@ -79,6 +80,9 @@ public class NewTradeUserFormValidationTest extends TestCase {
         newTradeUserForm.setPassword("password");
         newTradeUserForm.setPasswordConfirmation("somethingElse");
         assertFalse(validator.validate(newTradeUserForm).isEmpty());
+
+        newTradeUserForm.setPasswordConfirmation("password");
+        assertTrue(validator.validate(newTradeUserForm).isEmpty());
     }
 
     private void assertUsernameInvalid(String username) {

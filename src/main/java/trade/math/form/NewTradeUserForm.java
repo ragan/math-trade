@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 /**
  * Created by karol on 18.02.16.
  */
+@PasswordMatchConfirmation
 public class NewTradeUserForm {
 
     @NotEmpty
@@ -21,7 +22,6 @@ public class NewTradeUserForm {
 
     @NotEmpty
     @Size(min = 6, max = 128)
-    @MatchesConfirmation
     private String password;
 
     @NotEmpty
