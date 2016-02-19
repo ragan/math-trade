@@ -5,12 +5,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.context.WebContext;
 import trade.math.form.NewTradeItemForm;
-import trade.math.repository.TradeItemRepository;
+import trade.math.model.TradeItem;
 import trade.math.service.TradeItemService;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by danielpietrzak on 15.02.2016.
@@ -30,8 +34,30 @@ public class MainController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String main() {
+    public String main(HttpServletRequest request, HttpServletResponse response, ServletContext context) {
+        prepareTradeList();
+
+        List<TradeItem> list = tradeItemService.findWithPagination(0, 10);
+
+        WebContext webContext = new WebContext(request, response, context);
+
+        webContext.setVariable("mainList", list);
+
         return "index";
+    }
+
+//TODO: usunąć po dodaniu możliwości dodwania gier
+
+    private void prepareTradeList() {
+        tradeItemService.clearTradeItems();
+
+        for (int i = 0; i < 100; i++) {
+            NewTradeItemForm form = new NewTradeItemForm();
+            form.setDescription("desc" + i);
+            form.setBggId(i);
+
+            tradeItemService.save(form);
+        }
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)

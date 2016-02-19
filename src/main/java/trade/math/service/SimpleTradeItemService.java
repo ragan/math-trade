@@ -2,14 +2,10 @@ package trade.math.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
 import trade.math.repository.TradeItemRepository;
-
 import java.util.List;
 
 /**
