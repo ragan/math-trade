@@ -46,21 +46,29 @@ public class TradeItemServiceTest extends TestCase {
     }
 
     @Test
-    public void testPaginationList() throws Exception{
+    public void testPaginationList() throws Exception {
         prepareTradeList();
 
         List<TradeItem> testPage0 = tradeItemService.findWithPagination(0, 10);
 
-        assertEquals(testPage0.get(0).getBggId(), 0);
-        assertEquals(testPage0.get(5).getBggId(), 5);
+        assertEquals(0, testPage0.get(0).getBggId());
+        assertEquals(5, testPage0.get(5).getBggId());
 
-        assertEquals(testPage0.get(10).getDescription(), "desc10");
+        assertEquals("desc9", testPage0.get(9).getDescription());
+
+        List<TradeItem> testPage3 = tradeItemService.findWithPagination(3, 10);
+
+        assertEquals(32, testPage3.get(2).getBggId());
+
+        assertEquals("desc37", testPage3.get(7).getDescription());
     }
 
-    private void prepareTradeList(){
-        for(int i = 0; i < 100; i++){
+    private void prepareTradeList() {
+        tradeItemService.clearTradeItems();
+
+        for (int i = 0; i < 100; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
-            form.setDescription("desc"+i);
+            form.setDescription("desc" + i);
             form.setBggId(i);
 
             tradeItemService.save(form);

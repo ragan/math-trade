@@ -49,6 +49,11 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public void clearTradeItems() {
+        tradeItemRepository.deleteAll();
+    }
+
+    @Override
     public TradeItem findById(Long itemId) {
         return tradeItemRepository.findOne(itemId);
     }
