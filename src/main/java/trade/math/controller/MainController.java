@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.form.NewTradeItemForm;
+import trade.math.form.NewTradeUserForm;
 import trade.math.repository.TradeItemRepository;
 import trade.math.service.TradeItemService;
 
@@ -35,7 +36,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
-    public String signUp() {
+    public String signUp(NewTradeUserForm newTradeUserForm) {
         return "signUp";
     }
 
