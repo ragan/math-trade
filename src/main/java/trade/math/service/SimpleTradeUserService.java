@@ -1,6 +1,7 @@
 package trade.math.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import trade.math.TradeUserRole;
 import trade.math.form.NewTradeUserForm;
@@ -25,7 +26,7 @@ public class SimpleTradeUserService implements TradeUserService {
         TradeUser tradeUser = new TradeUser();
         tradeUser.setUsername(newTradeUserForm.getUsername());
         tradeUser.setEmail(newTradeUserForm.getEmail());
-        tradeUser.setPassword(newTradeUserForm.getPassword());
+        tradeUser.setPassword(new BCryptPasswordEncoder().encode(newTradeUserForm.getPassword()));
         tradeUser.setRole(TradeUserRole.ROLE_USER);
         return tradeUserRepository.save(tradeUser);
     }
