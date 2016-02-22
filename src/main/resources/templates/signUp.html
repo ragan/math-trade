@@ -5,40 +5,56 @@
 <nav th:replace="index :: navbar"></nav>
 <div class="container">
     <div class="page-header">
-        <h1>Sign up</h1>
+        <h1 th:text="#{signUp}"></h1>
     </div>
-    <form class="form-horizontal">
+    <form class="form-horizontal" th:object="${newTradeUserForm}" th:action="@{/signUp}" method="POST">
         <div class="form-group">
-            <label for="username" class="col-sm-2 control-label">Username</label>
+            <label for="username" class="col-sm-3 control-label" th:text="#{username}"></label>
 
             <div class="col-sm-6">
-                <input type="text" class="form-control" id="username" placeholder="Username"/>
+                <input type="text" class="form-control" id="username" th:placeholder="#{username}"
+                       th:field="*{username}"/>
+            </div>
+            <div class="col-sm-3">
+                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
             </div>
         </div>
         <div class="form-group">
-            <label for="email" class="col-sm-2 control-label">Email</label>
+            <label for="email" class="col-sm-3 control-label" th:text="#{email}"></label>
 
             <div class="col-sm-6">
-                <input type="email" class="form-control" id="email" placeholder="Email"/>
+                <input type="email" class="form-control" id="email" th:placeholder="#{email}" th:field="*{email}"/>
+            </div>
+            <div class="col-sm-3">
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
             </div>
         </div>
         <div class="form-group">
-            <label for="password" class="col-sm-2 control-label">Password</label>
+            <label for="password" class="col-sm-3 control-label" th:text="#{password}"></label>
 
             <div class="col-sm-6">
-                <input type="password" class="form-control" id="password" placeholder="Password"/>
+                <input type="password" class="form-control" id="password" th:placeholder="#{password}"
+                       th:field="*{password}"/>
+            </div>
+            <div class="col-sm-3">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
             </div>
         </div>
         <div class="form-group">
-            <label for="password-confirm" class="col-sm-2 control-label">Confirm password</label>
+            <label for="password-confirm" class="col-sm-3 control-label" th:text="#{password_confirmation}"></label>
 
             <div class="col-sm-6">
-                <input type="password" class="form-control" id="password-confirm" placeholder="Password confirmation"/>
+                <input type="password" class="form-control" id="password-confirm"
+                       th:placeholder="#{password_confirmation}" th:field="*{passwordConfirmation}"/>
+            </div>
+            <div class="col-sm-3">
+                <p th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}"></p>
             </div>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-6">
-                <button type="submit" class="btn btn-default">Sign up</button>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-default" th:text="#{signUp}"></button>
             </div>
         </div>
     </form>

@@ -20,7 +20,7 @@ public class PasswordMatchConfirmationValidator implements ConstraintValidator<P
         try {
             String password = BeanUtils.getProperty(value, "password");
             String passwordConfirmation = BeanUtils.getProperty(value, "passwordConfirmation");
-            return password.equals(passwordConfirmation);
+            return !(password == null || passwordConfirmation == null) && password.equals(passwordConfirmation);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
