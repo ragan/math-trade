@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.form.NewTradeUserForm;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -46,11 +47,13 @@ public class TradeUserServiceTest {
         tradeUserService.save(newTradeUserForm);
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void testPasswordCanNotBeEmpty() throws Exception {
         NewTradeUserForm newTradeUserForm = makeDefaultNewUserForm();
         newTradeUserForm.setPassword("");
         tradeUserService.save(newTradeUserForm);
+
+        assertFalse(tradeUserService.findByUsername(newTradeUserForm.getUsername()).getPassword().equals(""));
     }
 
     @Test(expected = Exception.class)

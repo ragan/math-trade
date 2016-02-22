@@ -8,6 +8,8 @@ import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeUser;
 import trade.math.repository.TradeUserRepository;
 
+import javax.validation.Valid;
+
 /**
  * Created by karol on 18.02.16.
  */
