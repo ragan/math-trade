@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:fragment="head">
     <meta charset="utf-8"/>
@@ -56,22 +55,15 @@
                 <button type="submit" class="btn btn-default">Search</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <div sec:authorize="not isAuthenticated()">
-                    <form class="navbar-form navbar-right" role="form" method="POST" th:action="@{/login}">
-                        <div class="form-group">
-                            <input name="username" type="text" class="form-control" placeholder="Username"/>
-                        </div>
-                        <div class="form-group">
-                            <input name="password" type="password" class="form-control" placeholder="Password"/>
-                        </div>
-                        <button class="btn btn-success">Sign in</button>
-                    </form>
-                </div>
-                <div sec:authorize="isAuthenticated()">
-                    <form  class="navbar-form navbar-right" th:action="@{/logout}" method="POST">
-                        <input type="submit" class="btn btn-primary" value="Sign out"/>
-                    </form>
-                </div>
+                <form class="navbar-form navbar-right" role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Username"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Password"/>
+                    </div>
+                    <button class="btn btn-success">Sign in</button>
+                </form>
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -82,26 +74,31 @@
 <div class="container">
     <nav>
         <ul class="pagination">
-            <li>
-                <a href="#" aria-label="Previous">
+            <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
+                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                   aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next">
+            <li
+                    th:each="page : ${mainList.pagination}"
+                    th:if="${page>0}"
+                    th:class="${page == mainList.actualPage} ? 'active' : ''">
+                <a th:href="'?page=' + ${page}" href="#"
+                   th:text="${page}">1</a>
+            </li>
+            <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
+                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+
+                   aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
     </nav>
-    <div class="panel panel-default">
+    <div th:each="item : ${mainList.items}" class="panel panel-default">
         <div class="panel-heading">
-            <h2 class="panel-title">
+            <h2 th:text="${item.title}" class="panel-title">
                 Game title
             </h2>
         </div>
@@ -109,151 +106,12 @@
             <div class="row">
                 <div class="col-md-3">
                     <a href="#" class="thumbnail">
-                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
+                        <img th:src="${item.imgUrl} ? ${item.imgUrl} : '../img/logo.png'" alt="game image" width="150"
+                             height="150"/>
                     </a>
                 </div>
                 <div class="col-md-9">
-                    <samp>
-                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
-                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
-                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
-                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
-                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
-                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                    </samp>
-                </div>
-                <!--character count limit -->
-            </div>
-            <div class="row">
-                <div class="col-md-9">
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-danger pull-right">Delete</button>
-                    <!--admin only or user own game-->
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2 class="panel-title">
-                Game title
-            </h2>
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <a href="#" class="thumbnail">
-                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
-                    </a>
-                </div>
-                <div class="col-md-9">
-                    <samp>
-                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
-                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
-                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
-                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
-                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
-                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                    </samp>
-                </div>
-                <!--character count limit -->
-            </div>
-            <div class="row">
-                <div class="col-md-9">
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-danger pull-right">Delete</button>
-                    <!--admin only or user own game-->
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2 class="panel-title">
-                Game title
-            </h2>
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <a href="#" class="thumbnail">
-                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
-                    </a>
-                </div>
-                <div class="col-md-9">
-                    <samp>
-                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
-                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
-                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
-                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
-                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
-                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                    </samp>
-                </div>
-                <!--character count limit -->
-            </div>
-            <div class="row">
-                <div class="col-md-9">
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-danger pull-right">Delete</button>
-                    <!--admin only or user own game-->
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2 class="panel-title">
-                Game title
-            </h2>
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <a href="#" class="thumbnail">
-                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
-                    </a>
-                </div>
-                <div class="col-md-9">
-                    <samp>
-                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
-                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
-                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
-                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
-                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
-                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                    </samp>
-                </div>
-                <!--character count limit -->
-            </div>
-            <div class="row">
-                <div class="col-md-9">
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-danger pull-right">Delete</button>
-                    <!--admin only or user own game-->
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2 class="panel-title">
-                Game title
-            </h2>
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <a href="#" class="thumbnail">
-                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
-                    </a>
-                </div>
-                <div class="col-md-9">
-                    <samp>
+                    <samp th:text="${item.description}">
                         Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
                         Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
                         książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
@@ -276,18 +134,23 @@
     </div>
     <nav>
         <ul class="pagination">
-            <li>
-                <a href="#" aria-label="Previous">
+            <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
+                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                   aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next">
+            <li
+                    th:each="page : ${mainList.pagination}"
+                    th:if="${page>0}"
+                    th:class="${page == mainList.actualPage} ? 'active' : ''">
+                <a th:href="'?page=' + ${page}" href="#"
+                   th:text="${page}">1</a>
+            </li>
+            <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
+                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+
+                   aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
