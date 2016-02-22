@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head th:fragment="head">
     <meta charset="utf-8"/>
@@ -14,255 +15,289 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
 
 <body>
-    <nav class="navbar navbar-default" th:fragment="navbar">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" th:href="@{/}">Math Trade</a>
-            </div>
+<nav class="navbar navbar-default" th:fragment="navbar">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" th:href="@{/}">Math Trade</a>
+        </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li><a th:href="@{/signUp}">Sign up</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Generate dummy list</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Trade</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search for game"/>
-                    </div>
-                    <button type="submit" class="btn btn-default">Search</button>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <form class="navbar-form navbar-right" role="form">
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a th:href="@{/signUp}">Sign up</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Admin <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Generate dummy list</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Trade</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search for game"/>
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <div sec:authorize="not isAuthenticated()">
+                    <form class="navbar-form navbar-right" role="form" method="POST" th:action="@{/login}">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Username"/>
+                            <input name="username" type="text" class="form-control" placeholder="Username"/>
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" placeholder="Password"/>
+                            <input name="password" type="password" class="form-control" placeholder="Password"/>
                         </div>
                         <button class="btn btn-success">Sign in</button>
                     </form>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container-fluid -->
-    </nav>
-
-    <div class="container">
-        <nav>
-            <ul class="pagination">
-                <li>
-                    <a href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li>
-                    <a href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <form  class="navbar-form navbar-right" th:action="@{/logout}" method="POST">
+                        <input type="submit" class="btn btn-primary" value="Sign out"/>
+                    </form>
+                </div>
             </ul>
-        </nav>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                Game title                
-            </h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="#" class="thumbnail">
-                            <img src="../img/logo.png" alt="game image" width="150" height="150" />
-                        </a>
-                    </div>
-                    <div class="col-md-9">
-                        <samp>
-                Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                </samp>
-                    </div>
-                    <!--character count limit -->
-                </div>
-                <div class="row">
-                    <div class="col-md-9">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-danger pull-right">Delete</button>
-                        <!--admin only or user own game-->
-                    </div>
-                </div>
-            </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                Game title                
-            </h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="#" class="thumbnail">
-                            <img src="../img/logo.png" alt="game image" width="150" height="150" />
-                        </a>
-                    </div>
-                    <div class="col-md-9">
-                        <samp>
-                Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                </samp>
-                    </div>
-                    <!--character count limit -->
-                </div>
-                <div class="row">
-                    <div class="col-md-9">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-danger pull-right">Delete</button>
-                        <!--admin only or user own game-->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                Game title                
-            </h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="#" class="thumbnail">
-                            <img src="../img/logo.png" alt="game image" width="150" height="150" />
-                        </a>
-                    </div>
-                    <div class="col-md-9">
-                        <samp>
-                Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                </samp>
-                    </div>
-                    <!--character count limit -->
-                </div>
-                <div class="row">
-                    <div class="col-md-9">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-danger pull-right">Delete</button>
-                        <!--admin only or user own game-->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                Game title                
-            </h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="#" class="thumbnail">
-                            <img src="../img/logo.png" alt="game image" width="150" height="150" />
-                        </a>
-                    </div>
-                    <div class="col-md-9">
-                        <samp>
-                Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                </samp>
-                    </div>
-                    <!--character count limit -->
-                </div>
-                <div class="row">
-                    <div class="col-md-9">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-danger pull-right">Delete</button>
-                        <!--admin only or user own game-->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                Game title                
-            </h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="#" class="thumbnail">
-                            <img src="../img/logo.png" alt="game image" width="150" height="150" />
-                        </a>
-                    </div>
-                    <div class="col-md-9">
-                        <samp>
-                Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
-                </samp>
-                    </div>
-                    <!--character count limit -->
-                </div>
-                <div class="row">
-                    <div class="col-md-9">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-danger pull-right">Delete</button>
-                        <!--admin only or user own game-->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <nav>
-            <ul class="pagination">
-                <li>
-                    <a href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li>
-                    <a href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <!-- /.navbar-collapse -->
     </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- /.container-fluid -->
+</nav>
+
+<div class="container">
+    <nav>
+        <ul class="pagination">
+            <li>
+                <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li>
+                <a href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                Game title
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
+                    </a>
+                </div>
+                <div class="col-md-9">
+                    <samp>
+                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
+                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
+                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
+                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
+                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
+                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
+                    </samp>
+                </div>
+                <!--character count limit -->
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-danger pull-right">Delete</button>
+                    <!--admin only or user own game-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                Game title
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
+                    </a>
+                </div>
+                <div class="col-md-9">
+                    <samp>
+                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
+                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
+                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
+                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
+                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
+                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
+                    </samp>
+                </div>
+                <!--character count limit -->
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-danger pull-right">Delete</button>
+                    <!--admin only or user own game-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                Game title
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
+                    </a>
+                </div>
+                <div class="col-md-9">
+                    <samp>
+                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
+                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
+                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
+                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
+                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
+                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
+                    </samp>
+                </div>
+                <!--character count limit -->
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-danger pull-right">Delete</button>
+                    <!--admin only or user own game-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                Game title
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
+                    </a>
+                </div>
+                <div class="col-md-9">
+                    <samp>
+                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
+                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
+                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
+                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
+                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
+                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
+                    </samp>
+                </div>
+                <!--character count limit -->
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-danger pull-right">Delete</button>
+                    <!--admin only or user own game-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                Game title
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="../img/logo.png" alt="game image" width="150" height="150"/>
+                    </a>
+                </div>
+                <div class="col-md-9">
+                    <samp>
+                        Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym.
+                        Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej
+                        książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie
+                        niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu,
+                        zawierających fragmenty Lorem Ipsum, a ostatnio. Lorem Ipsum jest tekstem stosowanym jako
+                        przykładowy wypełniacz w przemyśle poligraficznym. Został po raz.
+                    </samp>
+                </div>
+                <!--character count limit -->
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-danger pull-right">Delete</button>
+                    <!--admin only or user own game-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav>
+        <ul class="pagination">
+            <li>
+                <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li>
+                <a href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 
 </html>
