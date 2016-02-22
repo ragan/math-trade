@@ -31,7 +31,7 @@ public class SimpleTradeUserService implements TradeUserService {
     }
 
     @Override
-    public void deleteAllTradeUsers() {
+    public void deleteAll() {
         tradeUserRepository.deleteAll();
     }
 

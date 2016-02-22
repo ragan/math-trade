@@ -26,7 +26,7 @@ public class TradeUserServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        tradeUserService.deleteAllTradeUsers();
+        tradeUserService.deleteAll();
     }
 
     @Test

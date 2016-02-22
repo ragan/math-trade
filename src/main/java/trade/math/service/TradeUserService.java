@@ -10,7 +10,7 @@ public interface TradeUserService {
 
     TradeUser save(NewTradeUserForm newTradeUserForm);
 
-    void deleteAllTradeUsers();
+    void deleteAll();
 
     TradeUser findByUsername(String username);
 }
