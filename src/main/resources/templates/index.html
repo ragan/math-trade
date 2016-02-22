@@ -74,24 +74,29 @@
 <div class="container">
     <nav>
         <ul class="pagination">
-            <li>
-                <a href="#" aria-label="Previous">
+            <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
+                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                   aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next">
+            <li
+                    th:each="page : ${mainList.pagination}"
+                    th:if="${page>0}"
+                    th:class="${page == mainList.actualPage} ? 'active' : ''">
+                <a th:href="'?page=' + ${page}" href="#"
+                   th:text="${page}">1</a>
+            </li>
+            <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
+                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+
+                   aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
     </nav>
-    <div th:each="item : ${mainList}" class="panel panel-default">
+    <div th:each="item : ${mainList.items}" class="panel panel-default">
         <div class="panel-heading">
             <h2 th:text="${item.title}" class="panel-title">
                 Game title
@@ -101,7 +106,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <a href="#" class="thumbnail">
-                        <img th:src="${item.imgUrl} ? ${item.imgUrl} : '../img/logo.png'" alt="game image" width="150" height="150"/>
+                        <img th:src="${item.imgUrl} ? ${item.imgUrl} : '../img/logo.png'" alt="game image" width="150"
+                             height="150"/>
                     </a>
                 </div>
                 <div class="col-md-9">
@@ -128,18 +134,23 @@
     </div>
     <nav>
         <ul class="pagination">
-            <li>
-                <a href="#" aria-label="Previous">
+            <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
+                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                   aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next">
+            <li
+                    th:each="page : ${mainList.pagination}"
+                    th:if="${page>0}"
+                    th:class="${page == mainList.actualPage} ? 'active' : ''">
+                <a th:href="'?page=' + ${page}" href="#"
+                   th:text="${page}">1</a>
+            </li>
+            <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
+                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+
+                   aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

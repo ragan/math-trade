@@ -1,7 +1,9 @@
 package trade.math.service;
 
+import org.springframework.data.domain.Pageable;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
+import trade.math.wrappers.PageWrapper;
 
 import java.util.List;
 
@@ -16,11 +18,7 @@ public interface TradeItemService {
 
     TradeItem findById(Long itemId);
 
-    List<TradeItem> findWithPagination(int page, int itemPerPage);
-
-    int getPageCount(int itemsPerPage);
-
-    List<Integer> getPaginationList(int activePage, int itemsPerPage, int paginatorLength);
+    PageWrapper<TradeItem> findAll(Pageable pageable);
 
     void clearTradeItems();
 }
