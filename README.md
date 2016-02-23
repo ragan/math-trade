@@ -1,3 +1,13 @@
+### IN PROGRESS
+- lista gier
+    - V wyciąganie listy gier z bazy danych
+    - V testy wyciągania
+    - V paginacja z wyborem liczby gier na stronę
+    - V testy paginacji
+    - V wyświetlanie listy na stronie
+    - działanie paginacji na stronie
+    - V test skryptu tworzącego pasek paginacji
+
 ###TODO:
 - ~~model gry (jako TRADE_ITEM)
 - ~~lista gier

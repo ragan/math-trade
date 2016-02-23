@@ -1,11 +1,16 @@
 package trade.math.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
 import trade.math.repository.TradeItemRepository;
+import trade.math.wrappers.PageWrapper;
+import trade.math.wrappers.TradeItemPageWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +45,18 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public void clearTradeItems() {
+        tradeItemRepository.deleteAll();
+    }
+
+    @Override
     public TradeItem findById(Long itemId) {
         return tradeItemRepository.findOne(itemId);
     }
+
+    @Override
+    public PageWrapper<TradeItem> findAll(Pageable pageable) {
+        return new TradeItemPageWrapper(tradeItemRepository.findAll(pageable).getContent(), pageable, tradeItemRepository.count());
+    }
+
 }
