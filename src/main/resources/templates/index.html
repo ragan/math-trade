@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head th:fragment="head">
     <meta charset="utf-8"/>
@@ -37,8 +37,9 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a th:href="@{/signUp}">Sign up</a></li>
-                <li class="dropdown">
+                <li sec:authorize="hasRole('ROLE_USER')"><a th:href="@{/addItem}">Add item</a> </li>
+                <li sec:authorize="not isAuthenticated()"><a th:href="@{/signUp}">Sign up</a></li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Admin <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -48,22 +49,31 @@
                     </ul>
                 </li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search for game"/>
-                </div>
-                <button type="submit" class="btn btn-default">Search</button>
-            </form>
+            <!--
+                        <form class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search for game"/>
+                            </div>
+                            <button type="submit" class="btn btn-default">Search</button>
+                        </form>
+            -->
             <ul class="nav navbar-nav navbar-right">
-                <form class="navbar-form navbar-right" role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Username"/>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Password"/>
-                    </div>
-                    <button class="btn btn-success">Sign in</button>
-                </form>
+                <div sec:authorize="not isAuthenticated()">
+                    <form class="navbar-form navbar-right" role="form" th:action="@{/login}" method="post">
+                        <div class="form-group">
+                            <input name="username" type="text" class="form-control" placeholder="Username"/>
+                        </div>
+                        <div class="form-group">
+                            <input name="password" type="password" class="form-control" placeholder="Password"/>
+                        </div>
+                        <button id="signin-submit" class="btn btn-success">Sign in</button>
+                    </form>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <form class="navbar-form navbar-right" role="form" th:action="@{/logout}" method="post">
+                        <input id="signout-submit" type="submit" class="btn btn-danger" value="Sign out"/>
+                    </form>
+                </div>
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -75,7 +85,8 @@
     <nav>
         <ul class="pagination">
             <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
-                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -88,7 +99,8 @@
                    th:text="${page}">1</a>
             </li>
             <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
-                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
 
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
@@ -135,7 +147,8 @@
     <nav>
         <ul class="pagination">
             <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
-                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -148,7 +161,8 @@
                    th:text="${page}">1</a>
             </li>
             <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
-                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
 
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
