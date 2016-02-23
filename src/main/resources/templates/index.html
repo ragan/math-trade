@@ -75,7 +75,8 @@
     <nav>
         <ul class="pagination">
             <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
-                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -88,7 +89,8 @@
                    th:text="${page}">1</a>
             </li>
             <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
-                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
 
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
@@ -126,7 +128,10 @@
                 <div class="col-md-9">
                 </div>
                 <div class="col-md-3">
-                    <button class="btn btn-danger pull-right">Delete</button>
+                    <form action="/deleteItem" method="post">
+                        <input type="hidden" value="-1" th:value="${item.id}" name="deleteId" />
+                        <button type="submit" class="btn btn-danger pull-right">Delete</button>
+                    </form>
                     <!--admin only or user own game-->
                 </div>
             </div>
@@ -135,7 +140,8 @@
     <nav>
         <ul class="pagination">
             <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
-                <a href="#" th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -148,7 +154,8 @@
                    th:text="${page}">1</a>
             </li>
             <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
-                <a href="#" th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
+                <a href="#"
+                   th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
 
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>

@@ -8,16 +8,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.thymeleaf.context.WebContext;
 import trade.math.form.NewTradeItemForm;
-import trade.math.model.TradeItem;
 import trade.math.service.TradeItemService;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,9 +36,16 @@ public class MainController {
     public String main(Model model, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
         prepareTradeList();
 
-        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1)-1, 10)));
+        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10)));
 
         return "index";
+    }
+
+    @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
+    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId, HttpServletRequest request) {
+        tradeItemService.deleteById(deleteId.longValue());
+
+        return "redirect:" + request.getHeader("referer");
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
@@ -67,8 +69,13 @@ public class MainController {
 
 //TODO: usunąć po dodaniu możliwości dodwania gier
 
+    private boolean dbIsReady = false;
+
     private void prepareTradeList() {
-        tradeItemService.clearTradeItems();
+        if (dbIsReady)
+            return;
+
+        tradeItemService.deleteAll();
 
         for (int i = 0; i < 100; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
@@ -77,6 +84,7 @@ public class MainController {
 
             tradeItemService.save(form);
         }
+        dbIsReady = true;
     }
 
 }

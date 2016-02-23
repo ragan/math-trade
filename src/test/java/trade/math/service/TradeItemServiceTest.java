@@ -147,10 +147,31 @@ public class TradeItemServiceTest extends TestCase {
 
     }
 
+    @Test
+    public void testDeleteById(){
+        prepareTradeList(10);
+
+        List<TradeItem> allItems = tradeItemService.findAll();
+
+        for (TradeItem item : allItems) System.out.println(item.getId());
+
+        Long deletedItemId = allItems.get(4).getId();
+
+        tradeItemService.deleteById(deletedItemId); // pierwszy raz usuwam
+
+        allItems = tradeItemService.findAll();
+
+        for (TradeItem item : allItems) System.out.println(item.getId());
+
+        assertEquals(9, allItems.size());
+
+        for (TradeItem item : allItems) assertFalse(item.getId() == deletedItemId);
+    }
+
 
     //HELPERS
     private void prepareTradeList(int count) {
-        tradeItemService.clearTradeItems();
+        tradeItemService.deleteAll();
 
         for (int i = 0; i < count; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
