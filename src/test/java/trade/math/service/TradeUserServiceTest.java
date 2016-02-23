@@ -36,7 +36,7 @@ public class TradeUserServiceTest {
         assertNotNull(tradeUserService.save(newTradeUserForm));
 
         assertNotNull(tradeUserService.findByUsername(newTradeUserForm.getUsername()));
-        assertTrue(tradeUserService.findByUsername(newTradeUserForm.getUsername()).getUsername()
+        assertTrue(tradeUserService.findByUsername(newTradeUserForm.getUsername()).get().getUsername()
                 .equals(newTradeUserForm.getUsername()));
     }
 
@@ -53,7 +53,7 @@ public class TradeUserServiceTest {
         newTradeUserForm.setPassword("");
         tradeUserService.save(newTradeUserForm);
 
-        assertFalse(tradeUserService.findByUsername(newTradeUserForm.getUsername()).getPassword().equals(""));
+        assertFalse(tradeUserService.findByUsername(newTradeUserForm.getUsername()).get().getPassword().equals(""));
     }
 
     @Test(expected = Exception.class)

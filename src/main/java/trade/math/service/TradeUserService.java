@@ -3,6 +3,8 @@ package trade.math.service;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeUser;
 
+import java.util.Optional;
+
 /**
  * Created by karol on 18.02.16.
  */
@@ -12,5 +14,5 @@ public interface TradeUserService {
 
     void deleteAll();
 
-    TradeUser findByUsername(String username);
+    Optional<TradeUser> findByUsername(String username);
 }

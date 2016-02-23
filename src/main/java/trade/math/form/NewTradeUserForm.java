@@ -30,6 +30,16 @@ public class NewTradeUserForm {
     @NotEmpty
     private String passwordConfirmation;
 
+    public NewTradeUserForm() {
+    }
+
+    public NewTradeUserForm(String username, String email, String password, String passwordConfirmation) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.passwordConfirmation = passwordConfirmation;
+    }
+
     public String getUsername() {
         return username;
     }

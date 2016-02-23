@@ -9,6 +9,7 @@ import trade.math.model.TradeUser;
 import trade.math.repository.TradeUserRepository;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Created by karol on 18.02.16.
@@ -39,7 +40,8 @@ public class SimpleTradeUserService implements TradeUserService {
     }
 
     @Override
-    public TradeUser findByUsername(String username) {
-        return tradeUserRepository.findOneByUsername(username);
+    public Optional<TradeUser> findByUsername(String username) {
+        TradeUser oneByUsername = tradeUserRepository.findOneByUsername(username);
+        return Optional.of(oneByUsername);
     }
 }
