@@ -66,12 +66,12 @@
                         <div class="form-group">
                             <input name="password" type="password" class="form-control" placeholder="Password"/>
                         </div>
-                        <button class="btn btn-success">Sign in</button>
+                        <button id="signin-submit" class="btn btn-success">Sign in</button>
                     </form>
                 </div>
                 <div sec:authorize="isAuthenticated()">
                     <form class="navbar-form navbar-right" role="form" th:action="@{/logout}" method="post">
-                        <input type="submit" class="btn btn-danger" value="Sign out"/>
+                        <input id="signout-submit" type="submit" class="btn btn-danger" value="Sign out"/>
                     </form>
                 </div>
             </ul>
