@@ -9,12 +9,13 @@
     - V test skryptu tworzącego pasek paginacji
 
 ###TODO:
-- model gry (jako TRADE_ITEM)
-- lista gier
+- formularz signup nie informuje, że hasło nie jest takie samo
+- ~~model gry (jako TRADE_ITEM)~~
+- ~~lista gier~~
 - usuń grę
-- model użytkownika
-- rejestracja
-- logowanie
+- ~~model użytkownika~~
+- ~~rejestracja~~
+- ~~logowanie~~
 - dodawanie gry
 - definicja etapu - encja TRADE_STATUS z enumem
 - administrator (menu widoczne tylko dla administratora)
