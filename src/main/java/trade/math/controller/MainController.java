@@ -8,6 +8,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.service.TradeItemService;
@@ -46,10 +48,9 @@ public class MainController {
     }
 
     @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
-    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId, HttpServletRequest request) {
-        tradeItemService.deleteById(deleteId.longValue());
-
-        return "redirect:" + request.getHeader("referer");
+    @ResponseBody
+    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId) {
+        return tradeItemService.deleteById(deleteId.longValue()) ? "success" : "failure";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)

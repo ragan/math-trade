@@ -48,8 +48,15 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public void deleteById(Long itemId) {
-        tradeItemRepository.delete(itemId);
+    public boolean deleteById(Long itemId) {
+        try {
+            tradeItemRepository.delete(itemId);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     @Override

@@ -22,5 +22,5 @@ public interface TradeItemService {
 
     void deleteAll();
 
-    void deleteById(Long itemId);
+    boolean deleteById(Long itemId);
 }
