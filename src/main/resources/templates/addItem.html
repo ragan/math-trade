@@ -1,17 +1,73 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="index :: head"></head>
-  <body>
-    <nav th:replace="index :: navbar"></nav>
-    <div class="container">
-        <form th:object="${newTradeItemForm}" method="post" th:action="@{/addItem}">
-          <input type="text" th:field="*{description}"/>
-          <input type="submit" />
-        </form>
-    </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../js/bootstrap.min.js"></script>
-  </body>
+<head th:replace="index :: head"></head>
+<body>
+<nav th:replace="index :: navbar"></nav>
+<div class="container">
+    <select class="form-control" id="search-select-item">
+        <option value="3620194" selected="selected">select2/select2</option>
+    </select>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
+<script  type="application/javascript">
+    $("#search-select-item").select2({
+        ajax: {
+            url: "/search",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    page: params.page,
+                    title: params.term
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data,
+                    pagination: {
+                        more: false
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+    });
+
+    function formatRepo (repo) {
+        if (repo.loading) return repo.text;
+
+//        var markup = "<div class='select2-result-repository clearfix'>" +
+//                "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" +
+//                "<div class='select2-result-repository__meta'>" +
+//                "<div class='select2-result-repository__title'>" + repo.full_name + "</div>";
+
+        if (repo.description) {
+//            markup += "<div class='select2-result-repository__description'>" + repo.description + "</div>";
+        }
+
+//        markup += "<div class='select2-result-repository__statistics'>" +
+//                "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> " + repo.forks_count + " Forks</div>" +
+//                "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
+//                "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
+//                "</div>" +
+//                "</div></div>";
+
+        return "<p>" + repo.names[0] + "</p>";
+    }
+
+    function formatRepoSelection (repo) {
+        return repo.full_name || repo.text;
+    }
+</script>
+</body>
 </html>
