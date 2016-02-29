@@ -8,6 +8,9 @@
         <option value="" selected="selected" th:text="#{addItem.info}">select2/select2</option>
     </select>
 
+    <div class="page-header">
+        <h2>Add item form</h2>
+    </div>
     <form th:object="${newTradeItemForm}" method="post" th:action="@{/addItem}">
         <input id="game-form-bggId" type="hidden" th:field="*{bggId}"/>
         <div class="form-group">

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
 import trade.math.repository.TradeItemRepository;
+import trade.math.repository.TradeUserRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
@@ -18,18 +19,26 @@ import java.util.List;
 public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeItemRepository tradeItemRepository;
+
     private final BggIdToTitleService bggIdToTitleService;
+
+    private final TradeUserRepository tradeUserRepository;
 
     @Autowired
     public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
-                                  BggIdToTitleService bggIdToTitleService) {
+                                  BggIdToTitleService bggIdToTitleService,
+                                  TradeUserRepository tradeUserRepository) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
+        this.tradeUserRepository = tradeUserRepository;
     }
 
     @Override
-    public TradeItem save(NewTradeItemForm tradeItemForm) {
+    public TradeItem save(NewTradeItemForm tradeItemForm, String username) {
         TradeItem tradeItem = new TradeItem();
+
+        tradeItem.setOwner(tradeUserRepository.findOneByUsername(username));
+
         tradeItem.setBggId(tradeItemForm.getBggId());
         tradeItem.setDescription(tradeItemForm.getDescription());
         tradeItem.setForTrade(false);
@@ -52,7 +61,7 @@ public class SimpleTradeItemService implements TradeItemService {
         try {
             tradeItemRepository.delete(itemId);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

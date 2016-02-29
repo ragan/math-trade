@@ -20,6 +20,7 @@ import trade.math.service.TradeUserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,10 +79,12 @@ public class MainController {
     }
 
     @RequestMapping(value = "/addItem", method = RequestMethod.POST)
-    public String doAddTradeItem(@Valid NewTradeItemForm newTradeItemForm, BindingResult bindingResult) {
+    public String doAddTradeItem(@Valid NewTradeItemForm newTradeItemForm,
+                                 BindingResult bindingResult,
+                                 Principal principal) {
         if (bindingResult.hasErrors())
             return "addItem";
-        tradeItemService.save(newTradeItemForm);
+        tradeItemService.save(newTradeItemForm, principal.getName());
         return "redirect:/addItem";
     }
 
@@ -100,14 +103,14 @@ public class MainController {
         if (dbIsReady)
             return;
 
-        tradeItemService.deleteAll();
+//        tradeItemService.deleteAll();
 
         for (int i = 0; i < 100; i++) {
-            NewTradeItemForm form = new NewTradeItemForm();
-            form.setDescription("desc" + i);
-            form.setBggId(i);
+//            NewTradeItemForm form = new NewTradeItemForm();
+//            form.setDescription("desc" + i);
+//            form.setBggId(i);
 
-            tradeItemService.save(form);
+//            tradeItemService.save(form);
         }
         dbIsReady = true;
     }
