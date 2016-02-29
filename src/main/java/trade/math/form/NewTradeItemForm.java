@@ -13,9 +13,6 @@ public class NewTradeItemForm {
     @NotNull
     private int bggId;
 
-    @NotNull
-    private String title;
-
     @NotEmpty
     @Max(128)
     private String description;
@@ -35,15 +32,6 @@ public class NewTradeItemForm {
 
     public void setBggId(int bggId) {
         this.bggId = bggId;
-    }
-
-    public String getTitle() {
-        if ("".equals(title)) return "Name not specified";
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {
