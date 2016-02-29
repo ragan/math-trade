@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import trade.math.TradeUserRole;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by karol on 18.02.16.
@@ -29,6 +30,9 @@ public class TradeUser {
 
     @Enumerated(EnumType.STRING)
     private TradeUserRole role;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<TradeItem> items;
 
     public Long getId() {
         return id;
@@ -69,4 +73,12 @@ public class TradeUser {
     public void setRole(TradeUserRole role) {
         this.role = role;
     }
+//
+//    public List<TradeItem> getItems() {
+//        return items;
+//    }
+//
+//    public void setItems(List<TradeItem> items) {
+//        this.items = items;
+//    }
 }
