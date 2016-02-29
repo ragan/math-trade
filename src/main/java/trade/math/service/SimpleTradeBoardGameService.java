@@ -9,6 +9,7 @@ import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.repository.TradeBoardGameRepository;
 import trade.math.repository.TradeBoardGameTitleRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -29,12 +30,13 @@ public class SimpleTradeBoardGameService implements TradeBoardGameService {
 
     @Override
     public List<TradeBoardGame> save(List<TradeBoardGameDTO> tradeBoardGames) {
+        //nie wiem czy tak jest ok... Powinno chyba zapisywać wszystkie w jednej tranzakcji
         return tradeBoardGameRepository.save(tradeBoardGames.stream().map(this::save).collect(toList()));
     }
 
     @Override
     public TradeBoardGame save(TradeBoardGameDTO tradeBoardGameDTO) {
-        TradeBoardGame tradeBoardGame = tradeBoardGameDTO.getTradeBoardGame();
+        TradeBoardGame tradeBoardGame = tradeBoardGameDTO.makeTradeBoardGame();
         tradeBoardGameTitleRepository.save(tradeBoardGame.getNames());
         return tradeBoardGameRepository.save(tradeBoardGame);
     }
@@ -48,6 +50,8 @@ public class SimpleTradeBoardGameService implements TradeBoardGameService {
 
     @Override
     public List<TradeBoardGameDTO> searchByName(String name) {
+        if ("".equals(name) || name.length() < 3)
+            return Collections.emptyList();
         return tradeBoardGameTitleRepository.findByTitle(name).stream()
                 .map(t -> new TradeBoardGameDTO(t.getTradeBoardGame()))
                 .collect(toList());

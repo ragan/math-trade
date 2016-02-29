@@ -51,7 +51,7 @@ public class TradeBoardGameDTO {
         this.designer = tradeBoardGame.getDesigner();
     }
 
-    public TradeBoardGame getTradeBoardGame() {
+    public TradeBoardGame makeTradeBoardGame() {
         TradeBoardGame tradeBoardGame = new TradeBoardGame();
         tradeBoardGame.setBggId(getBggId());
         tradeBoardGame.setNames(getNames().stream().map(t -> {

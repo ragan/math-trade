@@ -8,13 +8,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
-import trade.math.model.TradeBoardGame;
 import trade.math.model.dto.TradeBoardGameDTO;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by karol on 26.02.16.
@@ -43,6 +42,14 @@ public class TradeBoardGameServiceTest {
     public void testPersistListOfTradeBoardGames() throws Exception {
         tradeBoardGameService.save(Arrays.asList(makeBoardGame("some title 1"), makeBoardGame("some title 1")));
         assertTrue(tradeBoardGameService.findAll().size() == 2);
+    }
+
+    @Test
+    public void testCanNotSearchEmptyOrTooShortString() throws Exception {
+        tradeBoardGameService.save(makeBoardGame("test title"));
+        assertTrue(tradeBoardGameService.searchByName("").isEmpty());
+        assertTrue(tradeBoardGameService.searchByName("t").isEmpty());
+        assertTrue(tradeBoardGameService.searchByName("te").isEmpty());
     }
 
     @Test
