@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head th:fragment="head">
     <meta charset="utf-8"/>
@@ -38,7 +39,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li sec:authorize="hasRole('ROLE_USER')"><a th:href="@{/addItem}">Add item</a> </li>
+                <li sec:authorize="hasRole('ROLE_USER')"><a th:href="@{/addItem}">Add item</a></li>
                 <li sec:authorize="not isAuthenticated()"><a th:href="@{/signUp}">Sign up</a></li>
                 <li sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -83,7 +84,8 @@
 </nav>
 
 <div class="container">
-    <nav>
+    <div class="statusInfo"></div>
+    <nav th:fragment="pagination">
         <ul class="pagination">
             <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
                 <a href="#"
@@ -139,43 +141,77 @@
                 <div class="col-md-9">
                 </div>
                 <div class="col-md-3">
-                    <button class="btn btn-danger pull-right">Delete</button>
+                    <!--<form action="/deleteItem" method="post">
+                        <input type="hidden" value="-1" th:value="${item.id}" name="deleteId" />-->
+                    <button type="button" class="btn btn-danger pull-right" data-toggle="modal"
+                            data-target="#deleteModalConfirm" th:attr="data-target='#deleteModalConfirm_' + ${item.id}">
+                        Delete
+                    </button>
+                    <!--</form>-->
                     <!--admin only or user own game-->
                 </div>
+                <!-- Modal ask -->
+                <div class="modal fade" id="deleteModalConfirm" th:id="'deleteModalConfirm_' + ${item.id}" tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel" th:text="#{deleteTitle}">Delete</h4>
+                            </div>
+                            <div class="modal-body" th:text="#{deleteQuestion(${item.title})}">
+
+                            </div>
+                            <div class="modal-footer">
+                                <!--<form action="/deleteItem" method="post">-->
+                                <button type="button" class="btn btn-default" data-dismiss="modal"
+                                        th:text="#{cancel}">
+                                    Close
+                                </button>
+                                <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <input type="hidden" value="-1" th:value="${item.id}" name="deleteId"/>-->
+                                <button type="button" th:id="${item.id}" class="btn btn-primary deleteConfirmButton"
+                                        th:text="#{deleteConfirm}">Confirm
+                                </button>
+                                <!--</form>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end modal-->
             </div>
         </div>
     </div>
-    <nav>
-        <ul class="pagination">
-            <li th:class="${mainList.actualPage > mainList.pagination[0]} ? '' : 'disabled'">
-                <a href="#"
-                   th:href="'?page='+(${mainList.actualPage > mainList.pagination[0]} ? ${mainList.actualPage - 1} : ${mainList.actualPage} )"
-                   aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li
-                    th:each="page : ${mainList.pagination}"
-                    th:if="${page>0}"
-                    th:class="${page == mainList.actualPage} ? 'active' : ''">
-                <a th:href="'?page=' + ${page}" href="#"
-                   th:text="${page}">1</a>
-            </li>
-            <li th:class="${mainList.actualPage >= mainList.pageCount} ? 'disabled' : ''">
-                <a href="#"
-                   th:href="'?page='+(${mainList.actualPage >= mainList.pageCount} ? ${mainList.actualPage} : ${mainList.actualPage + 1})"
-
-                   aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <nav th:replace="index :: pagination"></nav>
 </div>
+</body>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-</body>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $(".deleteConfirmButton").click(function () {
+                    $.post(
+                            "/deleteItem", {
+                                deleteId: $(this).attr("id"),
+                                    [[${_csrf.parameterName}]]
+                    :
+                    [[${_csrf.token}]]
+                },
+                function (status) {
+                    sessionStorage.setItem('deleteStatus', status);
+                    location.reload();
+                });
+    });
 
+    if(sessionStorage.getItem('deleteStatus') == "success")
+        $(".statusInfo").append('<div class="alert alert-success" role="alert">' + [[#{deleteSuccess}]] + '</div>');
+    else if(sessionStorage.getItem('deleteStatus') == "failure")
+        $(".statusInfo").append('<div class="alert alert-danger" role="alert">' + [[#{deleteFailure}]] + '</div>');
+    sessionStorage.setItem('deleteStatus', '');
+    });
+</script>
 </html>

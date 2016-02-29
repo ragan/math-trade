@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.dto.TradeBoardGameDTO;
@@ -16,6 +18,7 @@ import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeItemService;
 import trade.math.service.TradeUserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +52,12 @@ public class MainController {
         model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10)));
 
         return "index";
+    }
+
+    @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId) {
+        return tradeItemService.deleteById(deleteId.longValue()) ? "success" : "failure";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
@@ -85,8 +94,13 @@ public class MainController {
 
 //TODO: usunąć po dodaniu możliwości dodwania gier
 
+    private boolean dbIsReady = false;
+
     private void prepareTradeList() {
-        tradeItemService.clearTradeItems();
+        if (dbIsReady)
+            return;
+
+        tradeItemService.deleteAll();
 
         for (int i = 0; i < 100; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
@@ -95,6 +109,7 @@ public class MainController {
 
             tradeItemService.save(form);
         }
+        dbIsReady = true;
     }
 
 }

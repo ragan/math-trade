@@ -1,7 +1,6 @@
 package trade.math.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import trade.math.form.NewTradeItemForm;
@@ -10,7 +9,6 @@ import trade.math.repository.TradeItemRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,8 +43,20 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public void clearTradeItems() {
+    public void deleteAll() {
         tradeItemRepository.deleteAll();
+    }
+
+    @Override
+    public boolean deleteById(Long itemId) {
+        try {
+            tradeItemRepository.delete(itemId);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     @Override

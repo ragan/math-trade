@@ -1,9 +1,6 @@
 package trade.math.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class TradeItem {
@@ -25,6 +22,10 @@ public class TradeItem {
 
     @Column(nullable = false)
     private int bggId;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private TradeUser owner;
 
     public Long getId() {
         return id;
@@ -72,5 +73,13 @@ public class TradeItem {
 
     public void setBggId(int bggId) {
         this.bggId = bggId;
+    }
+
+    public TradeUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(TradeUser owner) {
+        this.owner = owner;
     }
 }

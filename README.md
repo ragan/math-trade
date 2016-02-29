@@ -1,12 +1,13 @@
 ### IN PROGRESS
-- lista gier
-    - V wyciąganie listy gier z bazy danych
-    - V testy wyciągania
-    - V paginacja z wyborem liczby gier na stronę
-    - V testy paginacji
-    - V wyświetlanie listy na stronie
-    - działanie paginacji na stronie
-    - V test skryptu tworzącego pasek paginacji
+- usuwanie gry
+    - ~~usuwanie z bazy~~
+    - ~~testy~~
+    - ~~frontend~~
+    - ~~popup z prośbą o potwierdzenie~~
+    - ~~ajaxowe usuwanie postem~~
+    - ~~wyświetlenie statusu usunięcia~~
+    - powiązanie gier z użytkownikiem
+    - możliwość ich usunięcia tylko przez właściciela
 
 ###TODO:
 - formularz signup nie informuje, że hasło nie jest takie samo
@@ -80,3 +81,14 @@ __admin -> generuj listę wymian__
 login -> generuj
 __wpisywanie propozycji__
 login -> lista preferencji -> wypełnij/edytuj -> zatwierdź
+
+
+### DONE
+- lista gier
+    - ~~wyciąganie listy gier z bazy danych~~
+    - ~~testy wyciągania~~
+    - ~~paginacja z wyborem liczby gier na stronę~~
+    - ~~testy paginacji~~
+    - ~~wyświetlanie listy na stronie~~
+    - ~~działanie paginacji na stronie~~
+    - ~~test skryptu tworzącego pasek paginacji~~

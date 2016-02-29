@@ -10,7 +10,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.form.NewTradeItemForm;
+import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItem;
+import trade.math.model.TradeUser;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class TradeItemServiceTest extends TestCase {
 
     @Autowired
     private TradeItemService tradeItemService;
+
 
     @Test
     public void testSaveNewTradeItem() throws Exception {
@@ -147,10 +150,41 @@ public class TradeItemServiceTest extends TestCase {
 
     }
 
+    @Test
+    public void testDeleteById(){
+        prepareTradeList(10);
+
+        List<TradeItem> allItems = tradeItemService.findAll();
+
+        for (TradeItem item : allItems) System.out.println(item.getId());
+
+        Long deletedItemId = allItems.get(4).getId();
+
+        tradeItemService.deleteById(deletedItemId); // pierwszy raz usuwam
+
+        allItems = tradeItemService.findAll();
+
+        for (TradeItem item : allItems) System.out.println(item.getId());
+
+        assertEquals(9, allItems.size());
+
+        for (TradeItem item : allItems) assertFalse(item.getId() == deletedItemId);
+    }
+
 
     //HELPERS
     private void prepareTradeList(int count) {
-        tradeItemService.clearTradeItems();
+        tradeItemService.deleteAll();
+//        tradeUserService.deleteAll();
+//
+//        NewTradeUserForm userForm = new NewTradeUserForm();
+//        userForm.setUsername("test");
+//        userForm.setEmail("test@test.com");
+//        userForm.setPassword("0000");
+//        userForm.setPasswordConfirmation("0000");
+//
+//        TradeUser user = tradeUserService.save(userForm);
+
 
         for (int i = 0; i < count; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
@@ -160,6 +194,5 @@ public class TradeItemServiceTest extends TestCase {
             tradeItemService.save(form);
         }
     }
-
 
 }

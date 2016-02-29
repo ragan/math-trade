@@ -20,5 +20,7 @@ public interface TradeItemService {
 
     PageWrapper<TradeItem> findAll(Pageable pageable);
 
-    void clearTradeItems();
+    void deleteAll();
+
+    boolean deleteById(Long itemId);
 }
