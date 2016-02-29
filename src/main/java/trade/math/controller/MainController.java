@@ -8,12 +8,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
+import trade.math.model.dto.TradeBoardGameDTO;
+import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeItemService;
 import trade.math.service.TradeUserService;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,20 +30,23 @@ public class MainController {
 
     private TradeUserService tradeUserService;
 
+    private TradeBoardGameService tradeBoardGameService;
+
     public MainController() {
     }
 
     @Autowired
-    public MainController(TradeItemService tradeItemService, TradeUserService tradeUserService) {
+    public MainController(TradeItemService tradeItemService, TradeUserService tradeUserService, TradeBoardGameService tradeBoardGameService) {
         this.tradeItemService = tradeItemService;
         this.tradeUserService = tradeUserService;
+        this.tradeBoardGameService = tradeBoardGameService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(Model model, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
         prepareTradeList();
 
-        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1)-1, 10)));
+        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10)));
 
         return "index";
     }
@@ -67,6 +74,12 @@ public class MainController {
             return "addItem";
         tradeItemService.save(newTradeItemForm);
         return "redirect:/addItem";
+    }
+
+    @RequestMapping("/search")
+    @ResponseBody
+    public List<TradeBoardGameDTO> searchGames(@RequestParam String title, NewTradeItemForm newTradeItemForm) {
+        return tradeBoardGameService.searchByName(title);
     }
 
 
