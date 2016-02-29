@@ -6,11 +6,13 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import trade.math.service.TradeUserService;
 
 import static org.junit.Assert.assertTrue;
 
@@ -28,10 +30,12 @@ public class MtApplicationSeleniumTest {
 
     String url = "http://localhost:9000/";
 
+    @Autowired
+    private TradeUserService tradeUserService;
+
     @Before
     public void setUp() throws Exception {
-        driver.get(url);
-
+        tradeUserService.deleteAll();
     }
 
     @Test

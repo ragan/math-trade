@@ -52,8 +52,9 @@ public class SimpleTradeBoardGameService implements TradeBoardGameService {
     public List<TradeBoardGameDTO> searchByName(String name) {
         if ("".equals(name) || name.length() < 3)
             return Collections.emptyList();
-        return tradeBoardGameTitleRepository.findByTitle(name).stream()
+        return tradeBoardGameTitleRepository.findByTitle(name.toLowerCase()).stream()
                 .map(t -> new TradeBoardGameDTO(t.getTradeBoardGame()))
+                .limit(10)
                 .collect(toList());
     }
 
