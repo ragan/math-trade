@@ -1,5 +1,6 @@
 package trade.math.service;
 
+import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.model.TradeBoardGame;
 import trade.math.model.dto.TradeBoardGameDTO;
 
@@ -16,7 +17,7 @@ public interface TradeBoardGameService {
 
     List<String> searchTitlesLike(String title);
 
-    List<TradeBoardGameDTO> searchByName(String name);
+    BoardGameSearchResult searchByName(String name);
 
     List<TradeBoardGameDTO> findAll();
 

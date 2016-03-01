@@ -9,19 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeItemService;
 import trade.math.service.TradeUserService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -90,7 +86,7 @@ public class MainController {
 
     @RequestMapping("/search")
     @ResponseBody
-    public List<TradeBoardGameDTO> searchGames(@RequestParam String title) {
+    public BoardGameSearchResult searchGames(@RequestParam String title) {
         return tradeBoardGameService.searchByName(title);
     }
 

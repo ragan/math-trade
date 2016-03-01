@@ -56,10 +56,9 @@
                     title: params.term
                 };
             },
-            processResults: function (data, params) {
-                params.page = params.page || 1;
+            processResults: function (data) {
                 return {
-                    results: data
+                    results: data.items
                 };
             },
             cache: true
@@ -72,7 +71,7 @@
     });
     $("#search-select-item").on("select2:select", function (e) {
 //        e.preventDefault();
-        $('#game-form-title').text(e.params.data.names[0]);
+        $('#game-form-title').text(e.params.data.title);
         $('#game-form-bggId').attr({value: e.params.data.bggId});
     });
 
@@ -84,7 +83,7 @@
                         .append($('<a/>').attr({href: '#'})
                                 .append($('<img/>').attr({src: item.thumbnailUrl}))))
                 .append($('<div/>').attr({class: 'media-body'})
-                        .append($('<h3/>').attr({class: 'media-heading'}).text(item.names[0])))
+                        .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
     }
 </script>
 </body>
