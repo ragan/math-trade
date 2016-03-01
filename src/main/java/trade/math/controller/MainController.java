@@ -90,7 +90,7 @@ public class MainController {
 
     @RequestMapping("/search")
     @ResponseBody
-    public List<TradeBoardGameDTO> searchGames(@RequestParam String title, NewTradeItemForm newTradeItemForm) {
+    public List<TradeBoardGameDTO> searchGames(@RequestParam String title) {
         return tradeBoardGameService.searchByName(title);
     }
 
