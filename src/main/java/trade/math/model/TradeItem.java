@@ -9,8 +9,8 @@ public class TradeItem {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private String title;
+    @ManyToOne
+    private TradeBoardGameTitle title;
 
     @Column(nullable = false)
     private String description;
@@ -35,11 +35,11 @@ public class TradeItem {
         this.id = id;
     }
 
-    public String getTitle() {
+    public TradeBoardGameTitle getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(TradeBoardGameTitle title) {
         this.title = title;
     }
 

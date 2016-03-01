@@ -3,6 +3,7 @@ package trade.math.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
 import trade.math.repository.TradeItemRepository;
@@ -16,6 +17,7 @@ import java.util.List;
  * Created by karol on 17.02.16.
  */
 @Service
+@Transactional
 public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeItemRepository tradeItemRepository;
@@ -42,7 +44,7 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeItem.setBggId(tradeItemForm.getBggId());
         tradeItem.setDescription(tradeItemForm.getDescription());
         tradeItem.setForTrade(false);
-        tradeItem.setTitle(bggIdToTitleService.getTitle(tradeItemForm.getBggId()));
+        tradeItem.setTitle(bggIdToTitleService.getBoardGameTitle(tradeItemForm.getBggId()));
         return tradeItemRepository.save(tradeItem);
     }
 
