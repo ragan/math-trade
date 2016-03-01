@@ -44,8 +44,6 @@ public class MainController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(Model model, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        prepareTradeList();
-
         model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10)));
 
         return "index";
@@ -89,26 +87,4 @@ public class MainController {
     public BoardGameSearchResult searchGames(@RequestParam String title) {
         return tradeBoardGameService.searchByName(title);
     }
-
-
-//TODO: usunąć po dodaniu możliwości dodwania gier
-
-    private boolean dbIsReady = false;
-
-    private void prepareTradeList() {
-        if (dbIsReady)
-            return;
-
-//        tradeItemService.deleteAll();
-
-        for (int i = 0; i < 100; i++) {
-//            NewTradeItemForm form = new NewTradeItemForm();
-//            form.setDescription("desc" + i);
-//            form.setBggId(i);
-
-//            tradeItemService.save(form);
-        }
-        dbIsReady = true;
-    }
-
 }
