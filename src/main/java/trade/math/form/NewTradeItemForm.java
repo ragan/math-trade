@@ -1,8 +1,10 @@
 package trade.math.form;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -11,26 +13,26 @@ import javax.validation.constraints.NotNull;
 public class NewTradeItemForm {
 
     @NotNull
-    private int bggId;
+    private Integer bggId;
 
     @NotEmpty
-    @Max(128)
+    @Length(min = 1, max = 128)
     private String description;
 
     public NewTradeItemForm() {
         //
     }
 
-    public NewTradeItemForm(int bggId, String description) {
+    public NewTradeItemForm(Integer bggId, String description) {
         this.bggId = bggId;
         this.description = description;
     }
 
-    public int getBggId() {
+    public Integer getBggId() {
         return bggId;
     }
 
-    public void setBggId(int bggId) {
+    public void setBggId(Integer bggId) {
         this.bggId = bggId;
     }
 
