@@ -4,12 +4,16 @@
 <body>
 <nav th:replace="index :: navbar"></nav>
 <div class="container">
-    <select class="form-control" id="search-select-item">
-        <option value="" selected="selected" th:text="#{addItem.info}">select2/select2</option>
+    <select class="form-control" id="search-select-item" th:placeholder="#{addItem.info}">
+        <option selected="selected"></option>
     </select>
 
+    <div class="page-header">
+        <h2>Add item form</h2>
+    </div>
     <form th:object="${newTradeItemForm}" method="post" th:action="@{/addItem}">
         <input id="game-form-bggId" type="hidden" th:field="*{bggId}"/>
+
         <div class="form-group">
             <label class="control-label col-sm-2">Title: </label>
 
@@ -19,8 +23,10 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2">Description: </label>
+
             <div class="col-sm-10">
-                <textarea class="form-control col-sm-10" cols="10" th:field="*{description}" title="Description"></textarea>
+                <textarea class="form-control col-sm-10" cols="10" th:field="*{description}"
+                          title="Description"></textarea>
             </div>
         </div>
         <div class="form-group">
@@ -38,49 +44,46 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
 <script type="text/javascript">
     $("#search-select-item").select2({
+        id: function (item) {
+            return item.bggId;
+        },
         ajax: {
             url: "/search",
             dataType: 'json',
             delay: 250,
             data: function (params) {
                 return {
-                    page: params.page,
                     title: params.term
                 };
             },
-            processResults: function (data, params) {
-                params.page = params.page || 1;
-
+            processResults: function (data) {
                 return {
-                    results: data,
-                    pagination: {
-                        more: false
-                    }
+                    results: data.items
                 };
             },
             cache: true
         },
-        escapeMarkup: function (markup) {
-            return markup;
-        }, // let our custom formatter work
         minimumInputLength: 3,
-        templateResult: formatRepo // omitted for brevity, see the source of this page
+        templateResult: templateResult,
+        templateSelection: function (item) {
+            return item.text;
+        }
+    });
+    $("#search-select-item").on("select2:select", function (e) {
+//        e.preventDefault();
+        $('#game-form-title').text(e.params.data.title);
+        $('#game-form-bggId').attr({value: e.params.data.bggId});
     });
 
-    function formatRepo(item) {
+    function templateResult(item) {
         if (item.loading) return item.text;
 
         return $('<div/>').attr({class: 'media'})
                 .append($('<div/>').attr({class: 'media-left'})
                         .append($('<a/>').attr({href: '#'})
-                                .append($('<img/>').attr({src: item.thumbnailUrl}).click(onThumbnailClick(item)))))
+                                .append($('<img/>').attr({src: item.thumbnailUrl}))))
                 .append($('<div/>').attr({class: 'media-body'})
-                        .append($('<h3/>').attr({class: 'media-heading'}).text(item.names[0])))
-    }
-
-    var onThumbnailClick = function (item) {
-        $('#game-form-title').text(item.names[0]);
-        $('#game-form-bggId').attr({value: item.bggId});
+                        .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
     }
 </script>
 </body>
