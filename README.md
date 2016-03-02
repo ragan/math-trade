@@ -1,4 +1,6 @@
 ### IN PROGRESS
+- walidacja usuwania w sevice
+- completne testy usuwania
 
 ###TODO:
 - formularz signup nie informuje, że hasło nie jest takie samo
