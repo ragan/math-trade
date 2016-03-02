@@ -144,7 +144,8 @@
                     <!--<form action="/deleteItem" method="post">
                         <input type="hidden" value="-1" th:value="${item.id}" name="deleteId" />-->
                     <button type="button" class="btn btn-danger pull-right" data-toggle="modal"
-                            data-target="#deleteModalConfirm" th:attr="data-target='#deleteModalConfirm_' + ${item.id}">
+                            data-target="#deleteModalConfirm" th:attr="data-target='#deleteModalConfirm_' + ${item.id}"
+                            th:if="${item.canDelete}">
                         Delete
                     </button>
                     <!--</form>-->

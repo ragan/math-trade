@@ -2,15 +2,20 @@ package trade.math.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trade.math.TradeUserRole;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
+import trade.math.model.dto.TradeItemDTO;
 import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -76,8 +81,13 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public PageWrapper<TradeItem> findAll(Pageable pageable) {
-        return new TradeItemPageWrapper(tradeItemRepository.findAll(pageable).getContent(), pageable, tradeItemRepository.count());
+    public PageWrapper<TradeItemDTO> findAll(Pageable pageable) {
+        return findAll(pageable, false, "");
+    }
+
+    @Override
+    public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName) {
+        return new TradeItemPageWrapper(tradeItemRepository.findAll(pageable).getContent(), pageable, tradeItemRepository.count(), isAdmin, userName);
     }
 
 }
