@@ -9,18 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeItemService;
 import trade.math.service.TradeUserService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
+import java.security.Principal;
 import java.util.Optional;
 
 /**
@@ -47,8 +44,6 @@ public class MainController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(Model model, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        prepareTradeList();
-
         model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10)));
 
         return "index";
@@ -78,38 +73,18 @@ public class MainController {
     }
 
     @RequestMapping(value = "/addItem", method = RequestMethod.POST)
-    public String doAddTradeItem(@Valid NewTradeItemForm newTradeItemForm, BindingResult bindingResult) {
+    public String doAddTradeItem(@Valid NewTradeItemForm newTradeItemForm,
+                                 BindingResult bindingResult,
+                                 Principal principal) {
         if (bindingResult.hasErrors())
             return "addItem";
-        tradeItemService.save(newTradeItemForm);
+        tradeItemService.save(newTradeItemForm, principal.getName());
         return "redirect:/addItem";
     }
 
     @RequestMapping("/search")
     @ResponseBody
-    public List<TradeBoardGameDTO> searchGames(@RequestParam String title, NewTradeItemForm newTradeItemForm) {
+    public BoardGameSearchResult searchGames(@RequestParam String title) {
         return tradeBoardGameService.searchByName(title);
     }
-
-
-//TODO: usunąć po dodaniu możliwości dodwania gier
-
-    private boolean dbIsReady = false;
-
-    private void prepareTradeList() {
-        if (dbIsReady)
-            return;
-
-        tradeItemService.deleteAll();
-
-        for (int i = 0; i < 100; i++) {
-            NewTradeItemForm form = new NewTradeItemForm();
-            form.setDescription("desc" + i);
-            form.setBggId(i);
-
-            tradeItemService.save(form);
-        }
-        dbIsReady = true;
-    }
-
 }

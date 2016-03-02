@@ -9,6 +9,8 @@ import static java.util.stream.Collectors.toList;
 
 public class TradeBoardGameDTO {
 
+    private int id;
+
     private int bggId;
 
     private List<String> names;
@@ -68,6 +70,14 @@ public class TradeBoardGameDTO {
         tradeBoardGame.setDesigner(getDesigner());
 
         return tradeBoardGame;
+    }
+
+    public int getId() {
+        return bggId;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getBggId() {

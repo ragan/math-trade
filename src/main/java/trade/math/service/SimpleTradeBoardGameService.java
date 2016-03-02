@@ -3,6 +3,9 @@ package trade.math.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trade.math.bgsearch.BoardGameSearchResult;
+import trade.math.bgsearch.bgg.BggBoardGameSearchResultItem;
+import trade.math.bgsearch.bgg.BggGameSearchResult;
 import trade.math.model.TradeBoardGame;
 import trade.math.model.TradeBoardGameTitle;
 import trade.math.model.dto.TradeBoardGameDTO;
@@ -11,6 +14,7 @@ import trade.math.repository.TradeBoardGameTitleRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -49,13 +53,18 @@ public class SimpleTradeBoardGameService implements TradeBoardGameService {
     }
 
     @Override
-    public List<TradeBoardGameDTO> searchByName(String name) {
+    public BoardGameSearchResult searchByName(String name) {
         if ("".equals(name) || name.length() < 3)
-            return Collections.emptyList();
-        return tradeBoardGameTitleRepository.findByTitle(name.toLowerCase()).stream()
-                .map(t -> new TradeBoardGameDTO(t.getTradeBoardGame()))
-                .limit(10)
-                .collect(toList());
+            return new BggGameSearchResult();
+        return new BggGameSearchResult(
+                tradeBoardGameTitleRepository.findByTitle(name.toLowerCase())
+                        .stream()
+                        .map(t -> new BggBoardGameSearchResultItem(
+                                t.getTitle(), t.getTradeBoardGame().getBggId(), t.getTradeBoardGame().getThumbnailUrl()
+                        ))
+                        .limit(10)
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override
