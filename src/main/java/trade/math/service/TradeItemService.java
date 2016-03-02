@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface TradeItemService {
 
-    TradeItem save(NewTradeItemForm tradeItemForm);
+    TradeItem save(NewTradeItemForm newTradeItemForm, String username);
 
     List<TradeItem> findAll();
 

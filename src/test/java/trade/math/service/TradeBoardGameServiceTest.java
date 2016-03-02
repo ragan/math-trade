@@ -47,16 +47,16 @@ public class TradeBoardGameServiceTest {
     @Test
     public void testCanNotSearchEmptyOrTooShortString() throws Exception {
         tradeBoardGameService.save(makeBoardGame("test title"));
-        assertTrue(tradeBoardGameService.searchByName("").isEmpty());
-        assertTrue(tradeBoardGameService.searchByName("t").isEmpty());
-        assertTrue(tradeBoardGameService.searchByName("te").isEmpty());
+        assertTrue(tradeBoardGameService.searchByName("").getItems().isEmpty());
+        assertTrue(tradeBoardGameService.searchByName("t").getItems().isEmpty());
+        assertTrue(tradeBoardGameService.searchByName("te").getItems().isEmpty());
     }
 
     @Test
     public void testSearchByTitle() throws Exception {
         tradeBoardGameService.save(makeBoardGame("some title"));
 
-        assertTrue(tradeBoardGameService.searchByName("some").size() == 1);
+        assertTrue(tradeBoardGameService.searchByName("some").getItems().size() == 1);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TradeBoardGameServiceTest {
         tradeBoardGameService.save(makeBoardGame("some title", "some other title"));
         tradeBoardGameService.save(makeBoardGame("test title"));
 
-        assertTrue(tradeBoardGameService.searchByName("some").size() == 2);
+        assertTrue(tradeBoardGameService.searchByName("some").getItems().size() == 2);
     }
 
     @Test

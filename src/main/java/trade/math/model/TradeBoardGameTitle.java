@@ -20,6 +20,11 @@ public class TradeBoardGameTitle {
     public TradeBoardGameTitle() {
     }
 
+    public TradeBoardGameTitle(TradeBoardGame tradeBoardGame, String title) {
+        this.tradeBoardGame = tradeBoardGame;
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }

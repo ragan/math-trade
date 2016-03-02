@@ -1,6 +1,7 @@
 package trade.math.service;
 
 import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,29 @@ import trade.math.model.TradeUser;
 
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * Created by karol on 17.02.16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MtApplication.class)
 @ActiveProfiles("test")
-public class TradeItemServiceTest extends TestCase {
+public class TradeItemServiceTest {
 
     @Autowired
     private TradeItemService tradeItemService;
 
-/*
+    @Autowired
+    private TradeUserService tradeUserService;
+
+    @Before
+    public void setUp() throws Exception {
+        tradeItemService.deleteAll();
+
+        tradeUserService.deleteAll();
+        tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
+    }
 
     @Test
     public void testSaveNewTradeItem() throws Exception {
@@ -35,7 +47,7 @@ public class TradeItemServiceTest extends TestCase {
         newTradeItemForm.setDescription("description");
         newTradeItemForm.setBggId(123);
 
-        TradeItem item = tradeItemService.save(newTradeItemForm);
+        TradeItem item = tradeItemService.save(newTradeItemForm, "username");
         assertNotNull(item.getId());
 
         Long itemId = item.getId();
@@ -152,7 +164,7 @@ public class TradeItemServiceTest extends TestCase {
     }
 
     @Test
-    public void testDeleteById(){
+    public void testDeleteById() {
         prepareTradeList(10);
 
         List<TradeItem> allItems = tradeItemService.findAll();
@@ -192,9 +204,8 @@ public class TradeItemServiceTest extends TestCase {
             form.setDescription("desc" + i);
             form.setBggId(i);
 
-            tradeItemService.save(form);
+            tradeItemService.save(form, "username");
         }
     }
-*/
 
 }
