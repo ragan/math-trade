@@ -3,8 +3,6 @@ package trade.math.form;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -12,28 +10,33 @@ import javax.validation.constraints.NotNull;
  */
 public class NewTradeItemForm {
 
-    @NotNull
-    private Integer bggId;
+    @NotEmpty
+    @Length(min = 1, max = 128)
+    private String title;
 
     @NotEmpty
     @Length(min = 1, max = 128)
     private String description;
 
+    @NotNull
+    private String imageUrl;
+
     public NewTradeItemForm() {
         //
     }
 
-    public NewTradeItemForm(Integer bggId, String description) {
-        this.bggId = bggId;
+    public NewTradeItemForm(String title, String description, String imageUrl) {
+        this.title = title;
         this.description = description;
+        this.imageUrl = imageUrl;
     }
 
-    public Integer getBggId() {
-        return bggId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setBggId(Integer bggId) {
-        this.bggId = bggId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -42,5 +45,13 @@ public class NewTradeItemForm {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
