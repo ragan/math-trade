@@ -2,6 +2,8 @@ package trade.math.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
@@ -43,8 +46,21 @@ public class MainController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String main(Model model, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10)));
+    public String main(Model model, Authentication authentication, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
+        boolean isAdmin = false;
+        String userName = "";
+
+        if (authentication != null) {
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                if (authority.getAuthority().equals(TradeUserRole.ROLE_ADMIN.name())) {
+                    isAdmin = true;
+                    break;
+                }
+            }
+            userName = authentication.getName();
+        }
+
+        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin, userName));
 
         return "index";
     }

@@ -1,7 +1,14 @@
 package trade.math.wrappers;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import trade.math.TradeUserRole;
 import trade.math.model.TradeItem;
+import trade.math.model.TradeUser;
+import trade.math.model.dto.TradeItemDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,16 +16,16 @@ import java.util.List;
 /**
  * Created by daniel on 22.02.16.
  */
-public class TradeItemPageWrapper implements PageWrapper<TradeItem> {
+public class TradeItemPageWrapper implements PageWrapper<TradeItemDTO> {
 
-    private List<TradeItem> items;
+    private List<TradeItemDTO> items;
     private Pageable pageable;
     private long itemCount;
     private int actualPage;
 
-    public TradeItemPageWrapper(List<TradeItem> items, Pageable pageable, long itemCount) {
+    public TradeItemPageWrapper(List<TradeItem> items, Pageable pageable, long itemCount, boolean isAdmin, String userName) {
 
-        this.items = items;
+        this.items = prepareTradeItemDTOList(items, isAdmin, userName);
         this.pageable = pageable;
         this.itemCount = itemCount;
 
@@ -27,7 +34,7 @@ public class TradeItemPageWrapper implements PageWrapper<TradeItem> {
     }
 
     @Override
-    public List<TradeItem> getItems() {
+    public List<TradeItemDTO> getItems() {
         return items;
     }
 
@@ -96,4 +103,31 @@ public class TradeItemPageWrapper implements PageWrapper<TradeItem> {
         return list;
     }
 
+    private List<TradeItemDTO> prepareTradeItemDTOList(List<TradeItem> listTI, boolean isAdmin, String userName) {
+        List<TradeItemDTO> list = new ArrayList<>();
+        TradeItemDTO dto;
+
+        for (TradeItem tradeItem : listTI) {
+            dto = new TradeItemDTO();
+
+            dto.setId(tradeItem.getId());
+            dto.setTitle((tradeItem.getTitle() != null ? tradeItem.getTitle().getTitle() : "Default"));
+            dto.setDescription(tradeItem.getDescription());
+            dto.setImgUrl(tradeItem.getImgUrl());
+            dto.setCanDelete(checkPermission(tradeItem.getOwner(), isAdmin, userName));
+
+            list.add(dto);
+        }
+        return list;
+    }
+
+    private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName){
+        if(isAdmin)
+            return true;
+
+        if(userName.isEmpty())
+            return false;
+
+        return userName.equals(owner.getUsername());
+    }
 }

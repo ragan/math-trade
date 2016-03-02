@@ -3,8 +3,10 @@ package trade.math.service;
 import org.springframework.data.domain.Pageable;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
+import trade.math.model.dto.TradeItemDTO;
 import trade.math.wrappers.PageWrapper;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -18,7 +20,9 @@ public interface TradeItemService {
 
     TradeItem findById(Long itemId);
 
-    PageWrapper<TradeItem> findAll(Pageable pageable);
+    PageWrapper<TradeItemDTO> findAll(Pageable pageable);
+
+    PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName);
 
     void deleteAll();
 
