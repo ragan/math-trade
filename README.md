@@ -1,20 +1,10 @@
 ### IN PROGRESS
-- usuwanie gry
-    - ~~usuwanie z bazy~~
-    - ~~testy~~
-    - ~~frontend~~
-    - ~~popup z prośbą o potwierdzenie~~
-    - ~~ajaxowe usuwanie postem~~
-    - ~~wyświetlenie statusu usunięcia~~
-    - ~~powiązanie gier z użytkownikiem~~
-    - TradeItemDTO zamiast TradeItem
-    - możliwość ich usunięcia tylko przez właściciela
 
 ###TODO:
 - formularz signup nie informuje, że hasło nie jest takie samo
 - ~~model gry (jako TRADE_ITEM)~~
 - ~~lista gier~~
-- usuń grę
+- ~~usuń grę
 - ~~model użytkownika~~
 - ~~rejestracja~~
 - ~~logowanie~~
@@ -93,3 +83,14 @@ login -> lista preferencji -> wypełnij/edytuj -> zatwierdź
     - ~~wyświetlanie listy na stronie~~
     - ~~działanie paginacji na stronie~~
     - ~~test skryptu tworzącego pasek paginacji~~
+
+- usuwanie gry
+    - ~~usuwanie z bazy~~
+    - ~~testy~~
+    - ~~frontend~~
+    - ~~popup z prośbą o potwierdzenie~~
+    - ~~ajaxowe usuwanie postem~~
+    - ~~wyświetlenie statusu usunięcia~~
+    - ~~powiązanie gier z użytkownikiem~~
+    - ~~TradeItemDTO zamiast TradeItem~~
+    - ~~możliwość ich usunięcia tylko przez właściciela
