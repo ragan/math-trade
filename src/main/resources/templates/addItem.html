@@ -4,7 +4,7 @@
 <body>
 <nav th:replace="index :: navbar"></nav>
 <div class="container">
-    <select class="form-control" id="search-select-item" th:placeholder="#{addItem.info}">
+    <select class="form-control" id="search-select-item">
         <option selected="selected"></option>
     </select>
 
@@ -70,7 +70,6 @@
         }
     });
     $("#search-select-item").on("select2:select", function (e) {
-//        e.preventDefault();
         $('#game-form-title').text(e.params.data.title);
         $('#game-form-bggId').attr({value: e.params.data.bggId});
     });
