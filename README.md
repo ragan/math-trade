@@ -6,7 +6,8 @@
     - ~~popup z prośbą o potwierdzenie~~
     - ~~ajaxowe usuwanie postem~~
     - ~~wyświetlenie statusu usunięcia~~
-    - powiązanie gier z użytkownikiem
+    - ~~powiązanie gier z użytkownikiem~~
+    - TradeItemDTO zamiast TradeItem
     - możliwość ich usunięcia tylko przez właściciela
 
 ###TODO:

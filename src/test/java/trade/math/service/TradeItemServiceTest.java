@@ -27,6 +27,7 @@ public class TradeItemServiceTest extends TestCase {
     @Autowired
     private TradeItemService tradeItemService;
 
+/*
 
     @Test
     public void testSaveNewTradeItem() throws Exception {
@@ -194,5 +195,6 @@ public class TradeItemServiceTest extends TestCase {
             tradeItemService.save(form);
         }
     }
+*/
 
 }
