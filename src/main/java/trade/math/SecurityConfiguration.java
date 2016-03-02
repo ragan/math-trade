@@ -24,6 +24,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf()
+                .ignoringAntMatchers("/admin/**")
+                .and()
                 .authorizeRequests()
                 .antMatchers("/addItem/**").hasRole("USER")
                 .antMatchers("/**", "/signUp/**", "/admin/**").permitAll()
