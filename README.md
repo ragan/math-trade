@@ -1,12 +1,12 @@
 ### IN PROGRESS
-- walidacja usuwania w sevice
+- ~~walidacja usuwania w sevice~~
 - completne testy usuwania
 
 ###TODO:
 - formularz signup nie informuje, że hasło nie jest takie samo
 - ~~model gry (jako TRADE_ITEM)~~
 - ~~lista gier~~
-- ~~usuń grę
+- ~~usuń grę~~
 - ~~model użytkownika~~
 - ~~rejestracja~~
 - ~~logowanie~~

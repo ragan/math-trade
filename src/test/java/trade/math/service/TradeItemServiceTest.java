@@ -36,7 +36,7 @@ public class TradeItemServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        tradeItemService.deleteAll();
+        tradeItemService.deleteAll(true);
 
         tradeUserService.deleteAll();
         tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
@@ -174,7 +174,7 @@ public class TradeItemServiceTest {
 
         Long deletedItemId = allItems.get(4).getId();
 
-        tradeItemService.deleteById(deletedItemId); // pierwszy raz usuwam
+        tradeItemService.deleteById(deletedItemId, true, ""); // pierwszy raz usuwam
 
         allItems = tradeItemService.findAll();
 
@@ -188,7 +188,7 @@ public class TradeItemServiceTest {
 
     //HELPERS
     private void prepareTradeList(int count) {
-        tradeItemService.deleteAll();
+        tradeItemService.deleteAll(true);
 //        tradeUserService.deleteAll();
 //
 //        NewTradeUserForm userForm = new NewTradeUserForm();
