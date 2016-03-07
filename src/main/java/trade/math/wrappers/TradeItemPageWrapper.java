@@ -12,6 +12,7 @@ import trade.math.model.dto.TradeItemDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by daniel on 22.02.16.
@@ -104,21 +105,31 @@ public class TradeItemPageWrapper implements PageWrapper<TradeItemDTO> {
     }
 
     private List<TradeItemDTO> prepareTradeItemDTOList(List<TradeItem> listTI, boolean isAdmin, String userName) {
-        List<TradeItemDTO> list = new ArrayList<>();
-        TradeItemDTO dto;
+//        List<TradeItemDTO> list = new ArrayList<>();
+//        TradeItemDTO dto;
 
-        for (TradeItem tradeItem : listTI) {
-            dto = new TradeItemDTO();
+        return listTI.stream().map(ti -> {
+            TradeItemDTO dto = new TradeItemDTO();
+            dto.setId(ti.getId());
+            dto.setTitle(ti.getTitle());
+            dto.setDescription(ti.getDescription());
+            dto.setImgUrl(ti.getImgUrl());
+            dto.setCanDelete(checkPermission(ti.getOwner(), isAdmin, userName));
+            return dto;
+        }).collect(Collectors.toList());
 
-            dto.setId(tradeItem.getId());
-            dto.setTitle(tradeItem.getTitle());
-            dto.setDescription(tradeItem.getDescription());
-            dto.setImgUrl(tradeItem.getImgUrl());
-            dto.setCanDelete(checkPermission(tradeItem.getOwner(), isAdmin, userName));
-
-            list.add(dto);
-        }
-        return list;
+//        for (TradeItem tradeItem : listTI) {
+//            dto = new TradeItemDTO();
+//
+//            dto.setId(tradeItem.getId());
+//            dto.setTitle(tradeItem.getTitle());
+//            dto.setDescription(tradeItem.getDescription());
+//            dto.setImgUrl(tradeItem.getImgUrl());
+//            dto.setCanDelete(checkPermission(tradeItem.getOwner(), isAdmin, userName));
+//
+//            list.add(dto);
+//        }
+//        return list;
     }
 
     private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {

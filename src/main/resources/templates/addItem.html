@@ -4,6 +4,12 @@
 <body>
 <nav th:replace="index :: navbar"></nav>
 <div class="container">
+
+    <div th:if="${param.success != null}" class="alert alert-success">
+        <b th:text="#{congratulations} + '!'"></b>
+        <span th:text="#{additem.success}"></span>
+    </div>
+
     <select class="form-control" id="search-select-item">
         <option selected="selected"></option>
     </select>
@@ -16,13 +22,18 @@
             <input id="title" type="hidden" th:field="*{title}"/>
             <input id="imageUrl" type="hidden" th:field="*{imageUrl}"/>
 
-            <img id="form-image" src=""/>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                <img id="form-image" th:src="@{/img/no-img.png}"/>
+            </div>
+
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2"></label>
 
             <div class="col-sm-10">
-                <h2 id="game-form-title-text" class="form-control-static">Please choose a game in searchbox.</h2>
+                <h2 id="game-form-title-text" class="form-control-static" th:text="${newTradeItemForm.title == null} ? #{addItem.pleaseChoose} : ${newTradeItemForm.title}"></h2>
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
             </div>
         </div>
         <div class="form-group">
@@ -31,6 +42,7 @@
             <div class="col-sm-10">
                 <textarea class="form-control col-sm-10" cols="10" th:field="*{description}"
                           title="Description"></textarea>
+                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
             </div>
         </div>
         <div class="form-group">
@@ -79,7 +91,7 @@
         $('#title').val(e.params.data.title);
         $('#game-form-title-text').text(e.params.data.title);
         $('#game-form-bggId').attr({value: e.params.data.bggId});
-        $('#form-image').attr('img', e.params.data.thumbNailUrl);
+        $('#form-image').attr('src', e.params.data.thumbnailUrl);
     });
 
     function templateResult(item) {

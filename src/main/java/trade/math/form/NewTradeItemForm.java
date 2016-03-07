@@ -5,9 +5,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
-/**
- * Created by karol on 17.02.16.
- */
+@TitleExistsConstraint
 public class NewTradeItemForm {
 
     @NotEmpty

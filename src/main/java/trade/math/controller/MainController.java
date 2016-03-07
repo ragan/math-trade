@@ -1,6 +1,7 @@
 package trade.math.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
@@ -91,11 +93,13 @@ public class MainController {
     @RequestMapping(value = "/addItem", method = RequestMethod.POST)
     public String doAddTradeItem(@Valid NewTradeItemForm newTradeItemForm,
                                  BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes,
                                  Principal principal) {
         if (bindingResult.hasErrors())
             return "addItem";
         tradeItemService.save(newTradeItemForm, principal.getName());
-        return "redirect:/addItem";
+//        redirectAttributes.addAttribute("success");
+        return "redirect:/addItem?success";
     }
 
     @RequestMapping("/search")

@@ -12,7 +12,6 @@ import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.repository.TradeBoardGameRepository;
 import trade.math.repository.TradeBoardGameTitleRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +46,7 @@ public class SimpleTradeBoardGameService implements TradeBoardGameService {
 
     @Override
     public List<String> searchTitlesLike(String title) {
-        return tradeBoardGameTitleRepository.findByTitle(title).stream()
+        return tradeBoardGameTitleRepository.findByTitleAllIgnoreCaseContainingOrderByTitleAsc(title).stream()
                 .map(TradeBoardGameTitle::getTitle)
                 .collect(toList());
     }
@@ -56,9 +55,17 @@ public class SimpleTradeBoardGameService implements TradeBoardGameService {
     public BoardGameSearchResult searchByName(String name) {
         if ("".equals(name) || name.length() < 3)
             return new BggGameSearchResult();
+
+        List<TradeBoardGameTitle> exact = tradeBoardGameTitleRepository
+                .findByTitleAllIgnoreCaseOrderByTitleAsc(name.toLowerCase());
+
+        List<TradeBoardGameTitle> containing = tradeBoardGameTitleRepository
+                .findByTitleAllIgnoreCaseContainingOrderByTitleAsc(name.toLowerCase());
+        exact.addAll(containing);
+
         return new BggGameSearchResult(
-                tradeBoardGameTitleRepository.findByTitle(name.toLowerCase())
-                        .stream()
+                exact.stream()
+                        .distinct()
                         .map(t -> new BggBoardGameSearchResultItem(
                                 t.getTitle(), t.getTradeBoardGame().getBggId(), t.getTradeBoardGame().getThumbnailUrl()
                         ))

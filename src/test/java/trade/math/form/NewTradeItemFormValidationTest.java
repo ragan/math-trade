@@ -1,6 +1,5 @@
 package trade.math.form;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +8,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class NewTradeItemFormValidationTest {
 
