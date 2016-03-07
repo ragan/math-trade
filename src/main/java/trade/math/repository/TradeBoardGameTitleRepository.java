@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TradeBoardGameTitleRepository extends JpaRepository<TradeBoardGameTitle, Long> {
 
-    @Query("select distinct t from TradeBoardGameTitle t where lower(t.title) like %:title%")
+    @Query("select distinct t from TradeBoardGameTitle t where lower(t.title) like %:title% order by t.title asc")
     List<TradeBoardGameTitle> findByTitle(@Param("title") String title);
 
 }

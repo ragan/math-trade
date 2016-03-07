@@ -1,6 +1,7 @@
 package trade.math.service;
 
 import junit.framework.TestCase;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import javax.validation.constraints.AssertFalse;
 import javax.validation.constraints.AssertTrue;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -47,10 +49,21 @@ public class TradeItemServiceTest {
     }
 
     @Test
+    public void testIfImageUrlIsTheSame() throws Exception {
+        NewTradeItemForm newTradeItemForm = new NewTradeItemForm();
+        newTradeItemForm.setTitle("title");
+        newTradeItemForm.setDescription("description");
+        newTradeItemForm.setImageUrl("imageUrl");
+
+        TradeItem item = tradeItemService.save(newTradeItemForm, "username");
+        assertThat(item.getImgUrl(), is(equalTo("imageUrl")));
+    }
+
+    @Test
     public void testSaveNewTradeItem() throws Exception {
         NewTradeItemForm newTradeItemForm = new NewTradeItemForm();
+        newTradeItemForm.setTitle("title");
         newTradeItemForm.setDescription("description");
-        newTradeItemForm.setBggId(123);
 
         TradeItem item = tradeItemService.save(newTradeItemForm, "username");
         assertNotNull(item.getId());
@@ -184,8 +197,9 @@ public class TradeItemServiceTest {
 
         for (int i = 0; i < count; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
+            form.setTitle("title" + i);
             form.setDescription("desc" + i);
-            form.setBggId(i);
+//            form.setBggId(i);
 
             tradeItemService.save(form, "username");
         }
