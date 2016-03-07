@@ -1,12 +1,12 @@
 ### IN PROGRESS
-- walidacja usuwania w sevice
-- completne testy usuwania
 
-###TODO:
+### TODO:
+- po rejestracji uzytkownik powinien być już zalogowany
+- po dodaniu gry może by przenosić na stronę główną(???)
 - formularz signup nie informuje, że hasło nie jest takie samo
 - ~~model gry (jako TRADE_ITEM)~~
 - ~~lista gier~~
-- ~~usuń grę
+- ~~usuń grę~~
 - ~~model użytkownika~~
 - ~~rejestracja~~
 - ~~logowanie~~
@@ -95,4 +95,6 @@ login -> lista preferencji -> wypełnij/edytuj -> zatwierdź
     - ~~wyświetlenie statusu usunięcia~~
     - ~~powiązanie gier z użytkownikiem~~
     - ~~TradeItemDTO zamiast TradeItem~~
-    - ~~możliwość ich usunięcia tylko przez właściciela
+    - ~~możliwość ich usunięcia tylko przez właściciela~~
+    - ~~walidacja usuwania w sevice~~
+    - ~~completne testy usuwania~~

@@ -49,28 +49,15 @@ public class MainController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(Model model, Authentication authentication, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        boolean isAdmin = false;
-        String userName = "";
-
-        if (authentication != null) {
-            for (GrantedAuthority authority : authentication.getAuthorities()) {
-                if (authority.getAuthority().equals(TradeUserRole.ROLE_ADMIN.name())) {
-                    isAdmin = true;
-                    break;
-                }
-            }
-            userName = authentication.getName();
-        }
-
-        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin, userName));
+        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), getUserName(authentication)));
 
         return "index";
     }
 
     @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId) {
-        return tradeItemService.deleteById(deleteId.longValue()) ? "success" : "failure";
+    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId, Authentication authentication) {
+        return tradeItemService.deleteById(deleteId.longValue(), isAdmin(authentication), getUserName(authentication)) ? "success" : "failure";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
@@ -106,5 +93,22 @@ public class MainController {
     @ResponseBody
     public BoardGameSearchResult searchGames(@RequestParam String title) {
         return tradeBoardGameService.searchByName(title);
+    }
+
+    //Helpers
+    private String getUserName(Authentication authentication) {
+        if (authentication != null)
+            return authentication.getName();
+        return "";
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+
+        if (authentication != null)
+            for (GrantedAuthority authority : authentication.getAuthorities())
+                if (authority.getAuthority().equals(TradeUserRole.ROLE_ADMIN.name()))
+                    return true;
+
+        return false;
     }
 }

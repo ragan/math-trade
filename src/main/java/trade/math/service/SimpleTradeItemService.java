@@ -6,13 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
+import trade.math.model.TradeUser;
 import trade.math.model.dto.TradeItemDTO;
 import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by karol on 17.02.16.
@@ -55,12 +56,17 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public void deleteAll() {
-        tradeItemRepository.deleteAll();
+    public void deleteAll(boolean isAdmin) {
+        if (isAdmin)
+            tradeItemRepository.deleteAll();
     }
 
     @Override
-    public boolean deleteById(Long itemId) {
+    public boolean deleteById(Long itemId, boolean isAdmin, String userName) {
+        TradeItem item = findById(itemId);
+        if(item == null || !checkPermission(item.getOwner(), isAdmin, userName))
+            return false;
+
         try {
             tradeItemRepository.delete(itemId);
             return true;
@@ -83,7 +89,33 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName) {
-        return new TradeItemPageWrapper(tradeItemRepository.findAll(pageable).getContent(), pageable, tradeItemRepository.count(), isAdmin, userName);
+        //return new TradeItemPageWrapper(
+        // prepareTradeItemDTOList(tradeItemRepository.findAll(pageable).getContent(), isAdmin, userName),
+        // pageable,
+        // tradeItemRepository.count());
+        return new TradeItemPageWrapper(
+                tradeItemRepository.findAll(pageable).getContent().stream().parallel().map(item -> tradeItemToDTO(item, isAdmin, userName)).collect(Collectors.toList()),
+                pageable,
+                tradeItemRepository.count());
+    }
+
+    private TradeItemDTO tradeItemToDTO(TradeItem item, boolean isAdmin, String userName) {
+        return new TradeItemDTO(
+                item.getId(),
+                item.getTitle(),
+                item.getDescription(),
+                item.getImgUrl(),
+                checkPermission(item.getOwner(), isAdmin, userName));
+    }
+
+    private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {
+        if (isAdmin)
+            return true;
+
+        if ("".equals(userName) || userName == null)
+            return false;
+
+        return userName.equals(owner.getUsername());
     }
 
 }
