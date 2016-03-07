@@ -1,6 +1,8 @@
 ### IN PROGRESS
 
-###TODO:
+### TODO:
+- po rejestracji uzytkownik powinien być już zalogowany
+- po dodaniu gry może by przenosić na stronę główną(???)
 - formularz signup nie informuje, że hasło nie jest takie samo
 - ~~model gry (jako TRADE_ITEM)~~
 - ~~lista gier~~

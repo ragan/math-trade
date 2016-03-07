@@ -12,11 +12,7 @@ import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
-
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -106,7 +102,7 @@ public class SimpleTradeItemService implements TradeItemService {
     private TradeItemDTO tradeItemToDTO(TradeItem item, boolean isAdmin, String userName) {
         return new TradeItemDTO(
                 item.getId(),
-                (item.getTitle() != null ? item.getTitle().getTitle() : "Default"),
+                item.getTitle(),
                 item.getDescription(),
                 item.getImgUrl(),
                 checkPermission(item.getOwner(), isAdmin, userName));
