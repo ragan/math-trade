@@ -33,8 +33,20 @@ public class NewTradeItemFormValidationTest {
         assertThat(validator.validate(newTradeItemForm), is(not(empty())));
     }
 
+    @Test
+    public void testTitleCanNotBeEmpty() throws Exception {
+        newTradeItemForm.setTitle("");
+        assertThat(validator.validate(newTradeItemForm), is(not(empty())));
+    }
+
+    @Test
+    public void testImageUrlCanBeEmpty() throws Exception {
+        newTradeItemForm.setImageUrl("");
+        assertThat(validator.validate(newTradeItemForm), is(empty()));
+    }
+
     private NewTradeItemForm getValidItemForm() {
-        return new NewTradeItemForm(123, "description");
+        return new NewTradeItemForm("title", "description", "//");
     }
 
 }

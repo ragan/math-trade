@@ -4,7 +4,7 @@
 <body>
 <nav th:replace="index :: navbar"></nav>
 <div class="container">
-    <select class="form-control" id="search-select-item" th:placeholder="#{addItem.info}">
+    <select class="form-control" id="search-select-item">
         <option selected="selected"></option>
     </select>
 
@@ -12,13 +12,17 @@
         <h2>Add item form</h2>
     </div>
     <form th:object="${newTradeItemForm}" method="post" th:action="@{/addItem}">
-        <input id="game-form-bggId" type="hidden" th:field="*{bggId}"/>
-
         <div class="form-group">
-            <label class="control-label col-sm-2">Title: </label>
+            <input id="title" type="hidden" th:field="*{title}"/>
+            <input id="imageUrl" type="hidden" th:field="*{imageUrl}"/>
+
+            <img id="form-image" src=""/>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2"></label>
 
             <div class="col-sm-10">
-                <p id="game-form-title" class="form-control-static">Please choose a game in searchbox.</p>
+                <h2 id="game-form-title-text" class="form-control-static">Please choose a game in searchbox.</h2>
             </div>
         </div>
         <div class="form-group">
@@ -69,10 +73,13 @@
             return item.text;
         }
     });
+
     $("#search-select-item").on("select2:select", function (e) {
-//        e.preventDefault();
-        $('#game-form-title').text(e.params.data.title);
+        $('#imageUrl').val(e.params.data.thumbnailUrl);
+        $('#title').val(e.params.data.title);
+        $('#game-form-title-text').text(e.params.data.title);
         $('#game-form-bggId').attr({value: e.params.data.bggId});
+        $('#form-image').attr('img', e.params.data.thumbNailUrl);
     });
 
     function templateResult(item) {
@@ -81,7 +88,7 @@
         return $('<div/>').attr({class: 'media'})
                 .append($('<div/>').attr({class: 'media-left'})
                         .append($('<a/>').attr({href: '#'})
-                                .append($('<img/>').attr({src: item.thumbnailUrl}))))
+                                .append($('<img/>').attr({src: item.thumbnailUrl, width: 100}))))
                 .append($('<div/>').attr({class: 'media-body'})
                         .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
     }

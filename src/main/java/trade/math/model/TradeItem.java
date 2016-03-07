@@ -1,6 +1,9 @@
 package trade.math.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class TradeItem {
@@ -9,8 +12,9 @@ public class TradeItem {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    private TradeBoardGameTitle title;
+    @NotNull
+    @NotEmpty
+    private String title;
 
     @Column(nullable = false)
     private String description;
@@ -19,9 +23,6 @@ public class TradeItem {
 
     @Column(nullable = false)
     private boolean forTrade;
-
-    @Column(nullable = false)
-    private int bggId;
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -35,11 +36,11 @@ public class TradeItem {
         this.id = id;
     }
 
-    public TradeBoardGameTitle getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(TradeBoardGameTitle title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -65,14 +66,6 @@ public class TradeItem {
 
     public void setForTrade(boolean forTrade) {
         this.forTrade = forTrade;
-    }
-
-    public int getBggId() {
-        return bggId;
-    }
-
-    public void setBggId(int bggId) {
-        this.bggId = bggId;
     }
 
     public TradeUser getOwner() {

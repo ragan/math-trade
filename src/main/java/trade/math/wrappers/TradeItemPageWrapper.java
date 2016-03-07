@@ -111,7 +111,7 @@ public class TradeItemPageWrapper implements PageWrapper<TradeItemDTO> {
             dto = new TradeItemDTO();
 
             dto.setId(tradeItem.getId());
-            dto.setTitle((tradeItem.getTitle() != null ? tradeItem.getTitle().getTitle() : "Default"));
+            dto.setTitle(tradeItem.getTitle());
             dto.setDescription(tradeItem.getDescription());
             dto.setImgUrl(tradeItem.getImgUrl());
             dto.setCanDelete(checkPermission(tradeItem.getOwner(), isAdmin, userName));
@@ -121,11 +121,11 @@ public class TradeItemPageWrapper implements PageWrapper<TradeItemDTO> {
         return list;
     }
 
-    private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName){
-        if(isAdmin)
+    private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {
+        if (isAdmin)
             return true;
 
-        if(userName.isEmpty())
+        if (userName.isEmpty())
             return false;
 
         return userName.equals(owner.getUsername());
