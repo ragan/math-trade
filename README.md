@@ -1,6 +1,4 @@
 ### IN PROGRESS
-- ~~walidacja usuwania w sevice~~
-- completne testy usuwania
 
 ###TODO:
 - formularz signup nie informuje, że hasło nie jest takie samo
@@ -95,4 +93,6 @@ login -> lista preferencji -> wypełnij/edytuj -> zatwierdź
     - ~~wyświetlenie statusu usunięcia~~
     - ~~powiązanie gier z użytkownikiem~~
     - ~~TradeItemDTO zamiast TradeItem~~
-    - ~~możliwość ich usunięcia tylko przez właściciela
+    - ~~możliwość ich usunięcia tylko przez właściciela~~
+    - ~~walidacja usuwania w sevice~~
+    - ~~completne testy usuwania~~
