@@ -70,10 +70,9 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public boolean deleteById(Long itemId, boolean isAdmin, String userName) {
-//        TradeItem item = findById(itemId);
-//        if(item == null || !checkPermission(item.getOwner(), isAdmin, userName))
-//            return false;
-
+        TradeItem item = findById(itemId);
+        if(item == null || !checkPermission(item.getOwner(), isAdmin, userName))
+            return false;
 
         try {
             tradeItemRepository.delete(itemId);

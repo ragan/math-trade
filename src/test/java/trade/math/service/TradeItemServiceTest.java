@@ -16,6 +16,8 @@ import trade.math.model.TradeItem;
 import trade.math.model.TradeUser;
 import trade.math.model.dto.TradeItemDTO;
 
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.AssertTrue;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -34,12 +36,14 @@ public class TradeItemServiceTest {
     @Autowired
     private TradeUserService tradeUserService;
 
+    private TradeUser tmpUser;
+
     @Before
     public void setUp() throws Exception {
         tradeItemService.deleteAll(true);
 
         tradeUserService.deleteAll();
-        tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
+        tmpUser = tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
     }
 
     @Test
@@ -62,25 +66,6 @@ public class TradeItemServiceTest {
 
         System.out.println(foundItem.getTitle());
     }
-/*
-    @Test
-    public void testFindWithPagination() throws Exception {
-        prepareTradeList(100);
-
-        List<TradeItemDTO> testPage0 = tradeItemService.findAll(new PageRequest(0, 10)).getItems();
-
-        assertEquals(0, testPage0.get(0).getBggId());
-        assertEquals(5, testPage0.get(5).getBggId());
-
-        assertEquals("desc9", testPage0.get(9).getDescription());
-
-        List<TradeItemDTO> testPage3 = tradeItemService.findAll(new PageRequest(3, 10)).getItems();
-
-        assertEquals(32, testPage3.get(2).getBggId());
-
-        assertEquals("desc37", testPage3.get(7).getDescription());
-    }*/
-
 
     @Test
     public void testGetPaginationList() {
@@ -170,35 +155,32 @@ public class TradeItemServiceTest {
 
         List<TradeItem> allItems = tradeItemService.findAll();
 
-        for (TradeItem item : allItems) System.out.println(item.getId());
-
         Long deletedItemId = allItems.get(4).getId();
 
-        tradeItemService.deleteById(deletedItemId, true, ""); // pierwszy raz usuwam
+        assertTrue(tradeItemService.deleteById(deletedItemId, true, ""));
 
         allItems = tradeItemService.findAll();
-
-        for (TradeItem item : allItems) System.out.println(item.getId());
 
         assertEquals(9, allItems.size());
 
         for (TradeItem item : allItems) assertFalse(item.getId() == deletedItemId);
+
+        assertFalse(tradeItemService.deleteById(deletedItemId, true, ""));
+    }
+
+    @Test
+    public void testDeleteCheckOwner() {
+        prepareTradeList(10);
+
+        assertFalse(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "anotherUser"));
+        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "username"));
+        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), true, "anotherUser"));
     }
 
 
     //HELPERS
     private void prepareTradeList(int count) {
         tradeItemService.deleteAll(true);
-//        tradeUserService.deleteAll();
-//
-//        NewTradeUserForm userForm = new NewTradeUserForm();
-//        userForm.setUsername("test");
-//        userForm.setEmail("test@test.com");
-//        userForm.setPassword("0000");
-//        userForm.setPasswordConfirmation("0000");
-//
-//        TradeUser user = tradeUserService.save(userForm);
-
 
         for (int i = 0; i < count; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
