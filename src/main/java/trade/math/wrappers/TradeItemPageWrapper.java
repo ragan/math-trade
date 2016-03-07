@@ -23,9 +23,9 @@ public class TradeItemPageWrapper implements PageWrapper<TradeItemDTO> {
     private long itemCount;
     private int actualPage;
 
-    public TradeItemPageWrapper(List<TradeItem> items, Pageable pageable, long itemCount, boolean isAdmin, String userName) {
+    public TradeItemPageWrapper(List<TradeItemDTO> items, Pageable pageable, long itemCount) {
 
-        this.items = prepareTradeItemDTOList(items, isAdmin, userName);
+        this.items = items;
         this.pageable = pageable;
         this.itemCount = itemCount;
 
@@ -103,31 +103,4 @@ public class TradeItemPageWrapper implements PageWrapper<TradeItemDTO> {
         return list;
     }
 
-    private List<TradeItemDTO> prepareTradeItemDTOList(List<TradeItem> listTI, boolean isAdmin, String userName) {
-        List<TradeItemDTO> list = new ArrayList<>();
-        TradeItemDTO dto;
-
-        for (TradeItem tradeItem : listTI) {
-            dto = new TradeItemDTO();
-
-            dto.setId(tradeItem.getId());
-            dto.setTitle(tradeItem.getTitle());
-            dto.setDescription(tradeItem.getDescription());
-            dto.setImgUrl(tradeItem.getImgUrl());
-            dto.setCanDelete(checkPermission(tradeItem.getOwner(), isAdmin, userName));
-
-            list.add(dto);
-        }
-        return list;
-    }
-
-    private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {
-        if (isAdmin)
-            return true;
-
-        if (userName.isEmpty())
-            return false;
-
-        return userName.equals(owner.getUsername());
-    }
 }
