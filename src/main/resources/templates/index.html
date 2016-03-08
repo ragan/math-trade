@@ -39,7 +39,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li sec:authorize="hasRole('ROLE_USER')"><a th:href="@{/addItem}">Add item</a></li>
+                <li sec:authorize="hasRole('ROLE_USER')"><a id="add-item-href" th:href="@{/addItem}">Add item</a></li>
                 <li sec:authorize="not isAuthenticated()"><a th:href="@{/signUp}">Sign up</a></li>
                 <li sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"

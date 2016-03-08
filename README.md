@@ -10,7 +10,7 @@
 - ~~model użytkownika~~
 - ~~rejestracja~~
 - ~~logowanie~~
-- dodawanie gry
+- ~~dodawanie gry~~
 - definicja etapu - encja TRADE_STATUS z enumem
 - administrator (menu widoczne tylko dla administratora)
 - zamknięcie listy
