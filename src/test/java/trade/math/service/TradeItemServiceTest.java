@@ -32,14 +32,12 @@ public class TradeItemServiceTest {
     @Autowired
     private TradeUserService tradeUserService;
 
-    private TradeUser tmpUser;
-
     @Before
     public void setUp() throws Exception {
         tradeItemService.deleteAll(true);
 
         tradeUserService.deleteAll();
-        tmpUser = tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
+        tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
     }
 
     @Test

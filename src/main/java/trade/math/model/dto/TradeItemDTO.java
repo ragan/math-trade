@@ -22,8 +22,6 @@ public class TradeItemDTO {
         this.canDelete = canDelete;
     }
 
-
-
     public String getTitle() {
         return title;
     }

@@ -2,6 +2,7 @@ package trade.math.form;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import trade.math.model.TradeCategory;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,14 +20,17 @@ public class NewTradeItemForm {
     @NotNull
     private String imageUrl;
 
+    private TradeCategory category;
+
     public NewTradeItemForm() {
         //
     }
 
-    public NewTradeItemForm(String title, String description, String imageUrl) {
+    public NewTradeItemForm(String title, String description, String imageUrl, TradeCategory category) {
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.category = category;
     }
 
     public String getTitle() {
@@ -51,5 +55,13 @@ public class NewTradeItemForm {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public TradeCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(TradeCategory category) {
+        this.category = category;
     }
 }

@@ -20,6 +20,9 @@ public class TradeItem {
 
     private String imgUrl;
 
+    @ManyToOne
+    private TradeCategory category;
+
     @Column(nullable = false)
     private boolean forTrade;
 
@@ -73,5 +76,13 @@ public class TradeItem {
 
     public void setOwner(TradeUser owner) {
         this.owner = owner;
+    }
+
+    public TradeCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(TradeCategory category) {
+        this.category = category;
     }
 }

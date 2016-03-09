@@ -16,6 +16,8 @@ public interface TradeItemService {
 
     TradeItem save(NewTradeItemForm newTradeItemForm, String username);
 
+    TradeItem update(TradeItem item);
+
     List<TradeItem> findAll();
 
     TradeItem findById(Long itemId);
