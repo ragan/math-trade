@@ -6,12 +6,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
+import trade.math.model.TradeList;
+import trade.math.model.TradeListState;
 import trade.math.model.TradeUser;
 import trade.math.model.dto.TradeItemDTO;
 import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,26 +31,54 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeUserRepository tradeUserRepository;
 
+    private final TradeListService tradeListService;
+
     @Autowired
     public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
                                   BggIdToTitleService bggIdToTitleService,
-                                  TradeUserRepository tradeUserRepository) {
+                                  TradeUserRepository tradeUserRepository,
+                                  TradeListService tradeListService) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
+        this.tradeListService = tradeListService;
     }
 
     @Override
     public TradeItem save(NewTradeItemForm tradeItemForm, String username) {
+        TradeList list = tradeListService.findMostRecentList();
+        if (list != null && list.getState() == TradeListState.CLOSED)
+            throw new IllegalStateException("Can not add new item when current list is closed.");
+        return save(tradeItemForm, username, list);
+    }
+
+    @Override
+    public TradeItem save(NewTradeItemForm newTradeItemForm, String username, TradeList tradeList) {
         TradeItem tradeItem = new TradeItem();
 
         tradeItem.setOwner(tradeUserRepository.findOneByUsername(username));
 
-        tradeItem.setDescription(tradeItemForm.getDescription());
+        tradeItem.setDescription(newTradeItemForm.getDescription());
         tradeItem.setForTrade(false);
-        tradeItem.setTitle(tradeItemForm.getTitle());
-        tradeItem.setImgUrl(tradeItemForm.getImageUrl());
+        tradeItem.setTitle(newTradeItemForm.getTitle());
+        tradeItem.setImgUrl(newTradeItemForm.getImageUrl());
+        tradeItem.setTradeList(tradeList);
         return tradeItemRepository.save(tradeItem);
+    }
+
+    @Override
+    public List<TradeItem> findByTradeList(TradeList tradeList) {
+        return tradeItemRepository.findByTradeList(tradeList);
+    }
+
+    @Override
+    public List<TradeItem> findByTradeList(Long tradeListId) {
+        return findByTradeList(tradeListService.findById(tradeListId));
+    }
+
+    @Override
+    public List<TradeItem> findByRecentTradeList() {
+        return findByTradeList(tradeListService.findMostRecentList());
     }
 
     @Override
@@ -56,7 +87,7 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public void deleteAll(boolean isAdmin) {
+    public void deleteAll(boolean isAdmin) { //TODO: WTF?
         if (isAdmin)
             tradeItemRepository.deleteAll();
     }
@@ -64,7 +95,7 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public boolean deleteById(Long itemId, boolean isAdmin, String userName) {
         TradeItem item = findById(itemId);
-        if(item == null || !checkPermission(item.getOwner(), isAdmin, userName))
+        if (item == null || !checkPermission(item.getOwner(), isAdmin, userName))
             return false;
 
         try {

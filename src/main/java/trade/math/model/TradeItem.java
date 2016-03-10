@@ -28,6 +28,10 @@ public class TradeItem {
     @JoinColumn(nullable = false)
     private TradeUser owner;
 
+    @ManyToOne
+    @JoinColumn(name = "TRADE_LIST_ID", nullable = true)
+    private TradeList tradeList;
+
     public Long getId() {
         return id;
     }
@@ -74,5 +78,13 @@ public class TradeItem {
 
     public void setOwner(TradeUser owner) {
         this.owner = owner;
+    }
+
+    public TradeList getTradeList() {
+        return tradeList;
+    }
+
+    public void setTradeList(TradeList tradeList) {
+        this.tradeList = tradeList;
     }
 }
