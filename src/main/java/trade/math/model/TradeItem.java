@@ -31,6 +31,7 @@ public class TradeItem {
     @JoinColumn(name = "TRADE_LIST_ID", nullable = true)
     private TradeList tradeList;
 
+
     public Long getId() {
         return id;
     }
