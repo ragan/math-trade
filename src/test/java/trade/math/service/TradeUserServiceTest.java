@@ -1,5 +1,6 @@
 package trade.math.service;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,11 +9,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.TradeUserRole;
 import trade.math.form.NewTradeUserForm;
+import trade.math.model.TradeUser;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Created by karol on 18.02.16.
@@ -31,9 +35,28 @@ public class TradeUserServiceTest {
     }
 
     @Test
+    public void testIfAdminIsPresent() throws Exception {
+        assertThat(tradeUserService.findByUsername("admin").isPresent(), is(true));
+    }
+
+    @Test
+    public void testWhenUsernameIsNotFound() throws Exception {
+        assertThat(tradeUserService.findByUsername("illegal username").isPresent(), is(false));
+    }
+
+    @Test
+    public void testPersistUserWithAdminRole() throws Exception {
+        assertThat(tradeUserService.save(makeNewUserForm("admin_username", "admin@email.com", "password"),
+                TradeUserRole.ROLE_ADMIN), is(notNullValue()));
+        Optional<TradeUser> username = tradeUserService.findByUsername("admin_username");
+        assertThat(username.isPresent(), is(true));
+        assertThat(username.get().getRole(), is(TradeUserRole.ROLE_ADMIN));
+    }
+
+    @Test
     public void testSaveNewUser() throws Exception {
         NewTradeUserForm newTradeUserForm = makeDefaultNewUserForm();
-        assertNotNull(tradeUserService.save(newTradeUserForm));
+        assertNotNull(tradeUserService.save(newTradeUserForm)); //jest w bazie admin z tym mailem
 
         assertNotNull(tradeUserService.findByUsername(newTradeUserForm.getUsername()));
         assertTrue(tradeUserService.findByUsername(newTradeUserForm.getUsername()).get().getUsername()
