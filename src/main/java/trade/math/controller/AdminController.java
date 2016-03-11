@@ -25,9 +25,4 @@ public class AdminController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/category")
-    public String showCategoriesManagement(){
-        return "category";
-    }
-
 }
