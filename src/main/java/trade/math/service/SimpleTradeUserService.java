@@ -25,23 +25,34 @@ public class SimpleTradeUserService implements TradeUserService {
     }
 
     @Override
-    public TradeUser save(NewTradeUserForm newTradeUserForm) {
+    public TradeUser save(NewTradeUserForm newTradeUserForm, TradeUserRole tradeUserRole) {
         TradeUser tradeUser = new TradeUser();
         tradeUser.setUsername(newTradeUserForm.getUsername());
         tradeUser.setEmail(newTradeUserForm.getEmail());
         tradeUser.setPassword(new BCryptPasswordEncoder().encode(newTradeUserForm.getPassword()));
-        tradeUser.setRole(TradeUserRole.ROLE_USER);
+        tradeUser.setRole(tradeUserRole);
         return tradeUserRepository.save(tradeUser);
     }
 
     @Override
+    public TradeUser save(NewTradeUserForm newTradeUserForm) {
+        return save(newTradeUserForm, TradeUserRole.ROLE_USER);
+    }
+
+    @Override
     public void deleteAll() {
-        tradeUserRepository.deleteAll();
+        deleteAll(TradeUserRole.ROLE_USER);
+    }
+
+    @Override
+    public void deleteAll(TradeUserRole tradeUserRole) {
+        tradeUserRepository.delete(tradeUserRepository.findAllByRole(tradeUserRole));
     }
 
     @Override
     public Optional<TradeUser> findByUsername(String username) {
         TradeUser oneByUsername = tradeUserRepository.findOneByUsername(username);
+        if (oneByUsername == null) return Optional.empty();
         return Optional.of(oneByUsername);
     }
 }
