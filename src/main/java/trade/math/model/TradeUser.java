@@ -31,6 +31,9 @@ public class TradeUser {
     @Enumerated(EnumType.STRING)
     private TradeUserRole role;
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<TradeItem> items;
+
     public Long getId() {
         return id;
     }
