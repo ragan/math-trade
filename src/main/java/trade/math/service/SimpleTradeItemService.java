@@ -67,6 +67,11 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public TradeItem update(TradeItem item) {
+        return tradeItemRepository.save(item);
+    }
+
+    @Override
     public List<TradeItem> findByTradeList(TradeList tradeList) {
         return tradeItemRepository.findByTradeList(tradeList);
     }

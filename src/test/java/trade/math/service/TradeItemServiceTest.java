@@ -1,7 +1,5 @@
 package trade.math.service;
 
-import junit.framework.TestCase;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +13,6 @@ import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItem;
 import trade.math.model.TradeUser;
-import trade.math.model.dto.TradeItemDTO;
-
-import javax.validation.constraints.AssertFalse;
-import javax.validation.constraints.AssertTrue;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -38,14 +32,12 @@ public class TradeItemServiceTest {
     @Autowired
     private TradeUserService tradeUserService;
 
-    private TradeUser tmpUser;
-
     @Before
     public void setUp() throws Exception {
         tradeItemService.deleteAll(true);
 
         tradeUserService.deleteAll();
-        tmpUser = tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
+        tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
     }
 
     @Test

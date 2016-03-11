@@ -1,5 +1,3 @@
-### IN PROGRESS
-
 ### TODO:
 - po rejestracji uzytkownik powinien być już zalogowany
 - po dodaniu gry może by przenosić na stronę główną(???)

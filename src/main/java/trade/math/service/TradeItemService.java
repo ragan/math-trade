@@ -25,6 +25,8 @@ public interface TradeItemService {
 
     List<TradeItem> findByRecentTradeList();
 
+    TradeItem update(TradeItem item);
+
     List<TradeItem> findAll();
 
     TradeItem findById(Long itemId);
