@@ -48,4 +48,9 @@ public class SimpleTradeBoardGamePropertiesService implements TradeBoardGameProp
 
         return false;
     }
+
+    @Override
+    public void deleteAll() {
+        tradeBoardGamePropertiesRepository.deleteAll();
+    }
 }

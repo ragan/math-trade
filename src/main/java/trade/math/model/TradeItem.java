@@ -31,6 +31,11 @@ public class TradeItem {
     @JoinColumn(name = "TRADE_LIST_ID", nullable = true)
     private TradeList tradeList;
 
+    @NotNull
+    @Column(name = "CATEGORY")
+    @Enumerated(EnumType.STRING)
+    private TradeItemCategory category;
+
 
     public Long getId() {
         return id;
@@ -88,4 +93,11 @@ public class TradeItem {
         this.tradeList = tradeList;
     }
 
+    public TradeItemCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(TradeItemCategory category) {
+        this.category = category;
+    }
 }

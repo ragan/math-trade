@@ -13,6 +13,7 @@ import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeBoardGameProperties;
 import trade.math.model.TradeItem;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 
 import java.util.List;
@@ -85,8 +86,34 @@ public class TradeBoardGamePropertiesServiceTest {
 
         assertTrue(tmpItem.getId() == tradeBoardGameProperties.getTradeItem().getId());
 
+        tradeBoardGamePropertiesService.deleteByTradeItem(tmpItem);
     }
 
-    //TODO: Test with delete item
+    @Test
+    public void testDeleteItem() {
+
+        TradeBoardGameProperties tradeBoardGameProperties = new TradeBoardGameProperties(tmpItem, 10);
+
+        tradeBoardGameProperties = tradeBoardGamePropertiesService.save(tradeBoardGameProperties);
+
+        assertNotNull(tradeBoardGamePropertiesService.findByTradeItem(tmpItem));
+
+        long itemId = tmpItem.getId();
+        tradeItemService.deleteById(itemId, true, "");
+
+        assertNull(tradeBoardGamePropertiesService.findByTradeItem(tmpItem));
+        assertNull(tradeItemService.findById(itemId));
+    }
+
+    @Test
+    public void testCreateItemWithProperty() {
+        TradeItem itemWithProperty = tradeItemService.save(new NewTradeItemForm("Chuj", "test", null, TradeItemCategory.BOARD_GAME, 100), tmpUser.getUsername());
+
+        assertNotNull(itemWithProperty);
+
+        assertNotNull(tradeBoardGamePropertiesService.findByTradeItem(itemWithProperty));
+
+        assertEquals(100, tradeBoardGamePropertiesService.findByTradeItem(itemWithProperty).getBggId().intValue());
+    }
 
 }

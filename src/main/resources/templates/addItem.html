@@ -21,6 +21,7 @@
         <div class="form-group">
             <input id="title" type="hidden" th:field="*{title}"/>
             <input id="imageUrl" type="hidden" th:field="*{imageUrl}"/>
+            <input id="game-form-bggId" type="hidden" th:field="*{bggId}"/>
 
             <div class="col-sm-2"></div>
             <div class="col-sm-10">
@@ -32,7 +33,9 @@
             <label class="control-label col-sm-2"></label>
 
             <div class="col-sm-10">
-                <h2 id="game-form-title-text" class="form-control-static" th:text="${newTradeItemForm.title == null} ? #{addItem.pleaseChoose} : ${newTradeItemForm.title}"></h2>
+                <h2 id="game-form-title-text" class="form-control-static"
+                    th:text="${newTradeItemForm.title == null} ? #{addItem.pleaseChoose} : ${newTradeItemForm.title}"></h2>
+
                 <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
             </div>
         </div>
@@ -42,7 +45,24 @@
             <div class="col-sm-10">
                 <textarea class="form-control col-sm-10" cols="10" th:field="*{description}"
                           title="Description"></textarea>
+
                 <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">Category: </label>
+
+            <div class="col-sm-10">
+                <select id="categorySelect" th:field="*{category}" class="form-control" onchange="categorySelector()">
+                    <option th:each="category : ${T(trade.math.model.TradeItemCategory).values()}" th:text="${category}" th:value="${category}"/>
+                </select>
+            </div>
+        </div>
+        <div class="collapse" id="boardGameDataCollapse">
+            <label class="control-label col-sm-2">Board Game Geek ID: </label>
+
+            <div class="col-sm-10">
+                <span id="bgg-id">-1</span>
             </div>
         </div>
         <div class="form-group">
@@ -90,7 +110,8 @@
         $('#imageUrl').val(e.params.data.thumbnailUrl);
         $('#title').val(e.params.data.title);
         $('#game-form-title-text').text(e.params.data.title);
-        $('#game-form-bggId').attr({value: e.params.data.bggId});
+        $('#bgg-id').text(e.params.data.bggId);
+        $('#game-form-bggId').val(e.params.data.bggId);
         $('#form-image').attr('src', e.params.data.thumbnailUrl);
     });
 
@@ -103,6 +124,13 @@
                                 .append($('<img/>').attr({src: item.thumbnailUrl, width: 100}))))
                 .append($('<div/>').attr({class: 'media-body'})
                         .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
+    }
+
+    function categorySelector(){
+        if($('#categorySelect').val() == "BOARD_GAME")
+            $('#boardGameDataCollapse').show();
+        else
+            $('#boardGameDataCollapse').hide();
     }
 </script>
 </body>

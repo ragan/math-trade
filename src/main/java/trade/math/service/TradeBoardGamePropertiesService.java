@@ -15,4 +15,5 @@ public interface TradeBoardGamePropertiesService {
 
     boolean deleteByTradeItem(TradeItem tradeItem);
 
+    void deleteAll();
 }
