@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import trade.math.model.TradeItem;
 import trade.math.model.TradeList;
 import trade.math.model.TradeListState;
+import trade.math.model.TradeListStatus;
 import trade.math.repository.TradeListRepository;
 
 import java.util.Date;
@@ -58,4 +59,8 @@ public class TradeListServiceImpl implements TradeListService {
         return tradeListRepository.findOne(tradeListId);
     }
 
+    @Override
+    public TradeListStatus getTradeListStatus() {
+        return new TradeListStatus(findMostRecentList());
+    }
 }
