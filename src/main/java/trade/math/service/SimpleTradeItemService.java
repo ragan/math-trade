@@ -5,10 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.form.NewTradeItemForm;
-import trade.math.model.TradeItem;
-import trade.math.model.TradeList;
-import trade.math.model.TradeListState;
-import trade.math.model.TradeUser;
+import trade.math.model.*;
 import trade.math.model.dto.TradeItemDTO;
 import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
@@ -33,15 +30,19 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeListService tradeListService;
 
+    private final TradeBoardGamePropertiesService tradeBoardGamePropertiesService;
+
     @Autowired
     public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
                                   BggIdToTitleService bggIdToTitleService,
                                   TradeUserRepository tradeUserRepository,
-                                  TradeListService tradeListService) {
+                                  TradeListService tradeListService,
+                                  TradeBoardGamePropertiesService tradeBoardGamePropertiesService) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
+        this.tradeBoardGamePropertiesService = tradeBoardGamePropertiesService;
     }
 
     @Override
@@ -63,7 +64,13 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeItem.setTitle(newTradeItemForm.getTitle());
         tradeItem.setImgUrl(newTradeItemForm.getImageUrl());
         tradeItem.setTradeList(tradeList);
-        return tradeItemRepository.save(tradeItem);
+        tradeItem.setCategory(newTradeItemForm.getCategory());
+
+        tradeItem = tradeItemRepository.save(tradeItem);
+
+        handleSaveProperties(tradeItem, newTradeItemForm);
+
+        return tradeItem;
     }
 
     @Override
@@ -93,8 +100,10 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public void deleteAll(boolean isAdmin) { //TODO: WTF?
-        if (isAdmin)
+        if (isAdmin) {
+            tradeBoardGamePropertiesService.deleteAll();
             tradeItemRepository.deleteAll();
+        }
     }
 
     @Override
@@ -102,6 +111,8 @@ public class SimpleTradeItemService implements TradeItemService {
         TradeItem item = findById(itemId);
         if (item == null || !checkPermission(item.getOwner(), isAdmin, userName))
             return false;
+
+        handleDeleteProperties(item);
 
         try {
             tradeItemRepository.delete(itemId);
@@ -152,6 +163,21 @@ public class SimpleTradeItemService implements TradeItemService {
             return false;
 
         return userName.equals(owner.getUsername());
+    }
+
+    private void handleSaveProperties(TradeItem tradeItem, NewTradeItemForm newTradeItemForm) {
+        if (tradeItem == null)
+            return;
+
+        switch (newTradeItemForm.getCategory()) {
+            case BOARD_GAME:
+                tradeBoardGamePropertiesService.save(new TradeBoardGameProperties(tradeItem, newTradeItemForm.getBggId()));
+                break;
+        }
+    }
+
+    private void handleDeleteProperties(TradeItem item) {
+        tradeBoardGamePropertiesService.deleteByTradeItem(item);
     }
 
 }
