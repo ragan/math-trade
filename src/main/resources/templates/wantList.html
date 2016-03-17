@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head"></head>
+<body>
+<nav th:replace="index :: navbar"></nav>
+<div class="container">
+
+    <div class="page-header">
+        <h2>Want list Composer</h2>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h4>Priority 1</h4></div>
+        <!--<ul class="list-group">-->
+        <!--<li class="list-group-item">-->
+        <div class="panel-body">
+            <!--<div class="btn-group" role="group">-->
+                <!--<button type="button" class="btn btn-default">Left</button>-->
+                <!--<button type="button" class="btn btn-default">Middle</button>-->
+                <!--<button type="button" class="btn btn-default">Right</button>-->
+            <!--</div>-->
+            <!--<ul class="nav nav-pills">-->
+                <!--<li role="presentation" class="active"><a href="#">Home</a></li>-->
+                <!--<li role="presentation"><a href="#">Profile</a></li>-->
+                <!--<li role="presentation"><a href="#">Messages</a></li>-->
+            <!--</ul>-->
+            <ul class="list-group" id="ourList">
+                <li class="list-group-item">Item 1</li>
+                <li class="list-group-item">Item 2</li>
+                <li class="list-group-item">Item 3</li>
+                <li class="list-group-item">Item 4</li>
+                <li class="list-group-item">Item 5</li>
+                <li class="list-group-item">Item 6</li>
+                <li class="list-group-item">Item 7</li>
+                <li class="list-group-item">Item 8</li>
+                <li class="list-group-item">Item 9</li>
+                <li class="list-group-item">Item 10</li>
+            </ul>
+            <!--<span class="label label-default">Item 1</span>-->
+            <!--<span class="label label-default">Item 2</span>-->
+            <!--<span class="label label-default">Item 3</span>-->
+            <!--<span class="label label-default">Item 4</span>-->
+            <!--<span class="label label-default">Item 5</span>-->
+            <!--<span class="label label-default">Item 6</span>-->
+            <!--<span class="label label-default">Item 7</span>-->
+            <!--<span class="label label-default">Item 8</span>-->
+            <!--<span class="label label-default">Item 9</span>-->
+            <!--<span class="label label-default">Item 10</span>-->
+
+            <!--<div class="input-group input-group-lg">-->
+                <!--<input class="form-control" type="text" disabled="true" value="pokemony1"/>-->
+                <!--<span class="input-group-btn">-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-down"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-up"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-remove"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="input-group input-group-lg">-->
+                <!--<input class="form-control" type="text" disabled="true" value="pokemony2"/>-->
+                <!--<span class="input-group-btn">-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-down"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-up"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-remove"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="input-group input-group-lg">-->
+                <!--<input class="form-control" type="text" disabled="true" value="pokemony3"/>-->
+                <!--<span class="input-group-btn">-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-down"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-up"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-remove"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="input-group input-group-lg">-->
+                <!--<input class="form-control" type="text" disabled="true" value="pokemony4"/>-->
+                <!--<span class="input-group-btn">-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-down"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-up"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                    <!--<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-remove"-->
+                                                                        <!--aria-hidden="true"/></button>-->
+                <!--</span>-->
+            <!--</div>-->
+        </div>
+        <!--</li>-->
+        <!--<li class="list-group-item">carca</li>-->
+        <!--<li class="list-group-item">test</li>-->
+        <!--<li class="list-group-item">szachy</li>-->
+        <!--<li class="list-group-item">asl</li>-->
+        <!--</ul>-->
+
+    </div>
+
+    <select class="form-control js-example-basic-multiple" id="selector" multiple="multiple" style="width: 100%">
+        <option selected="selected" value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select>
+
+    <button onclick="showOptions()" style="width: 300px; height: 100px"/>
+
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
+<script type="text/javascript">
+
+    $('#selector').select2();
+
+    Sortable.create(document.getElementById('ourList'), {
+        ghostClass: 'ghost',
+        animation: 150,
+        onEnd: endSort
+    });
+
+    function showOptions() {
+        alert($('#selector').val() + "\n" + $('#selector').data());
+    }
+
+    function endSort(evt){
+        alert(evt.oldIndex + " -> " + evt.newIndex);
+    }
+
+</script>
+</body>
+</html>

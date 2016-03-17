@@ -89,6 +89,11 @@ public class MainController {
         return "redirect:/addItem?success";
     }
 
+    @RequestMapping(value = "/wantList", method = RequestMethod.GET)
+    public String wantListComposer() {
+        return "wantList";
+    }
+
     @RequestMapping("/search")
     @ResponseBody
     public BoardGameSearchResult searchGames(@RequestParam String title) {
