@@ -11,4 +11,8 @@ import java.util.List;
  */
 public interface TradeItemRepository extends JpaRepository<TradeItem, Long> {
     List<TradeItem> findByTradeList(TradeList tradeList);
+    List<TradeItem> findByTradeListAndTitleAllIgnoreCaseContainingOrderByTitleAsc(TradeList tradeList, String title);
+    List<TradeItem> findByTradeListAndTitleAllIgnoreCaseOrderByTitleAsc(TradeList tradeList, String title);
+    List<TradeItem> findByTitleAllIgnoreCaseContainingOrderByTitleAsc(String title);
+    List<TradeItem> findByTitleAllIgnoreCaseOrderByTitleAsc(String title);
 }

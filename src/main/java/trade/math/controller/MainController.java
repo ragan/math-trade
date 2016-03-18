@@ -17,12 +17,15 @@ import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
+import trade.math.model.TradeItem;
+import trade.math.model.dto.TradeItemDTO;
 import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeItemService;
 import trade.math.service.TradeUserService;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -98,6 +101,18 @@ public class MainController {
     @ResponseBody
     public BoardGameSearchResult searchGames(@RequestParam String title) {
         return tradeBoardGameService.searchByName(title);
+    }
+
+    @RequestMapping("/searchOnTradeList")
+    @ResponseBody
+    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title){
+        return tradeItemService.findByRecentTradeListAndName(title);
+    }
+
+    @RequestMapping("/findItemById")
+    @ResponseBody
+    public TradeItem findItemById(@RequestParam long id){
+        return tradeItemService.findById(id);
     }
 
     //Helpers

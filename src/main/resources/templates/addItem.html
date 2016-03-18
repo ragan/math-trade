@@ -138,7 +138,7 @@
     });
 
     function templateResult(item) {
-        if (item.loading) return item.text;
+        if (item.loading) return '';
 
         return $('<div/>').attr({class: 'media'})
                 .append($('<div/>').attr({class: 'media-left'})

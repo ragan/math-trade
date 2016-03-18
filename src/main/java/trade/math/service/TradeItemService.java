@@ -23,6 +23,8 @@ public interface TradeItemService {
 
     List<TradeItem> findByTradeList(Long tradeListId);
 
+    List<TradeItemDTO> findByRecentTradeListAndName(String name);
+
     List<TradeItem> findByRecentTradeList();
 
     TradeItem update(TradeItem item);

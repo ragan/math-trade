@@ -12,7 +12,7 @@ import trade.math.repository.TradeUserRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -86,6 +86,33 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public List<TradeItem> findByTradeList(Long tradeListId) {
         return findByTradeList(tradeListService.findById(tradeListId));
+    }
+
+    @Override
+    public List<TradeItemDTO> findByRecentTradeListAndName(String name) {
+//        if ("".equals(name) || name.length() < 3)
+//            return new ArrayList<>();
+
+//        TradeList recentList = tradeListService.findMostRecentList();
+//
+//        List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseOrderByTitleAsc(recentList, name.toLowerCase());
+//
+//        List<TradeItem> containing = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseContainingOrderByTitleAsc(recentList, name.toLowerCase());
+        List<TradeItem> exact = tradeItemRepository.findByTitleAllIgnoreCaseOrderByTitleAsc(name.toLowerCase());
+
+        List<TradeItem> containing = tradeItemRepository.findByTitleAllIgnoreCaseContainingOrderByTitleAsc(name.toLowerCase());
+        exact.addAll(containing);
+
+        return exact.stream()
+                .distinct()
+                .limit(10)
+                .map(tradeItem -> new TradeItemDTO(
+                        tradeItem.getId(),
+                        tradeItem.getTitle(),
+                        tradeItem.getDescription(),
+                        tradeItem.getImgUrl(),
+                        false
+                )).collect(Collectors.toList());
     }
 
     @Override
