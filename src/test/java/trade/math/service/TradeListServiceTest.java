@@ -87,4 +87,6 @@ public class TradeListServiceTest {
 
         tradeItemService.save(new NewTradeItemForm("title", "description", ""), "username");
     }
+
+    //TODO: check that cannot close if no list present or current list closed
 }

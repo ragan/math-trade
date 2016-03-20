@@ -1,5 +1,6 @@
 package trade.math;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +14,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import trade.math.form.NewTradeUserForm;
+import trade.math.model.TradeListState;
+import trade.math.service.TradeListService;
 import trade.math.service.TradeUserService;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -33,6 +38,9 @@ public class MtApplicationSeleniumTest {
 
     @Autowired
     private TradeUserService tradeUserService;
+
+    @Autowired
+    private TradeListService tradeListService;
 
     @Before
     public void setUp() throws Exception {
@@ -74,5 +82,20 @@ public class MtApplicationSeleniumTest {
         driver.findElement(By.name("username")).sendKeys(username);
         driver.findElement(By.name("password")).sendKeys(password);
         driver.findElement(By.id("signin-submit")).click();
+    }
+
+    @Test
+    public void testCreateNewList() throws Exception {
+        driver.get(url);
+        driver.findElement(By.name("username")).clear();
+        driver.findElement(By.name("username")).sendKeys("admin");
+        driver.findElement(By.name("password")).clear();
+        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.id("signin-submit")).click();
+        driver.findElement(By.linkText("Admin")).click();
+        driver.findElement(By.id("create-new-list-command")).click();
+
+        assertThat(tradeListService.findMostRecentList(), is(notNullValue()));
+        assertThat(tradeListService.findMostRecentList().getState(), is(TradeListState.OPEN));
     }
 }

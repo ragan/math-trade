@@ -3,7 +3,6 @@ package trade.math.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import trade.math.model.TradeItem;
 import trade.math.model.TradeList;
 import trade.math.model.TradeListState;
 import trade.math.model.TradeListStatus;

@@ -2,6 +2,8 @@ package trade.math.model;
 
 public class TradeListStatus {
 
+    //TODO: TEST IT!
+
     private TradeList tradeList;
 
     public TradeListStatus(TradeList tradeList) {

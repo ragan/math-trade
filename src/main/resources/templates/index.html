@@ -45,25 +45,24 @@
                        aria-expanded="false">Admin <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li th:if="${listStatus.canClose()}">
-                            <a href="#">Close List</a>
+                            <!--<button class="btn btn-link" id="close-list-command">Close List</button>-->
+                            <a href="#" id="close-list-command">Close List</a>
                         </li>
                         <li th:if="${listStatus.canOpen()}">
-                            <a href="#">Open List</a>
+                            <a href="#" id="open-list-command">Open List</a>
                         </li>
                         <li th:if="${not listStatus.exists()}">
-                            <a href="#">Start new list</a>
+                            <a href="#" id="create-new-list-command">Start new list</a>
                         </li>
-                        <span th:if="${listStatus.exists()}">
-                            <li role="separator" class="divider"></li>
-                            <li>
-                                <a href="#" id="create-new-list-command">Generate group list</a>
-                            </li>
-                            <!-- anytime -->
-                            <li>
-                                <a href="#">Generate trade list</a>
-                            </li>
-                            <!-- if closed -->
-                        </span>
+                        <li th:if="${listStatus.exists()}" role="separator" class="divider"></li>
+                        <li th:if="${listStatus.exists()}">
+                            <a href="#" class="generate-group-list">Generate group list</a>
+                        </li>
+                        <!-- anytime -->
+                        <li th:if="${listStatus.exists()}">
+                            <a href="#">Generate trade list</a>
+                        </li>
+                        <!-- if closed -->
                     </ul>
                 </li>
             </ul>
@@ -129,7 +128,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <a href="#" class="thumbnail">
-                        <img th:src="${item.imgUrl == null || item.imgUrl == ''} ? @{/img/no-thumb.jpg} : ${item.imgUrl}" alt="game image" width="150"
+                        <img th:src="${item.imgUrl == null || item.imgUrl == ''} ? @{/img/no-thumb.jpg} : ${item.imgUrl}"
+                             alt="game image" width="150"
                              height="150"/>
                     </a>
                 </div>
@@ -200,15 +200,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-<script type="text/javascript">
-    $('#create-new-list-command').click(function () {
-        $.post("/admin/newList.command", function () {
-            location.reload();
-        });
-    });
-</script>
+<script src="../static/js/admin-menu.js" th:src="@{/js/admin-menu.js}"></script>
 <script th:inline="javascript">
     $(document).ready(function () {
+        1
         $(".deleteConfirmButton").click(function () {
                     $.post(
                             "/deleteItem", {

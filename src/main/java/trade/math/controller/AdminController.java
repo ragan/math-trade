@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import trade.math.model.TradeList;
+import trade.math.model.TradeListState;
 import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeListService;
@@ -35,6 +36,18 @@ public class AdminController {
         TradeList list = tradeListService.createNewList();
         if (list == null)
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/closeList.command", method = RequestMethod.POST)
+    public ResponseEntity closeList() {
+        tradeListService.setState(TradeListState.CLOSED);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/openList.command", method = RequestMethod.POST)
+    public ResponseEntity openList() {
+        tradeListService.setState(TradeListState.OPEN);
         return new ResponseEntity(HttpStatus.OK);
     }
 
