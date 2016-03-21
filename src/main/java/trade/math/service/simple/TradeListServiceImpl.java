@@ -1,4 +1,4 @@
-package trade.math.service;
+package trade.math.service.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,6 +7,7 @@ import trade.math.model.TradeList;
 import trade.math.model.TradeListState;
 import trade.math.model.TradeListStatus;
 import trade.math.repository.TradeListRepository;
+import trade.math.service.TradeListService;
 
 import java.util.Date;
 import java.util.List;

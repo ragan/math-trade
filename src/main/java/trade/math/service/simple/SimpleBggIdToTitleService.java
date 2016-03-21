@@ -1,10 +1,11 @@
-package trade.math.service;
+package trade.math.service.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.model.TradeBoardGameTitle;
 import trade.math.repository.TradeBoardGameRepository;
+import trade.math.service.BggIdToTitleService;
 
 /**
  * Created by karol on 17.02.16.

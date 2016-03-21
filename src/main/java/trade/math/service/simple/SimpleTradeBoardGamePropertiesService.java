@@ -1,10 +1,11 @@
-package trade.math.service;
+package trade.math.service.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import trade.math.model.TradeBoardGameProperties;
 import trade.math.model.TradeItem;
 import trade.math.repository.TradeBoardGamePropertiesRepository;
+import trade.math.service.TradeBoardGamePropertiesService;
 
 import javax.transaction.Transactional;
 
