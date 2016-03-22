@@ -52,7 +52,7 @@ public class MainController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(Model model, Authentication authentication, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), getUserName(authentication)));
+        model.addAttribute("mainList", tradeItemService.findAllByRecentTradeList(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), getUserName(authentication)));
 
         return "index";
     }

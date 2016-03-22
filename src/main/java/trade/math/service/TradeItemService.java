@@ -37,6 +37,8 @@ public interface TradeItemService {
 
     PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName);
 
+    PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName);
+
     void deleteAll(boolean isAdmin);
 
     boolean deleteById(Long itemId, boolean isAdmin, String userName);

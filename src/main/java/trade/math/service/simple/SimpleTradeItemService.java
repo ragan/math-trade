@@ -167,14 +167,19 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName) {
-        //return new TradeItemPageWrapper(
-        // prepareTradeItemDTOList(tradeItemRepository.findAll(pageable).getContent(), isAdmin, userName),
-        // pageable,
-        // tradeItemRepository.count());
         return new TradeItemPageWrapper(
                 tradeItemRepository.findAll(pageable).getContent().stream().parallel().map(item -> tradeItemToDTO(item, isAdmin, userName)).collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.count());
+    }
+
+    @Override
+    public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName) {
+        TradeList tradeList = tradeListService.findMostRecentList();
+        return new TradeItemPageWrapper(
+                tradeItemRepository.findByTradeList(tradeList, pageable).getContent().stream().parallel().map(tradeItem -> tradeItemToDTO(tradeItem, isAdmin, userName)).collect(Collectors.toList()),
+                pageable,
+                tradeItemRepository.findByTradeList(tradeList).size());
     }
 
     private TradeItemDTO tradeItemToDTO(TradeItem item, boolean isAdmin, String userName) {
