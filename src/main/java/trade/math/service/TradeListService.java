@@ -1,8 +1,8 @@
 package trade.math.service;
 
-import trade.math.model.TradeItem;
 import trade.math.model.TradeList;
 import trade.math.model.TradeListState;
+import trade.math.model.TradeListStatus;
 
 import java.util.List;
 
@@ -25,5 +25,6 @@ public interface TradeListService {
 
     TradeList findById(Long tradeListId);
 
-//    void addItemToList(TradeItem tradeItem);
+    TradeListStatus getTradeListStatus();
+
 }

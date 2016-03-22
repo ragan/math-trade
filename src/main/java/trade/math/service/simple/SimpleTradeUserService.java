@@ -1,4 +1,4 @@
-package trade.math.service;
+package trade.math.service.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -7,6 +7,7 @@ import trade.math.TradeUserRole;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeUser;
 import trade.math.repository.TradeUserRepository;
+import trade.math.service.TradeUserService;
 
 import javax.validation.Valid;
 import java.util.Optional;

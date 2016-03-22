@@ -80,11 +80,17 @@ public class TradeListServiceTest {
         assertThat(tradeItemService.findByRecentTradeList(), hasSize(2));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testCanNotAddItemWhenLatestListIsClosed() throws Exception {
         tradeListService.createNewList();
         tradeListService.setState(TradeListState.CLOSED);
 
         tradeItemService.save(new NewTradeItemForm("title", "description", ""), "username");
+        assertThat(tradeItemService.findAll(), hasSize(1));
+
+        assertThat(tradeItemService.findByRecentTradeList(), is(empty()));
+        assertThat(tradeItemService.findAll().get(0).getTradeList(), is(nullValue()));
     }
+
+    //TODO: check that cannot close if no list present or current list closed
 }
