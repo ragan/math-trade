@@ -1,4 +1,4 @@
-package trade.math.service;
+package trade.math.service.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,7 @@ import trade.math.model.TradeBoardGameTitle;
 import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.repository.TradeBoardGameRepository;
 import trade.math.repository.TradeBoardGameTitleRepository;
+import trade.math.service.TradeBoardGameService;
 
 import java.util.List;
 import java.util.stream.Collectors;

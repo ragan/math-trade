@@ -57,6 +57,11 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login() {
+        return "login";
+    }
+
     @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
     @ResponseBody
     public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId, Authentication authentication) {

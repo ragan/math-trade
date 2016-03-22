@@ -1,4 +1,4 @@
-package trade.math.service;
+package trade.math.service.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +9,10 @@ import trade.math.model.*;
 import trade.math.model.dto.TradeItemDTO;
 import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
+import trade.math.service.BggIdToTitleService;
+import trade.math.service.TradeBoardGamePropertiesService;
+import trade.math.service.TradeItemService;
+import trade.math.service.TradeListService;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
@@ -49,7 +53,7 @@ public class SimpleTradeItemService implements TradeItemService {
     public TradeItem save(NewTradeItemForm tradeItemForm, String username) {
         TradeList list = tradeListService.findMostRecentList();
         if (list != null && list.getState() == TradeListState.CLOSED)
-            throw new IllegalStateException("Can not add new item when current list is closed.");
+            list = null;
         return save(tradeItemForm, username, list);
     }
 

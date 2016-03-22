@@ -1,6 +1,5 @@
 package trade.math;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +14,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeListState;
+import trade.math.service.TradeItemService;
 import trade.math.service.TradeListService;
 import trade.math.service.TradeUserService;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -30,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 @WebAppConfiguration
 @IntegrationTest("server.port=9000")
 @ActiveProfiles(profiles = {"test", TestConfiguration.TITLE_REPO_MOCK})
-public class MtApplicationSeleniumTest {
+public class MtListOperationsSeleniumTest {
 
     private WebDriver driver = new FirefoxDriver();
 
@@ -42,48 +44,31 @@ public class MtApplicationSeleniumTest {
     @Autowired
     private TradeListService tradeListService;
 
+    @Autowired
+    private TradeItemService tradeItemService;
+
     @Before
     public void setUp() throws Exception {
         tradeUserService.deleteAll();
+
+        tradeUserService.save(new NewTradeUserForm("user", "email@user.com", "password", "password"));
     }
 
     @Test
-    public void testSignUpAndLoginAndLogout() throws Exception {
-        driver.get(url);
-        driver.findElement(By.linkText("Sign up")).click();
-
-        driver.findElement(By.id("username")).sendKeys("username");
-        driver.findElement(By.id("email")).sendKeys("test@email.com");
-        driver.findElement(By.id("password")).sendKeys("password");
-        driver.findElement(By.id("password-confirm")).sendKeys("password");
-
-        driver.findElement(By.id("signup-submit")).click();
-
-        assertTrue(driver.getCurrentUrl().equals(url));
-
-        signIn("username", "password");
-
-        driver.findElement(By.id("signout-submit")).click();
-    }
-
-    private void signIn(String username, String password) {
-        driver.findElement(By.name("username")).sendKeys(username);
-        driver.findElement(By.name("password")).sendKeys(password);
-        driver.findElement(By.id("signin-submit")).click();
-    }
-
-    @Test
-    public void testCreateNewList() throws Exception {
+    public void testCreateItemNoCategory() throws Exception {
         driver.get(url);
         driver.findElement(By.name("username")).clear();
-        driver.findElement(By.name("username")).sendKeys("admin");
+        driver.findElement(By.name("username")).sendKeys("user");
         driver.findElement(By.name("password")).clear();
-        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.name("password")).sendKeys("password");
         driver.findElement(By.id("signin-submit")).click();
-        driver.findElement(By.linkText("Admin")).click();
-        driver.findElement(By.id("create-new-list-command")).click();
+        driver.findElement(By.id("add-item-href")).click();
+        driver.findElement(By.id("game-form-title-text")).clear();
+        driver.findElement(By.id("game-form-title-text")).sendKeys("Some test item");
+        driver.findElement(By.id("description")).clear();
+        driver.findElement(By.id("description")).sendKeys("With description");
+        driver.findElement(By.cssSelector("input.btn.btn-default")).click();
 
-        assertThat(tradeListService.findMostRecentList(), is(notNullValue()));
-        assertThat(tradeListService.findMostRecentList().getState(), is(TradeListState.OPEN));
+        assertThat(tradeItemService.findAll(), hasSize(1));
     }
 }
