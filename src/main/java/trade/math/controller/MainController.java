@@ -18,6 +18,7 @@ import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItem;
+import trade.math.model.TradeUser;
 import trade.math.model.dto.TradeItemDTO;
 import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeItemService;
@@ -98,7 +99,9 @@ public class MainController {
     }
 
     @RequestMapping(value = "/wantList", method = RequestMethod.GET)
-    public String wantListComposer() {
+    public String wantListComposer(Model model, Principal principal) {
+        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(principal.getName()));
+
         return "wantList";
     }
 
@@ -110,8 +113,8 @@ public class MainController {
 
     @RequestMapping("/searchOnTradeList")
     @ResponseBody
-    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title){
-        return tradeItemService.findByRecentTradeListAndName(title);
+    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal){
+        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName());
     }
 
     @RequestMapping("/findItemById")

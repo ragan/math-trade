@@ -74,4 +74,11 @@ public class TradeUser {
         this.role = role;
     }
 
+    public List<TradeItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<TradeItem> items) {
+        this.items = items;
+    }
 }

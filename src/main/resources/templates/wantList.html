@@ -13,7 +13,8 @@
         <div class="panel-heading"><h4>Games to trade</h4></div>
         <div class="panel-body">
             <ul class="list-group">
-
+                <li class="list-group-item" th:each="item : ${myGames}"><h3 class="list-group-item-heading" th:text="${item.title}"></h3>
+                <p class="list-group-item-text">Want games list</p></li>
             </ul>
         </div>
     </div>

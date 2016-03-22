@@ -93,18 +93,16 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public List<TradeItemDTO> findByRecentTradeListAndName(String name) {
-//        if ("".equals(name) || name.length() < 3)
-//            return new ArrayList<>();
+    public List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName) {
+        TradeList recentList = tradeListService.findMostRecentList();
+        TradeUser owner = tradeUserRepository.findOneByUsername(userName);
 
-//        TradeList recentList = tradeListService.findMostRecentList();
-//
-//        List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseOrderByTitleAsc(recentList, name.toLowerCase());
-//
-//        List<TradeItem> containing = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseContainingOrderByTitleAsc(recentList, name.toLowerCase());
-        List<TradeItem> exact = tradeItemRepository.findByTitleAllIgnoreCaseOrderByTitleAsc(name.toLowerCase());
+        if(owner == null)
+            return null;
 
-        List<TradeItem> containing = tradeItemRepository.findByTitleAllIgnoreCaseContainingOrderByTitleAsc(name.toLowerCase());
+        List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), owner);
+
+        List<TradeItem> containing = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseContainingAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), owner);
         exact.addAll(containing);
 
         return exact.stream()
@@ -122,6 +120,11 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public List<TradeItem> findByRecentTradeList() {
         return findByTradeList(tradeListService.findMostRecentList());
+    }
+
+    @Override
+    public List<TradeItem> findByRecentTradeListAndOwner(String userName) {
+        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList(), tradeUserRepository.findOneByUsername(userName));
     }
 
     @Override
@@ -168,7 +171,12 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName) {
         return new TradeItemPageWrapper(
-                tradeItemRepository.findAll(pageable).getContent().stream().parallel().map(item -> tradeItemToDTO(item, isAdmin, userName)).collect(Collectors.toList()),
+                tradeItemRepository.findAll(pageable)
+                        .getContent()
+                        .stream()
+                        .parallel()
+                        .map(item -> tradeItemToDTO(item, isAdmin, userName))
+                        .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.count());
     }
@@ -177,7 +185,12 @@ public class SimpleTradeItemService implements TradeItemService {
     public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName) {
         TradeList tradeList = tradeListService.findMostRecentList();
         return new TradeItemPageWrapper(
-                tradeItemRepository.findByTradeList(tradeList, pageable).getContent().stream().parallel().map(tradeItem -> tradeItemToDTO(tradeItem, isAdmin, userName)).collect(Collectors.toList()),
+                tradeItemRepository.findByTradeList(tradeList, pageable)
+                        .getContent()
+                        .stream()
+                        .parallel()
+                        .map(tradeItem -> tradeItemToDTO(tradeItem, isAdmin, userName))
+                        .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.findByTradeList(tradeList).size());
     }

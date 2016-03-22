@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import trade.math.model.TradeItem;
 import trade.math.model.TradeList;
+import trade.math.model.TradeUser;
 
 import java.util.List;
 
@@ -14,8 +15,9 @@ import java.util.List;
 public interface TradeItemRepository extends JpaRepository<TradeItem, Long> {
     List<TradeItem> findByTradeList(TradeList tradeList);
     Page<TradeItem> findByTradeList(TradeList tradeList, Pageable pageable);
-    List<TradeItem> findByTradeListAndTitleAllIgnoreCaseContainingOrderByTitleAsc(TradeList tradeList, String title);
-    List<TradeItem> findByTradeListAndTitleAllIgnoreCaseOrderByTitleAsc(TradeList tradeList, String title);
-    List<TradeItem> findByTitleAllIgnoreCaseContainingOrderByTitleAsc(String title);
-    List<TradeItem> findByTitleAllIgnoreCaseOrderByTitleAsc(String title);
+    List<TradeItem> findByTradeListAndOwner(TradeList tradeList, TradeUser tradeUser);
+    List<TradeItem> findByTradeListAndTitleAllIgnoreCaseContainingAndOwnerNotOrderByTitleAsc(TradeList tradeList, String title, TradeUser owner);
+    List<TradeItem> findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(TradeList tradeList, String title, TradeUser owner);
+//    List<TradeItem> findByTitleAllIgnoreCaseContainingOrderByTitleAsc(String title);
+//    List<TradeItem> findByTitleAllIgnoreCaseOrderByTitleAsc(String title);
 }

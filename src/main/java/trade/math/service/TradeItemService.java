@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
 import trade.math.model.TradeList;
+import trade.math.model.TradeUser;
 import trade.math.model.dto.TradeItemDTO;
 import trade.math.wrappers.PageWrapper;
 
@@ -23,9 +24,11 @@ public interface TradeItemService {
 
     List<TradeItem> findByTradeList(Long tradeListId);
 
-    List<TradeItemDTO> findByRecentTradeListAndName(String name);
+    List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName);
 
     List<TradeItem> findByRecentTradeList();
+
+    List<TradeItem> findByRecentTradeListAndOwner(String userName);
 
     TradeItem update(TradeItem item);
 
