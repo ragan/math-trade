@@ -10,24 +10,31 @@
     </div>
 
     <div class="panel panel-primary">
-        <div class="panel-heading"><h4>Games to trade</h4></div>
+        <div class="panel-heading"><h4>Games to trade (Click to edit)</h4></div>
         <div class="panel-body">
-            <ul class="list-group">
-                <li class="list-group-item" th:each="item : ${myGames}"><h3 class="list-group-item-heading" th:text="${item.title}"></h3>
-                <p class="list-group-item-text">Want games list</p></li>
-            </ul>
+            <div class="list-group">
+                <a class="list-group-item" th:each="item : ${myGames}" th:id="${item.id}" onclick="edit(this)">
+                    <h4 class="list-group-item-heading" th:text="${item.title}"></h4>
+
+                    <p class="list-group-item-text">Want games list</p>
+                </a>
+            </div>
         </div>
     </div>
 
-    <ul class="list-group" id="ourList">
-    </ul>
-    <select class="form-control" id="selector" style="width: 100%">
-        <option selected="selected"></option>
-    </select>
+    <div class="panel panel-primary collapse" id="editPanel">
+        <div class="panel-heading"><h4 id="editTitle">Edit want list</h4></div>
+        <div class="panel-body">
+            <ul class="list-group" id="ourList">
+            </ul>
+            <select class="form-control" id="selector" style="width: 100%">
+                <option selected="selected"></option>
+            </select>
 
-    <button onclick="addGame()" style="width: 100px; height: 60px">Add</button>
-    <button onclick="showOptions()" style="width: 100px; height: 60px">Result</button>
-
+            <button onclick="addGame()" style="width: 100px; height: 60px">Add</button>
+            <button onclick="showOptions()" style="width: 100px; height: 60px">Result</button>
+        </div>
+    </div>
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -44,7 +51,7 @@
             delay: 250,
             data: function (param) {
                 var tit = param.term;
-                if(!tit)
+                if (!tit)
                     tit = '';
 
                 return {
@@ -98,6 +105,36 @@
         });
     }
 
+    var editedButton = null;
+
+    function edit(button) {
+        if (editedButton == button)
+            stopEdit(button);
+        else
+            startEdit(button);
+
+    }
+
+    function startEdit(button) {
+        if(editedButton != null)
+            $(editedButton).removeClass('active');
+
+        $(button).addClass('active');
+        $('#editPanel').collapse('show');
+        $('html, body').animate({
+            scrollTop: $("#editPanel").offset().top
+        }, 500);
+        editedButton = button;
+    }
+
+    function stopEdit(button) {
+        $(button).removeClass('active');
+        $('html, body').animate({
+            scrollTop: 0
+        }, 500);
+        $('#editPanel').collapse('hide');
+        editedButton = null;
+    }
 
 </script>
 </body>
