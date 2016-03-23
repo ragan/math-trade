@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import trade.math.model.TradeItem;
-import trade.math.model.TradeList;
+import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeUser;
 
 import java.util.List;

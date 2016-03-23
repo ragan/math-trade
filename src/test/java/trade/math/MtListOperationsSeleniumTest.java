@@ -13,9 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeListState;
 import trade.math.service.TradeItemService;
-import trade.math.service.TradeListService;
+import trade.math.domain.tradeList.TradeListService;
 import trade.math.service.TradeUserService;
 
 import static org.hamcrest.Matchers.hasSize;

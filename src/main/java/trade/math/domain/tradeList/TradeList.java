@@ -1,4 +1,6 @@
-package trade.math.model;
+package trade.math.domain.tradeList;
+
+import trade.math.model.TradeListState;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -39,7 +41,7 @@ public class TradeList {
         return state;
     }
 
-    public void setState(TradeListState state) {
+    protected void setState(TradeListState state) {
         this.state = state;
     }
 }

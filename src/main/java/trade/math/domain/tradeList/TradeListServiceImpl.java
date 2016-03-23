@@ -1,13 +1,10 @@
-package trade.math.service.simple;
+package trade.math.domain.tradeList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import trade.math.model.TradeList;
 import trade.math.model.TradeListState;
-import trade.math.model.TradeListStatus;
 import trade.math.repository.TradeListRepository;
-import trade.math.service.TradeListService;
 
 import java.util.Date;
 import java.util.List;
@@ -60,7 +57,7 @@ public class TradeListServiceImpl implements TradeListService {
     }
 
     @Override
-    public TradeListStatus getTradeListStatus() {
-        return new TradeListStatus(findMostRecentList());
+    public TradeListStatusDTO getTradeListStatus() {
+        return new TradeListStatusDTO(findMostRecentList());
     }
 }

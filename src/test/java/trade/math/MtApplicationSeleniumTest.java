@@ -1,6 +1,5 @@
 package trade.math;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +12,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeListState;
-import trade.math.service.TradeListService;
+import trade.math.domain.tradeList.TradeListService;
 import trade.math.service.TradeUserService;
 
 import static org.hamcrest.Matchers.*;

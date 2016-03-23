@@ -7,11 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import trade.math.model.TradeList;
+import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeListState;
 import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.service.TradeBoardGameService;
-import trade.math.service.TradeListService;
+import trade.math.domain.tradeList.TradeListService;
 
 import java.util.List;
 
