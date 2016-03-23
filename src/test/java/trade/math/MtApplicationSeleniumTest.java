@@ -12,7 +12,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import trade.math.model.TradeListState;
+import trade.math.domain.tradeList.TradeListState;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.service.TradeUserService;
 

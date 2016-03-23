@@ -3,7 +3,6 @@ package trade.math.domain.tradeList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import trade.math.model.TradeListState;
 import trade.math.repository.TradeListRepository;
 
 import java.util.Date;
@@ -36,7 +35,7 @@ public class TradeListServiceImpl implements TradeListService {
     @Override
     @Transactional
     public TradeList findMostRecentList() {
-        return tradeListRepository.findRecentList();
+        return tradeListRepository.findRecentList().orElse(null);
     }
 
     @Override
@@ -46,9 +45,12 @@ public class TradeListServiceImpl implements TradeListService {
 
     @Override
     public void setState(TradeListState tradeListState) {
-        TradeList list = tradeListRepository.findRecentList();
-        list.setState(tradeListState);
-        tradeListRepository.save(list);
+        TradeList list = tradeListRepository.findRecentList()
+                .orElseThrow(() -> new NoTradeListPresent("Cannot change state when no list is usable."));
+        if (TradeListStateChangeValidator.assertCanChangeState(list.getState(), tradeListState)) {
+            list.setState(tradeListState);
+            tradeListRepository.save(list);
+        }
     }
 
     @Override

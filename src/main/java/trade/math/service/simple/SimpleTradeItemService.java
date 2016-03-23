@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
+import trade.math.domain.tradeList.TradeListState;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.*;
 import trade.math.model.dto.TradeItemDTO;

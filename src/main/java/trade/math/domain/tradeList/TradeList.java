@@ -1,7 +1,5 @@
 package trade.math.domain.tradeList;
 
-import trade.math.model.TradeListState;
-
 import javax.persistence.*;
 import java.util.Date;
 

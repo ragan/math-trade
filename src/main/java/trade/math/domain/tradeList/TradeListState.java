@@ -1,4 +1,4 @@
-package trade.math.model;
+package trade.math.domain.tradeList;
 
 public enum TradeListState {
 
