@@ -8,11 +8,13 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.domain.tradeList.IllegalTradeListStateChange;
+import trade.math.domain.tradeList.TradeListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItem;
-import trade.math.model.TradeList;
-import trade.math.model.TradeListState;
+import trade.math.domain.tradeList.TradeList;
+import trade.math.domain.tradeList.TradeListState;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -33,9 +35,9 @@ public class TradeListServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        tradeListService.deleteAll();
         tradeItemService.deleteAll(true);
         tradeUserService.deleteAll();
+        tradeListService.deleteAll();
 
         tradeUserService.save(new NewTradeUserForm("username", "user@email", "password", "password"));
     }
@@ -90,6 +92,19 @@ public class TradeListServiceTest {
 
         assertThat(tradeItemService.findByRecentTradeList(), is(empty()));
         assertThat(tradeItemService.findAll().get(0).getTradeList(), is(nullValue()));
+    }
+
+    @Test(expected = IllegalTradeListStateChange.class)
+    public void testShouldThrowExceptionOnIllegalStateChange_OPEN_OPEN() throws Exception {
+        tradeListService.createNewList();
+        tradeListService.setState(TradeListState.OPEN);
+    }
+
+    @Test(expected = IllegalTradeListStateChange.class)
+    public void testShouldThrowExceptionOnIllegalStateChange_CLOSED_CLOSED() throws Exception {
+        tradeListService.createNewList();
+        tradeListService.setState(TradeListState.CLOSED);
+        tradeListService.setState(TradeListState.CLOSED);
     }
 
     //TODO: check that cannot close if no list present or current list closed

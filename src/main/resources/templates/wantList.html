@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head"></head>
+<body>
+<nav th:replace="index :: navbar"></nav>
+<div class="container">
+
+    <div class="page-header">
+        <h2>Want list Composer</h2>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h4>Games to trade (Click to edit)</h4></div>
+        <div class="panel-body">
+            <div class="list-group">
+                <a class="list-group-item" th:each="item : ${myGames}" th:id="${item.id}" onclick="edit(this)">
+                    <h4 class="list-group-item-heading" th:text="${item.title}"></h4>
+
+                    <p class="list-group-item-text">Want games list</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-primary collapse" id="editPanel">
+        <div class="panel-heading"><h4 id="editTitle">Edit want list</h4></div>
+        <div class="panel-body">
+            <ul class="list-group" id="ourList">
+            </ul>
+            <select class="form-control" id="selector" style="width: 100%">
+                <option selected="selected"></option>
+            </select>
+
+            <button onclick="addGame()" style="width: 100px; height: 60px">Add</button>
+            <button onclick="showOptions()" style="width: 100px; height: 60px">Result</button>
+        </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
+<script type="text/javascript">
+
+    $('#selector').select2({
+        ajax: {
+            url: "/searchOnTradeList",
+            dataType: 'json',
+            delay: 250,
+            data: function (param) {
+                var tit = param.term;
+                if (!tit)
+                    tit = '';
+
+                return {
+                    title: (param.term ? param.term : '')
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        templateResult: templateResult,
+        templateSelection: function (item) {
+            return item.title;
+        }
+    });
+
+    function templateResult(item) {
+        if (item.loading) return item.text;
+
+        return $('<div/>').attr({class: 'media'})
+                .append($('<div/>').attr({class: 'media-left'})
+                        .append($('<a/>').attr({href: '#'})
+                                .append($('<img/>').attr({src: item.imgUrl, width: 100}))))
+                .append($('<div/>').attr({class: 'media-body'})
+                        .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
+    }
+
+    var sort = Sortable.create($('#ourList')[0], {
+        ghostClass: 'ghost',
+        animation: 150
+    });
+
+    function showOptions() {
+        alert(sort.toArray());
+    }
+
+    function addGame() {
+        $.ajax({
+            url: '/findItemById',
+            dataType: 'json',
+            data: {
+                id: $('#selector').val()
+            },
+            success: function (data) {
+                if (data)
+                    $('#ourList').append('<li data-id="' + data.id + '" class="list-group-item">' + data.title + '</li>');
+            }
+        });
+    }
+
+    var editedButton = null;
+
+    function edit(button) {
+        if (editedButton == button)
+            stopEdit(button);
+        else
+            startEdit(button);
+
+    }
+
+    function startEdit(button) {
+        if(editedButton != null)
+            $(editedButton).removeClass('active');
+
+        $(button).addClass('active');
+        $('#editPanel').collapse('show');
+        $('html, body').animate({
+            scrollTop: $("#editPanel").offset().top
+        }, 500);
+        editedButton = button;
+    }
+
+    function stopEdit(button) {
+        $(button).removeClass('active');
+        $('html, body').animate({
+            scrollTop: 0
+        }, 500);
+        $('#editPanel').collapse('hide');
+        editedButton = null;
+    }
+
+</script>
+</body>
+</html>

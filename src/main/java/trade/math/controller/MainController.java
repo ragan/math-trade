@@ -17,12 +17,16 @@ import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
+import trade.math.model.TradeItem;
+import trade.math.model.TradeUser;
+import trade.math.model.dto.TradeItemDTO;
 import trade.math.service.TradeBoardGameService;
 import trade.math.service.TradeItemService;
 import trade.math.service.TradeUserService;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -49,7 +53,7 @@ public class MainController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(Model model, Authentication authentication, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        model.addAttribute("mainList", tradeItemService.findAll(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), getUserName(authentication)));
+        model.addAttribute("mainList", tradeItemService.findAllByRecentTradeList(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), getUserName(authentication)));
 
         return "index";
     }
@@ -94,10 +98,29 @@ public class MainController {
         return "redirect:/addItem?success";
     }
 
+    @RequestMapping(value = "/wantList", method = RequestMethod.GET)
+    public String wantListComposer(Model model, Principal principal) {
+        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(principal.getName()));
+
+        return "wantList";
+    }
+
     @RequestMapping("/search")
     @ResponseBody
     public BoardGameSearchResult searchGames(@RequestParam String title) {
         return tradeBoardGameService.searchByName(title);
+    }
+
+    @RequestMapping("/searchOnTradeList")
+    @ResponseBody
+    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal){
+        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName());
+    }
+
+    @RequestMapping("/findItemById")
+    @ResponseBody
+    public TradeItem findItemById(@RequestParam long id){
+        return tradeItemService.findById(id);
     }
 
     //Helpers

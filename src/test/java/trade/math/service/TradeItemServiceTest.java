@@ -38,6 +38,7 @@ public class TradeItemServiceTest {
 
         tradeUserService.deleteAll();
         tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
+        tradeUserService.save(new NewTradeUserForm("username1", "some1@email.com", "password", "password"));
     }
 
     @Test
@@ -182,18 +183,51 @@ public class TradeItemServiceTest {
         assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), true, "anotherUser"));
     }
 
+    @Test
+    public void testFindByRecentTradeListAndNameAndNotOwner(){
+        prepareTradeList(10, "username");
+        prepareTradeList(2, "username1");
+
+        List list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", "username");
+
+        assertNotNull(list);
+        assertEquals(2, list.size());
+
+        list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", "test");
+        assertNull(list);
+    }
+
+    @Test
+    public void testFindByRecentTradeListAndOwner(){
+        prepareTradeList(10, "username");
+        prepareTradeList(8, "username1");
+
+        List<TradeItem> list = tradeItemService.findByRecentTradeListAndOwner("username1");
+
+        assertNotNull(list);
+        assertEquals(8, list.size());
+
+        list = tradeItemService.findByRecentTradeListAndOwner("test");
+
+        assertNotNull(list);
+        assertEquals(0, list.size());
+    }
 
     //HELPERS
     private void prepareTradeList(int count) {
         tradeItemService.deleteAll(true);
 
+        prepareTradeList(count, "username");
+    }
+
+    private void prepareTradeList(int count, String userName){
         for (int i = 0; i < count; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
             form.setTitle("title" + i);
             form.setDescription("desc" + i);
 //            form.setBggId(i);
 
-            tradeItemService.save(form, "username");
+            tradeItemService.save(form, userName);
         }
     }
 
