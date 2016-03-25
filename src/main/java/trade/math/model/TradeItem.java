@@ -3,6 +3,7 @@ package trade.math.model;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 public class TradeItem {
@@ -36,6 +37,8 @@ public class TradeItem {
     @Enumerated(EnumType.STRING)
     private TradeItemCategory category;
 
+    @OneToMany(mappedBy = "offerTradeItemId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WantListItem> wantList;
 
     public Long getId() {
         return id;
@@ -99,5 +102,13 @@ public class TradeItem {
 
     public void setCategory(TradeItemCategory category) {
         this.category = category;
+    }
+
+    public List<WantListItem> getWantList() {
+        return wantList;
+    }
+
+    public void setWantList(List<WantListItem> wantList) {
+        this.wantList = wantList;
     }
 }
