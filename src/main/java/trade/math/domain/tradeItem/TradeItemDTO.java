@@ -1,4 +1,4 @@
-package trade.math.model.dto;
+package trade.math.domain.tradeItem;
 
 /**
  * Created by karol on 01.03.16.

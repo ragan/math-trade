@@ -1,14 +1,7 @@
 package trade.math.wrappers;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import trade.math.TradeUserRole;
-import trade.math.model.TradeItem;
-import trade.math.model.TradeUser;
-import trade.math.model.dto.TradeItemDTO;
+import trade.math.domain.tradeItem.TradeItemDTO;
 
 import java.util.ArrayList;
 import java.util.List;

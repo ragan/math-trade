@@ -1,7 +1,6 @@
 package trade.math.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,11 +16,10 @@ import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeItem;
-import trade.math.model.TradeUser;
-import trade.math.model.dto.TradeItemDTO;
+import trade.math.domain.tradeItem.TradeItem;
+import trade.math.domain.tradeItem.TradeItemDTO;
 import trade.math.service.TradeBoardGameService;
-import trade.math.service.TradeItemService;
+import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.service.TradeUserService;
 
 import javax.validation.Valid;

@@ -3,7 +3,7 @@ package trade.math.service.simple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import trade.math.model.TradeBoardGameProperties;
-import trade.math.model.TradeItem;
+import trade.math.domain.tradeItem.TradeItem;
 import trade.math.repository.TradeBoardGamePropertiesRepository;
 import trade.math.service.TradeBoardGamePropertiesService;
 

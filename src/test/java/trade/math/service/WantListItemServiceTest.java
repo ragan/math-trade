@@ -9,11 +9,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.domain.tradeItem.TradeItemService;
+import trade.math.domain.tradeItem.wantListItem.WantListItemService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeItem;
-import trade.math.model.WantListItem;
+import trade.math.domain.tradeItem.TradeItem;
+import trade.math.domain.tradeItem.wantListItem.WantListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +33,9 @@ public class WantListItemServiceTest {
     @Autowired
     private TradeUserService tradeUserService;
 
+    @Autowired
+    private WantListItemService wantListItemService;
+
     @Before
     public void setUp() throws Exception {
         tradeItemService.deleteAll(true);
@@ -41,16 +47,102 @@ public class WantListItemServiceTest {
 
     @Test
     public void saveWantListItemTest(){
-        TradeItem tradeItem = tradeItemService.save(new NewTradeItemForm("test", "test", null), "username");
+        List<TradeItem> list1 = generateArrayItems(10, "test", "username");
+        List<TradeItem> list2 = generateArrayItems(15, "want", "username1");
 
-        assertNotNull(tradeItem);
+        WantListItem item = new WantListItem();
 
-        List<WantListItem> wantListItems = tradeItem.getWantList();
+        item.setOfferTradeItem(list1.get(0));
+        item.setWantTradeItem(list2.get(0));
+        item.setPriority(1);
 
-        assertEquals(0, wantListItems.size());
+        item = wantListItemService.save(item);
 
-        wantListItems.add(WantListItem())
+        assertNotNull(item);
+
+        TradeItem tradeItem = tradeItemService.findById(list1.get(0).getId());
+
+        List<WantListItem> wantList = tradeItem.getWantList();
+
+        assertEquals(1, wantList.size());
+        assertTrue(wantList.get(0).getWantTradeItem().getTitle().equals(list2.get(0).getTitle()));
+
+
+        for(int i = 0; i < 4; i++) {
+            item = new WantListItem();
+            item.setOfferTradeItem(list1.get(0));
+            item.setWantTradeItem(list2.get(i));
+            item.setPriority(i);
+
+            wantListItemService.save(item);
+        }
+
+        tradeItem = tradeItemService.findById(list1.get(0).getId());
+
+        assertEquals(4, tradeItem.getWantList().size());
     }
 
+    @Test
+    public void updateWantListItemTest(){
+        TradeItem item = tradeItemService.save(new NewTradeItemForm("test", "test", null), "username");
+        TradeItem wantItem = tradeItemService.save(new NewTradeItemForm("want", "want", null), "username1");
+
+        WantListItem wantListItem = new WantListItem();
+
+        wantListItem.setPriority(1);
+        wantListItem.setOfferTradeItem(item);
+        wantListItem.setWantTradeItem(wantItem);
+
+        wantListItem = wantListItemService.save(wantListItem);
+
+        item = tradeItemService.findById(item.getId());
+
+        assertEquals(1, item.getWantList().size());
+        assertEquals(1, item.getWantList().get(0).getPriority());
+
+        wantListItem.setPriority(4);
+
+        wantListItemService.update(wantListItem);
+
+        item = tradeItemService.findById(item.getId());
+        assertEquals(4, item.getWantList().get(0).getPriority());
+    }
+
+    @Test
+    public void deleteWantListItemTest(){
+        TradeItem item = tradeItemService.save(new NewTradeItemForm("test", "test", null), "username");
+        TradeItem wantItem = tradeItemService.save(new NewTradeItemForm("want", "want", null), "username1");
+
+        WantListItem wantListItem = new WantListItem();
+
+        wantListItem.setPriority(6);
+        wantListItem.setOfferTradeItem(item);
+        wantListItem.setWantTradeItem(wantItem);
+
+        wantListItem = wantListItemService.save(wantListItem);
+
+        item = tradeItemService.findById(item.getId());
+
+        assertEquals(1, item.getWantList().size());
+        assertEquals(6, item.getWantList().get(0).getPriority());
+
+        boolean result = wantListItemService.delete(wantListItem);
+
+        assertTrue(result);
+
+        item = tradeItemService.findById(item.getId());
+
+        assertEquals(0, item.getWantList().size());
+    }
+
+
+    private List<TradeItem> generateArrayItems(int num, String prefix, String username){
+        List<TradeItem> list = new ArrayList<>();
+
+        for(int i = 0; i < num; i++)
+            list.add(tradeItemService.save(new NewTradeItemForm(prefix + String.valueOf(i), prefix + String.valueOf(i), null), username));
+
+        return list;
+    }
 
 }

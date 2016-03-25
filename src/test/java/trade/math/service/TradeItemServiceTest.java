@@ -9,10 +9,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeItem;
-import trade.math.model.TradeUser;
+import trade.math.domain.tradeItem.TradeItem;
+
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;

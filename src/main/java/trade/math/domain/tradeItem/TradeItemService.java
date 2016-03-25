@@ -1,10 +1,8 @@
-package trade.math.service;
+package trade.math.domain.tradeItem;
 
 import org.springframework.data.domain.Pageable;
 import trade.math.form.NewTradeItemForm;
-import trade.math.model.TradeItem;
 import trade.math.domain.tradeList.TradeList;
-import trade.math.model.dto.TradeItemDTO;
 import trade.math.wrappers.PageWrapper;
 
 import java.util.List;

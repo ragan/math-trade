@@ -1,4 +1,4 @@
-package trade.math.service.simple;
+package trade.math.domain.tradeItem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -9,12 +9,10 @@ import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.*;
-import trade.math.model.dto.TradeItemDTO;
 import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
 import trade.math.service.BggIdToTitleService;
 import trade.math.service.TradeBoardGamePropertiesService;
-import trade.math.service.TradeItemService;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 

@@ -1,4 +1,4 @@
-package trade.math.model.id;
+package trade.math.domain.tradeItem.wantListItem;
 
 import java.io.Serializable;
 
