@@ -1,12 +1,12 @@
-package trade.math.model;
+package trade.math.domain.tradeList;
 
-public class TradeListStatus {
+public class TradeListStatusDTO {
 
     //TODO: TEST IT!
 
     private TradeList tradeList;
 
-    public TradeListStatus(TradeList tradeList) {
+    public TradeListStatusDTO(TradeList tradeList) {
         this.tradeList = tradeList;
     }
 

@@ -1,13 +1,9 @@
-package trade.math.service.simple;
+package trade.math.domain.tradeList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import trade.math.model.TradeList;
-import trade.math.model.TradeListState;
-import trade.math.model.TradeListStatus;
 import trade.math.repository.TradeListRepository;
-import trade.math.service.TradeListService;
 
 import java.util.Date;
 import java.util.List;
@@ -39,7 +35,7 @@ public class TradeListServiceImpl implements TradeListService {
     @Override
     @Transactional
     public TradeList findMostRecentList() {
-        return tradeListRepository.findRecentList();
+        return tradeListRepository.findRecentList().orElse(null);
     }
 
     @Override
@@ -49,9 +45,12 @@ public class TradeListServiceImpl implements TradeListService {
 
     @Override
     public void setState(TradeListState tradeListState) {
-        TradeList list = tradeListRepository.findRecentList();
-        list.setState(tradeListState);
-        tradeListRepository.save(list);
+        TradeList list = tradeListRepository.findRecentList()
+                .orElseThrow(() -> new NoTradeListPresent("Cannot change state when no list is usable."));
+        if (TradeListStateChangeValidator.assertCanChangeState(list.getState(), tradeListState)) {
+            list.setState(tradeListState);
+            tradeListRepository.save(list);
+        }
     }
 
     @Override
@@ -60,7 +59,7 @@ public class TradeListServiceImpl implements TradeListService {
     }
 
     @Override
-    public TradeListStatus getTradeListStatus() {
-        return new TradeListStatus(findMostRecentList());
+    public TradeListStatusDTO getTradeListStatus() {
+        return new TradeListStatusDTO(findMostRecentList());
     }
 }

@@ -1,6 +1,8 @@
 package trade.math.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import trade.math.domain.tradeList.TradeList;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
