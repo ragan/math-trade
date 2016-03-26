@@ -82,6 +82,6 @@ public class MtApplicationSeleniumTest {
         driver.findElement(By.id("create-new-list-command")).click();
 
         assertThat(tradeListService.findMostRecentList(), is(notNullValue()));
-        assertThat(tradeListService.findMostRecentList().getState(), is(TradeListState.OPEN));
+        assertThat(tradeListService.findMostRecentList().get().getState(), is(TradeListState.OPEN));
     }
 }

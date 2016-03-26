@@ -23,4 +23,8 @@ public class TradeListStatusDTO {
         if (tradeList == null) return false;
         return tradeList.getState() == TradeListState.OPEN;
     }
+
+    public Boolean isClosed() {
+        return canOpen();
+    }
 }

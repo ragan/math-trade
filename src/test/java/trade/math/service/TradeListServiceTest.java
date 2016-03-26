@@ -46,14 +46,14 @@ public class TradeListServiceTest {
     public void testPersistNewList() throws Exception {
         assertThat(tradeListService.createNewList(), is(notNullValue()));
         assertThat(tradeListService.findAll(), hasSize(1));
-        assertThat(tradeListService.findMostRecentList().getState(), is(equalTo(TradeListState.OPEN)));
+        assertThat(tradeListService.findMostRecentList().get().getState(), is(equalTo(TradeListState.OPEN)));
     }
 
     @Test
     public void testFindMostRecentList() throws Exception {
         TradeList list0 = tradeListService.createNewList();
         TradeList list1 = tradeListService.createNewList();
-        TradeList mostRecentList = tradeListService.findMostRecentList();
+        TradeList mostRecentList = tradeListService.findMostRecentList().get();
         assertThat(mostRecentList.getId(), is(equalTo(list1.getId())));
     }
 
@@ -61,7 +61,7 @@ public class TradeListServiceTest {
     public void testChangeListState() throws Exception {
         tradeListService.createNewList();
         tradeListService.setState(TradeListState.CLOSED);
-        assertThat(tradeListService.findMostRecentList().getState(), is(equalTo(TradeListState.CLOSED)));
+        assertThat(tradeListService.findMostRecentList().get().getState(), is(equalTo(TradeListState.CLOSED)));
     }
 
     @Test
