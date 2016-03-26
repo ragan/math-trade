@@ -1,5 +1,6 @@
 package trade.math.domain.tradeList;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,8 @@ public class TradeListServiceImpl implements TradeListService {
 
     private final TradeListRepository tradeListRepository;
 
+    private Logger logger = Logger.getLogger(TradeListServiceImpl.class);
+
     @Autowired
     public TradeListServiceImpl(TradeListRepository tradeListRepository) {
         this.tradeListRepository = tradeListRepository;
@@ -22,6 +25,7 @@ public class TradeListServiceImpl implements TradeListService {
 
     @Override
     public TradeList createNewList() {
+        logger.info("Creating new trade list.");
         TradeList tradeList = new TradeList();
         tradeList.setCreationTime(new Date());
         tradeList.setState(TradeListState.OPEN);
