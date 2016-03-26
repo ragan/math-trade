@@ -7,6 +7,7 @@ import trade.math.repository.TradeListRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -34,8 +35,8 @@ public class TradeListServiceImpl implements TradeListService {
 
     @Override
     @Transactional
-    public TradeList findMostRecentList() {
-        return tradeListRepository.findRecentList().orElse(null);
+    public Optional<TradeList> findMostRecentList() {
+        return tradeListRepository.findRecentList();
     }
 
     @Override
@@ -60,6 +61,6 @@ public class TradeListServiceImpl implements TradeListService {
 
     @Override
     public TradeListStatusDTO getTradeListStatus() {
-        return new TradeListStatusDTO(findMostRecentList());
+        return new TradeListStatusDTO(findMostRecentList().orElse(null));
     }
 }

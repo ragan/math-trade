@@ -53,7 +53,7 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public TradeItem save(NewTradeItemForm tradeItemForm, String username) {
-        TradeList list = tradeListService.findMostRecentList();
+        TradeList list = tradeListService.findMostRecentList().orElse(null);
         if (list != null && list.getState() == TradeListState.CLOSED)
             list = null;
         return save(tradeItemForm, username, list);
@@ -96,10 +96,10 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName) {
-        TradeList recentList = tradeListService.findMostRecentList();
+        TradeList recentList = tradeListService.findMostRecentList().orElse(null);
         TradeUser owner = tradeUserRepository.findOneByUsername(userName);
 
-        if(owner == null)
+        if (owner == null)
             return null;
 
         List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), owner);
@@ -121,12 +121,12 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public List<TradeItem> findByRecentTradeList() {
-        return findByTradeList(tradeListService.findMostRecentList());
+        return findByTradeList(tradeListService.findMostRecentList().orElse(null));
     }
 
     @Override
     public List<TradeItem> findByRecentTradeListAndOwner(String userName) {
-        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList(), tradeUserRepository.findOneByUsername(userName));
+        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), tradeUserRepository.findOneByUsername(userName));
     }
 
     @Override
@@ -185,7 +185,7 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName) {
-        TradeList tradeList = tradeListService.findMostRecentList();
+        TradeList tradeList = tradeListService.findMostRecentList().orElse(null);
         return new TradeItemPageWrapper(
                 tradeItemRepository.findByTradeList(tradeList, pageable)
                         .getContent()
