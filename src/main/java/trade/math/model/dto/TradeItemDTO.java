@@ -1,17 +1,34 @@
 package trade.math.model.dto;
 
+import trade.math.model.TradeItem;
+import trade.math.model.TradeItemCategory;
+
 /**
  * Created by karol on 01.03.16.
  */
 public class TradeItemDTO {
 
     private long id;
+
     private String title;
+
     private String description;
+
     private String imgUrl;
-    private boolean canDelete;
+
+    private boolean deletable;
+
+    private TradeItemCategory category;
 
     public TradeItemDTO() {
+    }
+
+    public TradeItemDTO(TradeItem tradeItem, boolean deletable) {
+        this.id = tradeItem.getId();
+        this.title = tradeItem.getTitle();
+        this.description = tradeItem.getDescription();
+        this.imgUrl = tradeItem.getImgUrl();
+        this.deletable = deletable;
     }
 
     public TradeItemDTO(long id, String title, String description, String imgURL, boolean canDelete) {
@@ -19,7 +36,15 @@ public class TradeItemDTO {
         this.title = title;
         this.description = description;
         this.imgUrl = imgURL;
-        this.canDelete = canDelete;
+        this.deletable = canDelete;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -47,19 +72,26 @@ public class TradeItemDTO {
     }
 
     public boolean isCanDelete() {
-        return canDelete;
+        return isDeletable();
     }
 
     public void setCanDelete(boolean canDelete) {
-        this.canDelete = canDelete;
+        setDeletable(canDelete);
     }
 
-    public long getId() {
-
-        return id;
+    public boolean isDeletable() {
+        return this.deletable;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
+    public TradeItemCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(TradeItemCategory category) {
+        this.category = category;
     }
 }

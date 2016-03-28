@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trade.math.domain.groupList.GroupListItem;
+import trade.math.domain.groupList.GroupListService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
@@ -38,17 +40,21 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeBoardGamePropertiesService tradeBoardGamePropertiesService;
 
+    private final GroupListService groupListService;
+
     @Autowired
     public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
                                   BggIdToTitleService bggIdToTitleService,
                                   TradeUserRepository tradeUserRepository,
                                   TradeListService tradeListService,
-                                  TradeBoardGamePropertiesService tradeBoardGamePropertiesService) {
+                                  TradeBoardGamePropertiesService tradeBoardGamePropertiesService,
+                                  GroupListService groupListService) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
         this.tradeBoardGamePropertiesService = tradeBoardGamePropertiesService;
+        this.groupListService = groupListService;
     }
 
     @Override
@@ -177,7 +183,7 @@ public class SimpleTradeItemService implements TradeItemService {
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(item -> tradeItemToDTO(item, isAdmin, userName))
+                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName)))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.count());
@@ -191,29 +197,14 @@ public class SimpleTradeItemService implements TradeItemService {
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(tradeItem -> tradeItemToDTO(tradeItem, isAdmin, userName))
+                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName)))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.findByTradeList(tradeList).size());
     }
 
-    private TradeItemDTO tradeItemToDTO(TradeItem item, boolean isAdmin, String userName) {
-        return new TradeItemDTO(
-                item.getId(),
-                item.getTitle(),
-                item.getDescription(),
-                item.getImgUrl(),
-                checkPermission(item.getOwner(), isAdmin, userName));
-    }
-
     private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {
-        if (isAdmin)
-            return true;
-
-        if ("".equals(userName) || userName == null)
-            return false;
-
-        return userName.equals(owner.getUsername());
+        return isAdmin || owner != null && userName.equals(owner.getUsername());
     }
 
     private void handleSaveProperties(TradeItem tradeItem, NewTradeItemForm newTradeItemForm) {
@@ -231,4 +222,12 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeBoardGamePropertiesService.deleteByTradeItem(item);
     }
 
+    @Override
+    public void makeGroupLists() {
+//        groupListService.makeGroupLists()
+    }
+
+    private GroupListItem makeGroupListItem(TradeItemDTO tradeItemDTO) {
+        return null;
+    }
 }

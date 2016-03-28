@@ -62,11 +62,14 @@ public class SimpleGroupListServiceTest {
     public void testGroupItems() throws Exception {
         List<GroupListItem<String>> items = new ArrayList<>();
         items.add(new GroupableItem<>("a"));
+        items.add(new GroupableItem<>("a"));
         items.add(new GroupableItem<>("b"));
+        items.add(new GroupableItem<>("b"));
+        items.add(new GroupableItem<>("c"));
 
         Map<GroupListDTO, List<GroupListItem<String>>> result = groupListService.makeGroupLists(items);
-        assertThat(result.size(), is(2));
-        assertThat(groupListList, hasSize(2));
+        assertThat(result.size(), is(3));
+        assertThat(groupListList, hasSize(3));
     }
 
     private class GroupableItem<T> implements GroupListItem<T> {
