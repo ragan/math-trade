@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -32,6 +33,10 @@ public class SimpleGroupListServiceTest {
             groupListList.add((GroupList) invocation.getArguments()[0]);
             return invocation.getArguments()[0];
         });
+        when(groupListRepository.save(Mockito.<List>any())).then(invocation -> {
+            groupListList.addAll((Collection<? extends GroupList>) invocation.getArguments()[0]);
+            return invocation.getArguments()[0];
+        });
 
         groupListService = new SimpleGroupListService(groupListRepository);
     }
@@ -40,5 +45,15 @@ public class SimpleGroupListServiceTest {
     public void testSaveGroupList() throws Exception {
         GroupListDTO dto = new GroupListDTO("test title");
         assertThat(groupListService.save(dto).getTitle(), is(equalToIgnoringCase("test title")));
+    }
+
+    @Test
+    public void testSaveGroupLists() throws Exception {
+        List<GroupListDTO> dtos = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            dtos.add(new GroupListDTO("title " + i));
+        }
+        groupListService.save(dtos);
+        assertThat(this.groupListList, hasSize(10));
     }
 }

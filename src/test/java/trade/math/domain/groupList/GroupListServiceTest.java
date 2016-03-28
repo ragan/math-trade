@@ -10,6 +10,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -23,6 +26,7 @@ public class GroupListServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        groupListService.deleteAll();
     }
 
     @Test
@@ -33,5 +37,16 @@ public class GroupListServiceTest {
         assertThat(dto, is(notNullValue()));
         assertThat(dto.getId(), is(notNullValue()));
         assertThat(dto.getTitle(), equalTo(TITLE));
+    }
+
+    @Test
+    public void testSaveMultipleGroupLists() throws Exception {
+        String TITLE = "title";
+        List<GroupListDTO> dtos = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            dtos.add(new GroupListDTO(TITLE + i));
+        }
+        groupListService.save(dtos);
+        assertThat(groupListService.findAll(), hasSize(10));
     }
 }
