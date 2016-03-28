@@ -141,6 +141,11 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public void deleteAll() {
+        deleteAll(true);
+    }
+
+    @Override
     public void deleteAll(boolean isAdmin) { //TODO: WTF?
         if (isAdmin) {
             tradeBoardGamePropertiesService.deleteAll();
