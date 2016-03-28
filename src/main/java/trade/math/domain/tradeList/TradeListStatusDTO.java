@@ -7,11 +7,15 @@ public class TradeListStatusDTO {
     private Optional<TradeList> tradeList;
 
     public TradeListStatusDTO(TradeList tradeList) {
-        this(Optional.of(tradeList));
+        this(Optional.ofNullable(tradeList));
     }
 
     public TradeListStatusDTO(Optional<TradeList> tradeList) {
         this.tradeList = tradeList;
+    }
+
+    public boolean exists() {
+        return tradeList.isPresent();
     }
 
     public Boolean canOpen() {
