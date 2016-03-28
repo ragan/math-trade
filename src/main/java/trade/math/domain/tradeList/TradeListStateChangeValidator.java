@@ -3,9 +3,6 @@ package trade.math.domain.tradeList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by karol on 23.03.16.
- */
 public class TradeListStateChangeValidator {
 
     private static final Map<TradeListState, TradeListState> allowedStateChanges = new HashMap<>();
