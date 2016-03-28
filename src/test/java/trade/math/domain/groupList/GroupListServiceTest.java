@@ -27,6 +27,11 @@ public class GroupListServiceTest {
 
     @Test
     public void testSaveSingleGroupList() throws Exception {
-        assertThat(groupListService.save(new GroupListDTO("title")), is(notNullValue()));
+        String TITLE = "title";
+
+        GroupListDTO dto = groupListService.save(new GroupListDTO(TITLE));
+        assertThat(dto, is(notNullValue()));
+        assertThat(dto.getId(), is(notNullValue()));
+        assertThat(dto.getTitle(), equalTo(TITLE));
     }
 }
