@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.GroupListItemWrapper;
+import trade.math.domain.groupList.GroupListDTO;
 import trade.math.domain.groupList.GroupListItem;
 import trade.math.domain.groupList.GroupListService;
 import trade.math.domain.tradeList.TradeList;
@@ -22,6 +23,7 @@ import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -232,7 +234,27 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public void makeGroupLists() {
-//        groupListService.makeGroupLists()
+        makeGroupLists(findByRecentTradeList().stream()
+                .map(ti -> new TradeItemDTO(ti,
+                        false,
+                        Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
+                .collect(Collectors.toList()));
+    }
+
+    private void makeGroupLists(List<TradeItemDTO> tradeItemDTOs) {
+//        Map<TradeItemCategory, List<TradeItemDTO>> collect = tradeItemDTOs.stream()
+//                .collect(Collectors.groupingBy(dto -> dto.getCategory()));
+//        collect.entrySet().forEach(entry -> {
+//            Map<GroupListDTO, List<GroupListItem>> map =
+//                    groupListService.makeGroupLists(makeGroupListItems(entry.getValue()));
+//            map.forEach((k, v) -> {
+//                v.forEach(ti -> );
+//            });
+//        });
+    }
+
+    private List<GroupListItem> makeGroupListItems(List<TradeItemDTO> tradeItemDTOs) {
+        return tradeItemDTOs.stream().map(this::makeGroupListItem).collect(Collectors.toList());
     }
 
     private GroupListItem makeGroupListItem(TradeItemDTO tradeItemDTO) {

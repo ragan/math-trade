@@ -1,5 +1,6 @@
 package trade.math.model.dto;
 
+import trade.math.domain.groupList.GroupList;
 import trade.math.model.TradeBoardGameProperties;
 import trade.math.model.TradeItem;
 import trade.math.model.TradeItemCategory;
@@ -24,6 +25,8 @@ public class TradeItemDTO {
 
     private Integer bggId;
 
+    private GroupList groupList;
+
     public TradeItemDTO() {
         //
     }
@@ -40,6 +43,7 @@ public class TradeItemDTO {
         this.category = tradeItem.getCategory();
         this.deletable = deletable;
         this.bggId = properties.map(p -> p.getBggId()).orElse(null);
+        this.groupList = tradeItem.getGroupList();
     }
 
     public TradeItemDTO(long id, String title, String description, String imgURL, boolean canDelete) {
@@ -49,6 +53,15 @@ public class TradeItemDTO {
         this.imgUrl = imgURL;
         this.deletable = canDelete;
     }
+
+//    public TradeItem toTradeItem() {
+//        TradeItem tradeItem = new TradeItem();
+//        tradeItem.setId(getId());
+//        tradeItem.setTitle(getTitle());
+//        tradeItem.setDescription(getDescription());
+//        tradeItem.setImgUrl(getImgUrl());
+//        tradeItem.;
+//    }
 
     public long getId() {
         return id;
@@ -112,5 +125,13 @@ public class TradeItemDTO {
 
     public void setBggId(Integer bggId) {
         this.bggId = bggId;
+    }
+
+    public GroupList getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(GroupList groupList) {
+        this.groupList = groupList;
     }
 }

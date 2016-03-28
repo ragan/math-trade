@@ -60,14 +60,14 @@ public class SimpleGroupListServiceTest {
 
     @Test
     public void testGroupItems() throws Exception {
-        List<GroupListItem<String>> items = new ArrayList<>();
+        List<GroupListItem> items = new ArrayList<>();
         items.add(new GroupableItem<>("a"));
         items.add(new GroupableItem<>("a"));
         items.add(new GroupableItem<>("b"));
         items.add(new GroupableItem<>("b"));
         items.add(new GroupableItem<>("c"));
 
-        Map<GroupListDTO, List<GroupListItem<String>>> result = groupListService.makeGroupLists(items);
+        Map<GroupListDTO, List<GroupListItem>> result = groupListService.makeGroupLists(items);
         assertThat(result.size(), is(3));
         assertThat(groupListList, hasSize(3));
     }

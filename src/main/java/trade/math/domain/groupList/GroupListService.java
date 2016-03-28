@@ -13,5 +13,5 @@ public interface GroupListService {
 
     void deleteAll();
 
-    <T> Map<GroupListDTO, List<GroupListItem<T>>> makeGroupLists(List<GroupListItem<T>> byRecentTradeList);
+    Map<GroupListDTO, List<GroupListItem>> makeGroupLists(List<GroupListItem> byRecentTradeList);
 }

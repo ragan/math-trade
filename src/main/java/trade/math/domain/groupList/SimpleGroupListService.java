@@ -44,8 +44,8 @@ public class SimpleGroupListService implements GroupListService {
     }
 
     @Override
-    public <T> Map<GroupListDTO, List<GroupListItem<T>>> makeGroupLists(List<GroupListItem<T>> byRecentTradeList) {
-        Map<T, List<GroupListItem<T>>> group = byRecentTradeList.stream()
+    public Map<GroupListDTO, List<GroupListItem>> makeGroupLists(List<GroupListItem> byRecentTradeList) {
+        Map<Object, List<GroupListItem>> group = byRecentTradeList.stream()
                 .collect(groupingBy(GroupListItem::getProperty));
         return group.entrySet().stream()
                 .collect(toMap(e -> save(new GroupListDTO("e")), Map.Entry::getValue));
