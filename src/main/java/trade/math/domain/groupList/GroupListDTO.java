@@ -10,9 +10,20 @@ public class GroupListDTO {
         //
     }
 
+    public GroupListDTO(String title) {
+        this.title = title;
+    }
+
     public GroupListDTO(GroupList groupList) {
         this.id = groupList.getId();
         this.title = groupList.getTitle();
+    }
+
+    public GroupList toGroupList() {
+        GroupList groupList = new GroupList();
+        groupList.setId(getId());
+        groupList.setTitle(getTitle());
+        return groupList;
     }
 
     public Long getId() {
