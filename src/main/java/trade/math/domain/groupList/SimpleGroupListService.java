@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -20,7 +21,7 @@ public class SimpleGroupListService implements GroupListService {
 
     @Override
     public List<GroupListDTO> findAll() {
-        return groupListRepository.findAll().stream().map(GroupListDTO::new).collect(Collectors.toList());
+        return groupListRepository.findAll().stream().map(GroupListDTO::new).collect(toList());
     }
 
     @Override
@@ -40,5 +41,13 @@ public class SimpleGroupListService implements GroupListService {
     @Override
     public void deleteAll() {
         groupListRepository.deleteAll();
+    }
+
+    @Override
+    public <T> Map<GroupListDTO, List<GroupListItem<T>>> makeGroupLists(List<GroupListItem<T>> byRecentTradeList) {
+        Map<T, List<GroupListItem<T>>> group = byRecentTradeList.stream()
+                .collect(groupingBy(GroupListItem::getProperty));
+        return group.entrySet().stream()
+                .collect(toMap(e -> save(new GroupListDTO("e")), Map.Entry::getValue));
     }
 }

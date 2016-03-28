@@ -1,6 +1,5 @@
 package trade.math.domain.groupList;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,12 +8,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.form.NewTradeItemForm;
+import trade.math.form.NewTradeUserForm;
+import trade.math.model.TradeItemCategory;
+import trade.math.service.TradeItemService;
+import trade.math.service.TradeUserService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MtApplication.class)
@@ -24,9 +28,18 @@ public class GroupListServiceTest {
     @Autowired
     private GroupListService groupListService;
 
+    @Autowired
+    private TradeItemService tradeItemService;
+
+    @Autowired
+    private TradeUserService tradeUserService;
+
     @Before
     public void setUp() throws Exception {
         groupListService.deleteAll();
+
+        tradeUserService.deleteAll();
+        tradeUserService.save(new NewTradeUserForm("username", "user@email.com", "password", "password"));
     }
 
     @Test
@@ -49,4 +62,6 @@ public class GroupListServiceTest {
         groupListService.save(dtos);
         assertThat(groupListService.findAll(), hasSize(10));
     }
+
+    //TODO: test unique titles
 }

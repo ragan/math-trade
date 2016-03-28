@@ -10,6 +10,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -37,7 +39,6 @@ public class SimpleGroupListServiceTest {
             groupListList.addAll((Collection<? extends GroupList>) invocation.getArguments()[0]);
             return invocation.getArguments()[0];
         });
-
         groupListService = new SimpleGroupListService(groupListRepository);
     }
 
@@ -55,5 +56,30 @@ public class SimpleGroupListServiceTest {
         }
         groupListService.save(dtos);
         assertThat(this.groupListList, hasSize(10));
+    }
+
+    @Test
+    public void testGroupItems() throws Exception {
+        List<GroupListItem<String>> items = new ArrayList<>();
+        items.add(new GroupableItem<>("a"));
+        items.add(new GroupableItem<>("b"));
+
+        Map<GroupListDTO, List<GroupListItem<String>>> result = groupListService.makeGroupLists(items);
+        assertThat(result.size(), is(2));
+        assertThat(groupListList, hasSize(2));
+    }
+
+    private class GroupableItem<T> implements GroupListItem<T> {
+
+        private T property;
+
+        public GroupableItem(T property) {
+            this.property = property;
+        }
+
+        @Override
+        public T getProperty() {
+            return this.property;
+        }
     }
 }
