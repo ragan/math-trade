@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trade.math.GroupListItemWrapper;
 import trade.math.domain.groupList.GroupListItem;
 import trade.math.domain.groupList.GroupListService;
 import trade.math.domain.tradeList.TradeList;
@@ -21,6 +22,7 @@ import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -188,7 +190,8 @@ public class SimpleTradeItemService implements TradeItemService {
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName)))
+                        .map(ti -> new TradeItemDTO(
+                                ti, checkPermission(ti.getOwner(), isAdmin, userName), Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.count());
@@ -202,7 +205,7 @@ public class SimpleTradeItemService implements TradeItemService {
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName)))
+                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName), Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.findByTradeList(tradeList).size());
@@ -233,6 +236,14 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     private GroupListItem makeGroupListItem(TradeItemDTO tradeItemDTO) {
-        return null;
+        switch (tradeItemDTO.getCategory()) {
+            case NONE:
+                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getCategory);
+            case BOARD_GAME:
+                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getBggId);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown category: %s. Don't know what to do.",
+                        tradeItemDTO.getCategory()));
+        }
     }
 }

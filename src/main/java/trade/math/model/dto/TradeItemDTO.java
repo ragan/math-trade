@@ -1,11 +1,13 @@
 package trade.math.model.dto;
 
+import trade.math.model.TradeBoardGameProperties;
 import trade.math.model.TradeItem;
 import trade.math.model.TradeItemCategory;
 
-/**
- * Created by karol on 01.03.16.
- */
+import java.util.Optional;
+
+import static trade.math.model.TradeItemCategory.*;
+
 public class TradeItemDTO {
 
     private long id;
@@ -20,15 +22,24 @@ public class TradeItemDTO {
 
     private TradeItemCategory category;
 
+    private Integer bggId;
+
     public TradeItemDTO() {
+        //
     }
 
     public TradeItemDTO(TradeItem tradeItem, boolean deletable) {
+        this(tradeItem, deletable, Optional.empty());
+    }
+
+    public TradeItemDTO(TradeItem tradeItem, boolean deletable, Optional<TradeBoardGameProperties> properties) {
         this.id = tradeItem.getId();
         this.title = tradeItem.getTitle();
         this.description = tradeItem.getDescription();
         this.imgUrl = tradeItem.getImgUrl();
+        this.category = tradeItem.getCategory();
         this.deletable = deletable;
+        this.bggId = properties.map(p -> p.getBggId()).orElse(null);
     }
 
     public TradeItemDTO(long id, String title, String description, String imgURL, boolean canDelete) {
@@ -93,5 +104,13 @@ public class TradeItemDTO {
 
     public void setCategory(TradeItemCategory category) {
         this.category = category;
+    }
+
+    public Integer getBggId() {
+        return bggId;
+    }
+
+    public void setBggId(Integer bggId) {
+        this.bggId = bggId;
     }
 }
