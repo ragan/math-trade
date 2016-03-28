@@ -2,12 +2,14 @@ package trade.math.domain.groupList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class GroupList {
 
     @Id
+    @GeneratedValue
     private Long id;
 
     @Column(name = "TITLE")
