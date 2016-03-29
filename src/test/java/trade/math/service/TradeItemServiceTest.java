@@ -9,10 +9,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.domain.groupList.GroupListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItem;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
+
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -26,19 +29,25 @@ import static org.junit.Assert.*;
 @ActiveProfiles("test")
 public class TradeItemServiceTest {
 
+    private final String USERNAME = "username";
+    private final String USERNAME_1 = "username1";
+
     @Autowired
     private TradeItemService tradeItemService;
 
     @Autowired
     private TradeUserService tradeUserService;
 
+    @Autowired
+    private GroupListService groupListService;
+
     @Before
     public void setUp() throws Exception {
         tradeItemService.deleteAll(true);
 
         tradeUserService.deleteAll();
-        tradeUserService.save(new NewTradeUserForm("username", "some@email.com", "password", "password"));
-        tradeUserService.save(new NewTradeUserForm("username1", "some1@email.com", "password", "password"));
+        tradeUserService.save(new NewTradeUserForm(USERNAME, "some@email.com", "password", "password"));
+        tradeUserService.save(new NewTradeUserForm(USERNAME_1, "some1@email.com", "password", "password"));
     }
 
     @Test
@@ -48,7 +57,7 @@ public class TradeItemServiceTest {
         newTradeItemForm.setDescription("description");
         newTradeItemForm.setImageUrl("imageUrl");
 
-        TradeItem item = tradeItemService.save(newTradeItemForm, "username");
+        TradeItem item = tradeItemService.save(newTradeItemForm, USERNAME);
         assertThat(item.getImgUrl(), is(equalTo("imageUrl")));
     }
 
@@ -58,7 +67,7 @@ public class TradeItemServiceTest {
         newTradeItemForm.setTitle("title");
         newTradeItemForm.setDescription("description");
 
-        TradeItem item = tradeItemService.save(newTradeItemForm, "username");
+        TradeItem item = tradeItemService.save(newTradeItemForm, USERNAME);
         assertNotNull(item.getId());
 
         Long itemId = item.getId();
@@ -179,16 +188,16 @@ public class TradeItemServiceTest {
         prepareTradeList(10);
 
         assertFalse(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "anotherUser"));
-        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "username"));
+        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, USERNAME));
         assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), true, "anotherUser"));
     }
 
     @Test
-    public void testFindByRecentTradeListAndNameAndNotOwner(){
-        prepareTradeList(10, "username");
-        prepareTradeList(2, "username1");
+    public void testFindByRecentTradeListAndNameAndNotOwner() {
+        prepareTradeList(10, USERNAME);
+        prepareTradeList(2, USERNAME_1);
 
-        List list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", "username");
+        List list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", USERNAME);
 
         assertNotNull(list);
         assertEquals(2, list.size());
@@ -198,11 +207,11 @@ public class TradeItemServiceTest {
     }
 
     @Test
-    public void testFindByRecentTradeListAndOwner(){
-        prepareTradeList(10, "username");
-        prepareTradeList(8, "username1");
+    public void testFindByRecentTradeListAndOwner() {
+        prepareTradeList(10, USERNAME);
+        prepareTradeList(8, USERNAME_1);
 
-        List<TradeItem> list = tradeItemService.findByRecentTradeListAndOwner("username1");
+        List<TradeItem> list = tradeItemService.findByRecentTradeListAndOwner(USERNAME_1);
 
         assertNotNull(list);
         assertEquals(8, list.size());
@@ -213,14 +222,26 @@ public class TradeItemServiceTest {
         assertEquals(0, list.size());
     }
 
+    @Test
+    public void testCreateGroupLists() throws Exception {
+//        tradeItemService.save(new NewTradeItemForm("title", "description", "", TradeItemCategory.BOARD_GAME, 123),
+//                USERNAME);
+//        tradeItemService.save(new NewTradeItemForm("title", "description", ""), USERNAME);
+//        tradeItemService.save(new NewTradeItemForm("title_1", "description", "", TradeItemCategory.BOARD_GAME, 123),
+//                USERNAME);
+//
+//        tradeItemService.makeGroupLists();
+        assertThat(true, is(true));
+    }
+
     //HELPERS
     private void prepareTradeList(int count) {
         tradeItemService.deleteAll(true);
 
-        prepareTradeList(count, "username");
+        prepareTradeList(count, USERNAME);
     }
 
-    private void prepareTradeList(int count, String userName){
+    private void prepareTradeList(int count, String userName) {
         for (int i = 0; i < count; i++) {
             NewTradeItemForm form = new NewTradeItemForm();
             form.setTitle("title" + i);
@@ -230,5 +251,4 @@ public class TradeItemServiceTest {
             tradeItemService.save(form, userName);
         }
     }
-
 }

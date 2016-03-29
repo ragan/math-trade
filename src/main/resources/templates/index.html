@@ -61,7 +61,7 @@
                             <a href="#" class="generate-group-list">Generate group list</a>
                         </li>
                         <!-- anytime -->
-                        <li th:if="${listStatus.exists()}">
+                        <li th:if="${listStatus.isClosed()}">
                             <a href="#">Generate trade list</a>
                         </li>
                         <!-- if closed -->

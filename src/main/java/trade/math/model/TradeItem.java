@@ -1,6 +1,7 @@
 package trade.math.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import trade.math.domain.groupList.GroupList;
 import trade.math.domain.tradeList.TradeList;
 
 import javax.persistence.*;
@@ -38,6 +39,9 @@ public class TradeItem {
     @Enumerated(EnumType.STRING)
     private TradeItemCategory category;
 
+    @ManyToOne
+    @JoinColumn(name = "GROUP_LIST_ID")
+    private GroupList groupList;
 
     public Long getId() {
         return id;
@@ -101,5 +105,13 @@ public class TradeItem {
 
     public void setCategory(TradeItemCategory category) {
         this.category = category;
+    }
+
+    public GroupList getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(GroupList groupList) {
+        this.groupList = groupList;
     }
 }

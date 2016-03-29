@@ -1,6 +1,7 @@
 package trade.math.domain.tradeList;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TradeListService {
 
@@ -13,7 +14,7 @@ public interface TradeListService {
 
     List<TradeList> findAll();
 
-    TradeList findMostRecentList();
+    Optional<TradeList> findMostRecentList();
 
     void deleteAll();
 

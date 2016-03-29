@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeItem;
 import trade.math.domain.tradeList.TradeList;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.dto.TradeItemDTO;
 import trade.math.wrappers.PageWrapper;
 
@@ -40,7 +41,11 @@ public interface TradeItemService {
 
     PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName);
 
+    void deleteAll();
+
     void deleteAll(boolean isAdmin);
 
     boolean deleteById(Long itemId, boolean isAdmin, String userName);
+
+    void makeGroupLists();
 }
