@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
+import trade.math.domain.tradeItem.wantListItem.WantListItem;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItem;
@@ -94,13 +95,6 @@ public class MainController {
         tradeItemService.save(newTradeItemForm, principal.getName());
 //        redirectAttributes.addAttribute("success");
         return "redirect:/addItem?success";
-    }
-
-    @RequestMapping(value = "/wantList", method = RequestMethod.GET)
-    public String wantListComposer(Model model, Principal principal) {
-        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(principal.getName()));
-
-        return "wantList";
     }
 
     @RequestMapping("/search")

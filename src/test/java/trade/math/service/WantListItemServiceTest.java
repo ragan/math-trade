@@ -1,6 +1,9 @@
 package trade.math.service;
 
 import static org.junit.Assert.*;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.codehaus.groovy.runtime.ArrayUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -126,13 +129,54 @@ public class WantListItemServiceTest {
         assertEquals(1, item.getWantList().size());
         assertEquals(6, item.getWantList().get(0).getPriority());
 
-        boolean result = wantListItemService.delete(wantListItem);
+        boolean result = wantListItemService.delete(wantListItem, tradeItemService);
 
         assertTrue(result);
 
         item = tradeItemService.findById(item.getId());
 
         assertEquals(0, item.getWantList().size());
+    }
+
+    @Test
+    public void updateWantListTest(){
+        List<TradeItem> list1 = generateArrayItems(10, "test", "username");
+        List<TradeItem> list2 = generateArrayItems(15, "want", "username1");
+
+        //Check adding
+        tradeItemService.updateWantList(list1.get(0).getId(), ArrayUtils.toObject(list2.stream().limit(5).mapToLong(value -> value.getId()).toArray()));
+        TradeItem item = tradeItemService.findById(list1.get(0).getId());
+        assertEquals(5, item.getWantList().size());
+
+        //Check deleting
+        tradeItemService.updateWantList(item.getId(), new Long[]{});
+        item = tradeItemService.findById(list1.get(0).getId());
+        assertEquals(0, item.getWantList().size());
+
+        //Check failure id
+        Long[] array =  ArrayUtils.toObject(list2.stream().limit(5).mapToLong(value -> value.getId()).toArray());
+        array[4] = 192736L;
+        tradeItemService.updateWantList(item.getId(), array);
+        item = tradeItemService.findById(list1.get(0).getId());
+        assertEquals(4, item.getWantList().size());
+
+        //Check change priority
+        array = ArrayUtils.toObject(list2.stream().limit(5).mapToLong(value -> value.getId()).toArray());
+        tradeItemService.updateWantList(list1.get(0).getId(), array);
+        item = tradeItemService.findById(list1.get(0).getId());
+        assertEquals(5, item.getWantList().size());
+
+        Long pickedWantListId = array[3];
+        assertEquals(4, item.getWantList().stream().filter(wantListItem -> wantListItem.getWantTradeItem().getId() == pickedWantListId).findFirst().get().getPriority());
+
+        array[3] = array[0];
+        array[0] = pickedWantListId;
+
+        tradeItemService.updateWantList(list1.get(0).getId(), array);
+        item = tradeItemService.findById(list1.get(0).getId());
+        assertEquals(5, item.getWantList().size());
+        assertEquals(1, item.getWantList().stream().filter(wantListItem -> wantListItem.getWantTradeItem().getId() == pickedWantListId).findFirst().get().getPriority());
+
     }
 
 

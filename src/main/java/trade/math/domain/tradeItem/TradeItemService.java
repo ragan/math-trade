@@ -28,6 +28,8 @@ public interface TradeItemService {
 
     TradeItem update(TradeItem item);
 
+    boolean updateWantList(Long tradeItemId, Long[] wantIds);
+
     List<TradeItem> findAll();
 
     TradeItem findById(Long itemId);

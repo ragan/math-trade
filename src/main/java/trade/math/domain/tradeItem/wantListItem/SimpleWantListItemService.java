@@ -15,12 +15,10 @@ import javax.transaction.Transactional;
 public class SimpleWantListItemService implements WantListItemService {
 
     private final WantListItemRepository wantListItemRepository;
-    private final TradeItemService tradeItemService;
 
     @Autowired
-    public SimpleWantListItemService(WantListItemRepository wantListItemRepository, TradeItemService tradeItemService) {
+    public SimpleWantListItemService(WantListItemRepository wantListItemRepository) {
         this.wantListItemRepository = wantListItemRepository;
-        this.tradeItemService = tradeItemService;
     }
 
     @Override
@@ -41,7 +39,7 @@ public class SimpleWantListItemService implements WantListItemService {
     }
 
     @Override
-    public boolean delete(WantListItem wantListItem) {
+    public boolean delete(WantListItem wantListItem, TradeItemService tradeItemService) {
         try {
             wantListItem.getOfferTradeItem().getWantList().remove(wantListItem);
             tradeItemService.update(wantListItem.getOfferTradeItem());
