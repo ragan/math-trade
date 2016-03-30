@@ -8,11 +8,12 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeList.IllegalTradeListStateChange;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeItem;
+import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListState;
 

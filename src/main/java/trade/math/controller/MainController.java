@@ -1,7 +1,6 @@
 package trade.math.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,13 +14,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
+import trade.math.domain.tradeItem.wantListItem.WantListItem;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeItem;
-import trade.math.model.TradeUser;
-import trade.math.model.dto.TradeItemDTO;
+import trade.math.domain.tradeItem.TradeItem;
+import trade.math.domain.tradeItem.TradeItemDTO;
 import trade.math.service.TradeBoardGameService;
-import trade.math.service.TradeItemService;
+import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.service.TradeUserService;
 
 import javax.validation.Valid;
@@ -96,13 +95,6 @@ public class MainController {
         tradeItemService.save(newTradeItemForm, principal.getName());
 //        redirectAttributes.addAttribute("success");
         return "redirect:/addItem?success";
-    }
-
-    @RequestMapping(value = "/wantList", method = RequestMethod.GET)
-    public String wantListComposer(Model model, Principal principal) {
-        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(principal.getName()));
-
-        return "wantList";
     }
 
     @RequestMapping("/search")

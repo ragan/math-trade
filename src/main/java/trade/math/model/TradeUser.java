@@ -2,6 +2,7 @@ package trade.math.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import trade.math.TradeUserRole;
+import trade.math.domain.tradeItem.TradeItem;
 
 import javax.persistence.*;
 import java.util.List;
@@ -74,11 +75,4 @@ public class TradeUser {
         this.role = role;
     }
 
-    public List<TradeItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<TradeItem> items) {
-        this.items = items;
-    }
 }

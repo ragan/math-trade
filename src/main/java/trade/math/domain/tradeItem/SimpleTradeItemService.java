@@ -1,9 +1,11 @@
-package trade.math.service.simple;
+package trade.math.domain.tradeItem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trade.math.domain.tradeItem.wantListItem.WantListItem;
+import trade.math.domain.tradeItem.wantListItem.WantListItemService;
 import trade.math.GroupListItemWrapper;
 import trade.math.domain.groupList.GroupListDTO;
 import trade.math.domain.groupList.GroupListItem;
@@ -13,19 +15,22 @@ import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.*;
-import trade.math.model.dto.TradeItemDTO;
 import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
 import trade.math.service.BggIdToTitleService;
 import trade.math.service.TradeBoardGamePropertiesService;
-import trade.math.service.TradeItemService;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 /**
  * Created by karol on 17.02.16.
@@ -44,6 +49,8 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeBoardGamePropertiesService tradeBoardGamePropertiesService;
 
+    private final WantListItemService wantListItemService;
+
     private final GroupListService groupListService;
 
     @Autowired
@@ -52,13 +59,15 @@ public class SimpleTradeItemService implements TradeItemService {
                                   TradeUserRepository tradeUserRepository,
                                   TradeListService tradeListService,
                                   TradeBoardGamePropertiesService tradeBoardGamePropertiesService,
-                                  GroupListService groupListService) {
+                                  GroupListService groupListService,
+                                  WantListItemService wantListItemService) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
         this.tradeBoardGamePropertiesService = tradeBoardGamePropertiesService;
         this.groupListService = groupListService;
+        this.wantListItemService = wantListItemService;
     }
 
     @Override
@@ -92,6 +101,54 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public TradeItem update(TradeItem item) {
         return tradeItemRepository.save(item);
+    }
+
+    @Override
+    public boolean updateWantList(Long tradeItemId, Long[] wantIds) {
+        TradeItem tradeItem = tradeItemRepository.findOne(tradeItemId);
+
+        if (tradeItem == null)
+            return false;
+
+        List<WantListItem> wantList = tradeItem.getWantList();
+
+        if (wantList == null)
+            wantList = new ArrayList<>();
+
+
+        //Remove unused
+        List<WantListItem> toRemove = new ArrayList<>();
+
+        for (WantListItem wantListItem : wantList)
+            if (wantListItem.getOfferTradeItem().getId() != tradeItemId || !Stream.of(wantIds).anyMatch(value -> value.equals(wantListItem.getWantTradeItem().getId())))
+                toRemove.add(wantListItem);
+
+        for (int i = 0; i < toRemove.size(); i++)
+            wantListItemService.delete(toRemove.get(i), this);
+        toRemove.clear();
+
+        //Update and create new
+        for (int i = 0; i < wantIds.length; i++) {
+            int priority = i;
+            WantListItem item = wantList.stream().filter(wantListItem -> wantListItem.getWantTradeItem().getId().equals(wantIds[priority])).findFirst().orElse(null);
+
+            if(item != null) {
+                item.setPriority(i+1);
+                wantListItemService.update(item);
+            }else{
+                TradeItem wantItem = tradeItemRepository.findOne(wantIds[i]);
+                if(wantItem == null)
+                    continue;
+
+                item = new WantListItem();
+                item.setWantTradeItem(tradeItemRepository.findOne(wantIds[i]));
+                item.setPriority(i+1);
+                item.setOfferTradeItem(tradeItem);
+                wantListItemService.save(item);
+            }
+        }
+
+        return true;
     }
 
     @Override

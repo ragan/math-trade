@@ -1,4 +1,4 @@
-package trade.math.model.dto;
+package trade.math.domain.tradeItem;
 
 import trade.math.domain.groupList.GroupList;
 import trade.math.model.TradeBoardGameProperties;

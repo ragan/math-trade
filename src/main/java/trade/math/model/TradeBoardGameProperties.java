@@ -1,5 +1,7 @@
 package trade.math.model;
 
+import trade.math.domain.tradeItem.TradeItem;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
