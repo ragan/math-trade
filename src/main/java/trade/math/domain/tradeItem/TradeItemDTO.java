@@ -1,17 +1,49 @@
 package trade.math.domain.tradeItem;
 
-/**
- * Created by karol on 01.03.16.
- */
+import trade.math.domain.groupList.GroupList;
+import trade.math.model.TradeBoardGameProperties;
+import trade.math.model.TradeItem;
+import trade.math.model.TradeItemCategory;
+
+import java.util.Optional;
+
+import static trade.math.model.TradeItemCategory.*;
+
 public class TradeItemDTO {
 
     private long id;
+
     private String title;
+
     private String description;
+
     private String imgUrl;
-    private boolean canDelete;
+
+    private boolean deletable;
+
+    private TradeItemCategory category;
+
+    private Integer bggId;
+
+    private GroupList groupList;
 
     public TradeItemDTO() {
+        //
+    }
+
+    public TradeItemDTO(TradeItem tradeItem, boolean deletable) {
+        this(tradeItem, deletable, Optional.empty());
+    }
+
+    public TradeItemDTO(TradeItem tradeItem, boolean deletable, Optional<TradeBoardGameProperties> properties) {
+        this.id = tradeItem.getId();
+        this.title = tradeItem.getTitle();
+        this.description = tradeItem.getDescription();
+        this.imgUrl = tradeItem.getImgUrl();
+        this.category = tradeItem.getCategory();
+        this.deletable = deletable;
+        this.bggId = properties.map(p -> p.getBggId()).orElse(null);
+        this.groupList = tradeItem.getGroupList();
     }
 
     public TradeItemDTO(long id, String title, String description, String imgURL, boolean canDelete) {
@@ -19,7 +51,24 @@ public class TradeItemDTO {
         this.title = title;
         this.description = description;
         this.imgUrl = imgURL;
-        this.canDelete = canDelete;
+        this.deletable = canDelete;
+    }
+
+//    public TradeItem toTradeItem() {
+//        TradeItem tradeItem = new TradeItem();
+//        tradeItem.setId(getId());
+//        tradeItem.setTitle(getTitle());
+//        tradeItem.setDescription(getDescription());
+//        tradeItem.setImgUrl(getImgUrl());
+//        tradeItem.;
+//    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -47,19 +96,42 @@ public class TradeItemDTO {
     }
 
     public boolean isCanDelete() {
-        return canDelete;
+        return isDeletable();
     }
 
     public void setCanDelete(boolean canDelete) {
-        this.canDelete = canDelete;
+        setDeletable(canDelete);
     }
 
-    public long getId() {
-
-        return id;
+    public boolean isDeletable() {
+        return this.deletable;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
+    public TradeItemCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(TradeItemCategory category) {
+        this.category = category;
+    }
+
+    public Integer getBggId() {
+        return bggId;
+    }
+
+    public void setBggId(Integer bggId) {
+        this.bggId = bggId;
+    }
+
+    public GroupList getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(GroupList groupList) {
+        this.groupList = groupList;
     }
 }

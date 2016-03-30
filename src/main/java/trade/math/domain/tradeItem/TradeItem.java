@@ -1,6 +1,7 @@
 package trade.math.domain.tradeItem;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import trade.math.domain.groupList.GroupList;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
@@ -44,6 +45,9 @@ public class TradeItem {
 
     @OneToMany(mappedBy = "offerTradeItemId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<WantListItem> wantList;
+    @ManyToOne
+    @JoinColumn(name = "GROUP_LIST_ID")
+    private GroupList groupList;
 
     public Long getId() {
         return id;
@@ -115,5 +119,13 @@ public class TradeItem {
 
     public void setWantList(List<WantListItem> wantList) {
         this.wantList = wantList;
+    }
+
+    public GroupList getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(GroupList groupList) {
+        this.groupList = groupList;
     }
 }

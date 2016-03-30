@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.domain.tradeItem.wantListItem.WantListItem;
 import trade.math.domain.tradeItem.wantListItem.WantListItemService;
+import trade.math.GroupListItemWrapper;
+import trade.math.domain.groupList.GroupListDTO;
+import trade.math.domain.groupList.GroupListItem;
+import trade.math.domain.groupList.GroupListService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
@@ -21,6 +25,8 @@ import trade.math.wrappers.TradeItemPageWrapper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -45,19 +51,28 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final WantListItemService wantListItemService;
 
+    private final GroupListService groupListService;
+
     @Autowired
-    public SimpleTradeItemService(TradeItemRepository tradeItemRepository, BggIdToTitleService bggIdToTitleService, TradeUserRepository tradeUserRepository, TradeListService tradeListService, TradeBoardGamePropertiesService tradeBoardGamePropertiesService, WantListItemService wantListItemService) {
+    public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
+                                  BggIdToTitleService bggIdToTitleService,
+                                  TradeUserRepository tradeUserRepository,
+                                  TradeListService tradeListService,
+                                  TradeBoardGamePropertiesService tradeBoardGamePropertiesService,
+                                  GroupListService groupListService,
+                                  WantListItemService wantListItemService) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
         this.tradeBoardGamePropertiesService = tradeBoardGamePropertiesService;
+        this.groupListService = groupListService;
         this.wantListItemService = wantListItemService;
     }
 
     @Override
     public TradeItem save(NewTradeItemForm tradeItemForm, String username) {
-        TradeList list = tradeListService.findMostRecentList();
+        TradeList list = tradeListService.findMostRecentList().orElse(null);
         if (list != null && list.getState() == TradeListState.CLOSED)
             list = null;
         return save(tradeItemForm, username, list);
@@ -148,7 +163,7 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName) {
-        TradeList recentList = tradeListService.findMostRecentList();
+        TradeList recentList = tradeListService.findMostRecentList().orElse(null);
         TradeUser owner = tradeUserRepository.findOneByUsername(userName);
 
         if (owner == null)
@@ -173,17 +188,22 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public List<TradeItem> findByRecentTradeList() {
-        return findByTradeList(tradeListService.findMostRecentList());
+        return findByTradeList(tradeListService.findMostRecentList().orElse(null));
     }
 
     @Override
     public List<TradeItem> findByRecentTradeListAndOwner(String userName) {
-        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList(), tradeUserRepository.findOneByUsername(userName));
+        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), tradeUserRepository.findOneByUsername(userName));
     }
 
     @Override
     public List<TradeItem> findAll() {
         return tradeItemRepository.findAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        deleteAll(true);
     }
 
     @Override
@@ -229,7 +249,8 @@ public class SimpleTradeItemService implements TradeItemService {
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(item -> tradeItemToDTO(item, isAdmin, userName))
+                        .map(ti -> new TradeItemDTO(
+                                ti, checkPermission(ti.getOwner(), isAdmin, userName), Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.count());
@@ -237,35 +258,20 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName) {
-        TradeList tradeList = tradeListService.findMostRecentList();
+        TradeList tradeList = tradeListService.findMostRecentList().orElse(null);
         return new TradeItemPageWrapper(
                 tradeItemRepository.findByTradeList(tradeList, pageable)
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(tradeItem -> tradeItemToDTO(tradeItem, isAdmin, userName))
+                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName), Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.findByTradeList(tradeList).size());
     }
 
-    private TradeItemDTO tradeItemToDTO(TradeItem item, boolean isAdmin, String userName) {
-        return new TradeItemDTO(
-                item.getId(),
-                item.getTitle(),
-                item.getDescription(),
-                item.getImgUrl(),
-                checkPermission(item.getOwner(), isAdmin, userName));
-    }
-
     private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {
-        if (isAdmin)
-            return true;
-
-        if ("".equals(userName) || userName == null)
-            return false;
-
-        return userName.equals(owner.getUsername());
+        return isAdmin || owner != null && userName.equals(owner.getUsername());
     }
 
     private void handleSaveProperties(TradeItem tradeItem, NewTradeItemForm newTradeItemForm) {
@@ -283,4 +289,40 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeBoardGamePropertiesService.deleteByTradeItem(item);
     }
 
+    @Override
+    public void makeGroupLists() {
+        makeGroupLists(findByRecentTradeList().stream()
+                .map(ti -> new TradeItemDTO(ti,
+                        false,
+                        Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
+                .collect(Collectors.toList()));
+    }
+
+    private void makeGroupLists(List<TradeItemDTO> tradeItemDTOs) {
+//        Map<TradeItemCategory, List<TradeItemDTO>> collect = tradeItemDTOs.stream()
+//                .collect(Collectors.groupingBy(dto -> dto.getCategory()));
+//        collect.entrySet().forEach(entry -> {
+//            Map<GroupListDTO, List<GroupListItem>> map =
+//                    groupListService.makeGroupLists(makeGroupListItems(entry.getValue()));
+//            map.forEach((k, v) -> {
+//                v.forEach(ti -> );
+//            });
+//        });
+    }
+
+    private List<GroupListItem> makeGroupListItems(List<TradeItemDTO> tradeItemDTOs) {
+        return tradeItemDTOs.stream().map(this::makeGroupListItem).collect(Collectors.toList());
+    }
+
+    private GroupListItem makeGroupListItem(TradeItemDTO tradeItemDTO) {
+        switch (tradeItemDTO.getCategory()) {
+            case NONE:
+                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getCategory);
+            case BOARD_GAME:
+                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getBggId);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown category: %s. Don't know what to do.",
+                        tradeItemDTO.getCategory()));
+        }
+    }
 }
