@@ -109,11 +109,6 @@ public class MainController {
         return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName());
     }
 
-    @RequestMapping("/findItemById")
-    @ResponseBody
-    public TradeItem findItemById(@RequestParam long id){
-        return tradeItemService.findById(id);
-    }
 
     //Helpers
     private String getUserName(Authentication authentication) {

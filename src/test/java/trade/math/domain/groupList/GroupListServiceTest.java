@@ -8,10 +8,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
+import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItemCategory;
-import trade.math.service.TradeItemService;
 import trade.math.service.TradeUserService;
 
 import java.util.ArrayList;

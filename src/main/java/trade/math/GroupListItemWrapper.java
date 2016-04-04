@@ -1,7 +1,7 @@
 package trade.math;
 
 import trade.math.domain.groupList.GroupListItem;
-import trade.math.model.dto.TradeItemDTO;
+import trade.math.domain.tradeItem.TradeItemDTO;
 
 public class GroupListItemWrapper<T> implements GroupListItem<T> {
 

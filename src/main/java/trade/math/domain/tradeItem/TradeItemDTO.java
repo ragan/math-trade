@@ -2,7 +2,6 @@ package trade.math.domain.tradeItem;
 
 import trade.math.domain.groupList.GroupList;
 import trade.math.model.TradeBoardGameProperties;
-import trade.math.model.TradeItem;
 import trade.math.model.TradeItemCategory;
 
 import java.util.Optional;
@@ -134,4 +133,5 @@ public class TradeItemDTO {
     public void setGroupList(GroupList groupList) {
         this.groupList = groupList;
     }
+
 }

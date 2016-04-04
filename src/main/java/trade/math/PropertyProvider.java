@@ -1,6 +1,7 @@
 package trade.math;
 
-import trade.math.model.dto.TradeItemDTO;
+
+import trade.math.domain.tradeItem.TradeItemDTO;
 
 public interface PropertyProvider<T> {
 
