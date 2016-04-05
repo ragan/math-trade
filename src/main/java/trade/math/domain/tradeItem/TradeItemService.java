@@ -50,4 +50,6 @@ public interface TradeItemService {
     boolean deleteById(Long itemId, boolean isAdmin, String userName);
 
     void makeGroupLists();
+
+    String generateTradeWantListTM(String userName);
 }

@@ -301,6 +301,26 @@ public class SimpleTradeItemService implements TradeItemService {
                 .collect(Collectors.toList()));
     }
 
+    @Override
+    public String generateTradeWantListTM(String userName) {
+        String tmText = "";
+        List<TradeItem> tradeItems = findByRecentTradeListAndOwner(userName);
+
+        if(tradeItems == null)
+            return tmText;
+
+
+        for(TradeItem tradeItem : tradeItems){
+            if(tradeItem.getWantList() == null || tradeItem.getWantList().size() == 0)
+                continue;
+            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
+            for(WantListItemDTO wantItem : wantListItemService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
+                tmText += wantItem.getWantTradeItemId() + " ";
+        }
+
+        return tmText;
+    }
+
     private void makeGroupLists(List<TradeItemDTO> tradeItemDTOs) {
 //        Map<TradeItemCategory, List<TradeItemDTO>> collect = tradeItemDTOs.stream()
 //                .collect(Collectors.groupingBy(dto -> dto.getCategory()));

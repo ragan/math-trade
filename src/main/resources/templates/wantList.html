@@ -45,6 +45,9 @@
             </div>
         </div>
     </div>
+    <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-primary" onclick="showTMtext()">Generate TM text</button>
+    </div>
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -100,7 +103,7 @@
 
     function addGame() {
         $.ajax({
-            url: '/findItemById',
+            url: '/wantList/findItemById',
             dataType: 'json',
             data: {
                 id: $('#selector').val()
@@ -183,9 +186,9 @@
         [[${_csrf.token}]]
     }
     ,
-    success: function (data){
+    success: function (data) {
         $('#ourList').empty();
-        for(var i = 0; i < data.length; i++){
+        for (var i = 0; i < data.length; i++) {
 //            alert(data[i].wantTradeItemTitle);
             $('#ourList').append('<li id="' + data[i].wantTradeItemId + '" data-id="' + data[i].wantTradeItemId + '" class="list-group-item">' + data[i].wantTradeItemTitle + '<span class="badge" onclick="removeWantItem(' + data[i].wantTradeItemId + ')">X</span></li>');
         }
@@ -199,8 +202,31 @@
     ;
     }
 
-    function removeWantItem(wantTradeItemId){
+    function removeWantItem(wantTradeItemId) {
         $('#ourList').children("#" + wantTradeItemId).remove();
+    }
+
+    function showTMtext() {
+        $.ajax({
+            url: '/wantList/getListTM.command',
+            dataType: 'text',
+            method: "POST",
+            data: {
+                    [[${_csrf.parameterName}]]
+    :
+        [[${_csrf.token}]]
+    }
+    ,
+    success: function (data) {
+        alert(data);
+    }
+    ,
+    error: function (data, status, error) {
+        alert(status + '  -  ' + data);
+    }
+    }
+    )
+    ;
     }
 
     /*]]>*/
