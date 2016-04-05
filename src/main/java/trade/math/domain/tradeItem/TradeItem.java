@@ -45,6 +45,7 @@ public class TradeItem {
 
     @OneToMany(mappedBy = "offerTradeItemId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<WantListItem> wantList;
+
     @ManyToOne
     @JoinColumn(name = "GROUP_LIST_ID")
     private GroupList groupList;
