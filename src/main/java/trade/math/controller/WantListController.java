@@ -52,9 +52,15 @@ public class WantListController {
     }
 
 
-    @RequestMapping("/findItemById")
+    @RequestMapping("/wantList/findItemById")
     @ResponseBody
     public WantListItemDTO findItemById(@RequestParam long id){
         return tradeItemService.findByIdWantItem(id);
+    }
+
+    @RequestMapping("/wantList/getListTM.command")
+    @ResponseBody
+    public String getWantListTM(Principal principal){
+        return tradeItemService.generateTradeWantListTM(principal.getName());
     }
 }
