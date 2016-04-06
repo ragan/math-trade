@@ -2,7 +2,7 @@ package trade.math.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import trade.math.domain.tradeItem.TradeItem;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
+import trade.math.domain.wantListItem.WantListItem;
 
 import java.util.List;
 

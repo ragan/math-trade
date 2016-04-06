@@ -3,7 +3,6 @@ package trade.math.service;
 import static org.junit.Assert.*;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.codehaus.groovy.runtime.ArrayUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.domain.tradeItem.wantListItem.WantListItemService;
+import trade.math.domain.wantListItem.WantListItemService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItem;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
+import trade.math.domain.wantListItem.WantListItem;
 
 import java.util.ArrayList;
 import java.util.List;

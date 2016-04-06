@@ -1,7 +1,7 @@
 package trade.math.domain.tradeItem;
 
 import org.springframework.data.domain.Pageable;
-import trade.math.domain.tradeItem.wantListItem.WantListItemDTO;
+import trade.math.domain.wantListItem.WantListItemDTO;
 import trade.math.form.NewTradeItemForm;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.wrappers.PageWrapper;

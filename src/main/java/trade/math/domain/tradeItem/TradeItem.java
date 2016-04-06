@@ -3,7 +3,7 @@ package trade.math.domain.tradeItem;
 import org.hibernate.validator.constraints.NotEmpty;
 import trade.math.domain.groupList.GroupListItem;
 import trade.math.domain.groupList.ItemGroup;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
+import trade.math.domain.wantListItem.WantListItem;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;

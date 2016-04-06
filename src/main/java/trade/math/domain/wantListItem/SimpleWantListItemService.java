@@ -1,4 +1,4 @@
-package trade.math.domain.tradeItem.wantListItem;
+package trade.math.domain.wantListItem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

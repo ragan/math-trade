@@ -1,4 +1,4 @@
-package trade.math.domain.tradeItem.wantListItem;
+package trade.math.domain.wantListItem;
 
 import trade.math.domain.tradeItem.TradeItem;
 
