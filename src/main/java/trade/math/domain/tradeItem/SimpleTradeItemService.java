@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import trade.math.GroupListItemWrapper;
-import trade.math.domain.groupList.GroupListItem;
 import trade.math.domain.groupList.GroupListService;
 import trade.math.domain.tradeItem.wantListItem.WantListItem;
 import trade.math.domain.tradeItem.wantListItem.WantListItemDTO;
@@ -270,26 +268,8 @@ public class SimpleTradeItemService implements TradeItemService {
         return isAdmin || owner != null && userName.equals(owner.getUsername());
     }
 
-//    private void handleSaveProperties(TradeItem tradeItem, NewTradeItemForm newTradeItemForm) {
-//        if (tradeItem == null)
-//            return;
-//
-//        switch (newTradeItemForm.getCategory()) {
-//            case BOARD_GAME:
-//                tradeBoardGamePropertiesService.save(new TradeBoardGameProperties(tradeItem, newTradeItemForm.getBggId()));
-//                break;
-//        }
-//    }
-
-//    private void handleDeleteProperties(TradeItem item) {
-//        tradeBoardGamePropertiesService.deleteByTradeItem(item);
-//    }
-
     @Override
     public void makeGroupLists() {
-        makeGroupLists(findByRecentTradeList().stream()
-                .map(ti -> new TradeItemDTO(ti, false))
-                .collect(Collectors.toList()));
     }
 
     @Override
@@ -297,46 +277,18 @@ public class SimpleTradeItemService implements TradeItemService {
         String tmText = "";
         List<TradeItem> tradeItems = findByRecentTradeListAndOwner(userName);
 
-        if(tradeItems == null)
+        if (tradeItems == null)
             return tmText;
 
 
-        for(TradeItem tradeItem : tradeItems){
-            if(tradeItem.getWantList() == null || tradeItem.getWantList().size() == 0)
+        for (TradeItem tradeItem : tradeItems) {
+            if (tradeItem.getWantList() == null || tradeItem.getWantList().size() == 0)
                 continue;
             tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
-            for(WantListItemDTO wantItem : wantListItemService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
+            for (WantListItemDTO wantItem : wantListItemService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
                 tmText += wantItem.getWantTradeItemId() + " ";
         }
-
         return tmText;
     }
 
-    private void makeGroupLists(List<TradeItemDTO> tradeItemDTOs) {
-//        Map<TradeItemCategory, List<TradeItemDTO>> collect = tradeItemDTOs.stream()
-//                .collect(Collectors.groupingBy(dto -> dto.getCategory()));
-//        collect.entrySet().forEach(entry -> {
-//            Map<GroupListDTO, List<GroupListItem>> map =
-//                    groupListService.makeGroupLists(makeGroupListItems(entry.getValue()));
-//            map.forEach((k, v) -> {
-//                v.forEach(ti -> );
-//            });
-//        });
-    }
-
-    private List<GroupListItem> makeGroupListItems(List<TradeItemDTO> tradeItemDTOs) {
-        return tradeItemDTOs.stream().map(this::makeGroupListItem).collect(Collectors.toList());
-    }
-
-    private GroupListItem makeGroupListItem(TradeItemDTO tradeItemDTO) {
-        switch (tradeItemDTO.getCategory()) {
-            case NONE:
-                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getCategory);
-            case BOARD_GAME:
-                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getBggId);
-            default:
-                throw new IllegalArgumentException(String.format("Unknown category: %s. Don't know what to do.",
-                        tradeItemDTO.getCategory()));
-        }
-    }
 }

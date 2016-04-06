@@ -46,7 +46,7 @@ public class GroupListServiceTest {
     public void testSaveSingleGroupList() throws Exception {
         String TITLE = "title";
 
-        GroupListDTO dto = groupListService.save(new GroupListDTO(TITLE));
+        GroupList dto = groupListService.save(new GroupList(TITLE));
         assertThat(dto, is(notNullValue()));
         assertThat(dto.getId(), is(notNullValue()));
         assertThat(dto.getTitle(), equalTo(TITLE));
@@ -55,9 +55,9 @@ public class GroupListServiceTest {
     @Test
     public void testSaveMultipleGroupLists() throws Exception {
         String TITLE = "title";
-        List<GroupListDTO> dtos = new ArrayList<>();
+        List<GroupList> dtos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            dtos.add(new GroupListDTO(TITLE + i));
+            dtos.add(new GroupList(TITLE + i));
         }
         groupListService.save(dtos);
         assertThat(groupListService.findAll(), hasSize(10));

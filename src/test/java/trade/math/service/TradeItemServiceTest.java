@@ -64,24 +64,17 @@ public class TradeItemServiceTest {
     }
 
     @Test
-    public void testSaveNewTradeItem() throws Exception {
-        NewTradeItemForm newTradeItemForm = new NewTradeItemForm();
-        newTradeItemForm.setTitle("title");
-        newTradeItemForm.setDescription("description");
+    public void testSaveAndDeleteNewBoardGame() throws Exception {
+        NewTradeItemForm form = new NewTradeItemForm("Title", "Description", "", TradeItemCategory.BOARD_GAME, 123);
 
-        TradeItem item = tradeItemService.save(newTradeItemForm, USERNAME);
-        assertNotNull(item.getId());
+        Long id = tradeItemService.save(form, USERNAME).getId();
+        assertThat(tradeItemService.findAll(), hasSize(1));
 
-        Long itemId = item.getId();
-
-        List<TradeItem> forms = tradeItemService.findAll();
-        assertTrue(forms.size() == 1);
-
-        TradeItem foundItem = tradeItemService.findById(itemId);
-        assertNotNull(foundItem);
-        assertTrue(foundItem.getDescription().equals("description"));
-
-        System.out.println(foundItem.getTitle());
+        assertThat(tradeItemService.findById(id).getTitle(), is(equalToIgnoringCase("Title")));
+        assertThat(tradeItemService.findById(id).getDescription(), is(equalToIgnoringCase("Description")));
+        assertThat(tradeItemService.findById(id).getImgUrl(), is(equalToIgnoringCase("")));
+        assertThat(tradeItemService.findById(id).getCategory(), is(TradeItemCategory.BOARD_GAME));
+        assertThat(tradeItemService.findById(id).getBggId(), is(123));
     }
 
     @Test
@@ -120,17 +113,6 @@ public class TradeItemServiceTest {
         assertEquals(9, list.get(5).intValue());
         assertEquals(1, list.get(0).intValue());
         assertEquals(-1, list.get(1).intValue());
-//
-//        list = tradeItemService.getPaginationList(5, 10, 4);
-//
-//        System.out.println(list.toString());
-//
-//        assertEquals(8, list.size());
-//        assertEquals(4, list.get(2).intValue());
-//        assertEquals(5, list.get(3).intValue());
-//        assertEquals(7, list.get(5).intValue());
-//        assertEquals(-1, list.get(6).intValue());
-//        assertEquals(10, list.get(7).intValue());
 
         prepareTradeList(1);
         list = tradeItemService.findAll(new PageRequest(0, 10)).getPagination();// .getPaginationList(1, 10, 5);
@@ -146,14 +128,6 @@ public class TradeItemServiceTest {
 
         assertEquals(1, list.size());
         assertEquals(1, list.get(0).intValue());
-
-//        list = tradeItemService.findAll(new PageRequest(-4, 10)).getPagination();// .getPaginationList(-3, 10, 5);
-//
-//        System.out.println(list.toString());
-//
-//        assertEquals(1, list.size());
-//        assertEquals(1, list.get(0).intValue());
-
 
         prepareTradeList(50);
         list = tradeItemService.findAll(new PageRequest(2, 10)).getPagination();// .getPaginationList(3, 10, 5);
@@ -226,13 +200,6 @@ public class TradeItemServiceTest {
 
     @Test
     public void testCreateGroupLists() throws Exception {
-//        tradeItemService.save(new NewTradeItemForm("title", "description", "", TradeItemCategory.BOARD_GAME, 123),
-//                USERNAME);
-//        tradeItemService.save(new NewTradeItemForm("title", "description", ""), USERNAME);
-//        tradeItemService.save(new NewTradeItemForm("title_1", "description", "", TradeItemCategory.BOARD_GAME, 123),
-//                USERNAME);
-//
-//        tradeItemService.makeGroupLists();
         assertThat(true, is(true));
     }
 
@@ -248,7 +215,7 @@ public class TradeItemServiceTest {
             NewTradeItemForm form = new NewTradeItemForm();
             form.setTitle("title" + i);
             form.setDescription("desc" + i);
-//            form.setBggId(i);
+            form.setBggId(i);
 
             tradeItemService.save(form, userName);
         }

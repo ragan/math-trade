@@ -3,10 +3,6 @@ package trade.math.domain.tradeItem;
 import trade.math.domain.groupList.GroupList;
 import trade.math.model.TradeItemCategory;
 
-import java.util.Optional;
-
-import static trade.math.model.TradeItemCategory.*;
-
 public class TradeItemDTO {
 
     private long id;
@@ -37,6 +33,7 @@ public class TradeItemDTO {
         this.category = tradeItem.getCategory();
         this.deletable = deletable;
         this.groupList = tradeItem.getGroupList();
+        this.bggId = tradeItem.getBggId();
     }
 
     public TradeItemDTO(long id, String title, String description, String imgURL, boolean canDelete) {
@@ -45,6 +42,7 @@ public class TradeItemDTO {
         this.description = description;
         this.imgUrl = imgURL;
         this.deletable = canDelete;
+        this.bggId = -1;
     }
 
     public long getId() {

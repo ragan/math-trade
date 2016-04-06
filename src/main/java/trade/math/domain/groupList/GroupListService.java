@@ -5,13 +5,13 @@ import java.util.Map;
 
 public interface GroupListService {
 
-    List<GroupListDTO> findAll();
+    List<GroupList> findAll();
 
-    GroupListDTO save(GroupListDTO groupListDTO);
+    GroupList save(GroupList groupList);
 
-    List<GroupListDTO> save(List<GroupListDTO> groupListDTOs);
+    List<GroupList> save(List<GroupList> groupLists);
 
     void deleteAll();
 
-    Map<GroupListDTO, List<GroupListItem>> makeGroupLists(List<GroupListItem> byRecentTradeList);
+    Map<GroupList, List<GroupListItem>> makeGroupLists(List<GroupListItem> items);
 }

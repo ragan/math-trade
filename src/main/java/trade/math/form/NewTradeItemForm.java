@@ -20,7 +20,7 @@ public class NewTradeItemForm {
     @NotNull
     private String imageUrl;
 
-    private TradeItemCategory category = TradeItemCategory.NONE;
+    private TradeItemCategory category;
 
     private int bggId;
 
@@ -29,9 +29,7 @@ public class NewTradeItemForm {
     }
 
     public NewTradeItemForm(String title, String description, String imageUrl) {
-        this.title = title;
-        this.description = description;
-        this.imageUrl = imageUrl;
+        this(title, description, imageUrl, TradeItemCategory.NONE, 0);
     }
 
     public NewTradeItemForm(String title, String description, String imageUrl, TradeItemCategory category, int bggId) {
@@ -41,8 +39,6 @@ public class NewTradeItemForm {
         this.category = category;
         this.bggId = bggId;
     }
-
-
 
     public String getTitle() {
         return title;

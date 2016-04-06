@@ -15,6 +15,14 @@ public class GroupList {
     @Column(name = "TITLE")
     private String title;
 
+    public GroupList() {
+        //
+    }
+
+    public GroupList(String title) {
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }

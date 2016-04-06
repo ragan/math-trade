@@ -2,6 +2,7 @@ package trade.math.domain.tradeItem;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import trade.math.domain.groupList.GroupList;
+import trade.math.domain.groupList.GroupListItem;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
-public class TradeItem {
+public class TradeItem implements GroupListItem<String> {
 
     @Id
     @GeneratedValue
@@ -49,6 +50,9 @@ public class TradeItem {
     @ManyToOne
     @JoinColumn(name = "GROUP_LIST_ID")
     private GroupList groupList;
+
+    @Column(name = "BGG_ID")
+    private int bggId;
 
     public Long getId() {
         return id;
@@ -128,5 +132,25 @@ public class TradeItem {
 
     public void setGroupList(GroupList groupList) {
         this.groupList = groupList;
+    }
+
+    public int getBggId() {
+        return bggId;
+    }
+
+    public void setBggId(int bggId) {
+        this.bggId = bggId;
+    }
+
+    @Override
+    public String getProperty() {
+        switch (getCategory()) {
+            case NONE:
+                return getTitle();
+            case BOARD_GAME:
+                return String.valueOf(getBggId());
+            default:
+                throw new IllegalArgumentException("Unknown category.");
+        }
     }
 }

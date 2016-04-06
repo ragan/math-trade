@@ -44,17 +44,17 @@ public class SimpleGroupListServiceTest {
 
     @Test
     public void testSaveGroupList() throws Exception {
-        GroupListDTO dto = new GroupListDTO("test title");
-        assertThat(groupListService.save(dto).getTitle(), is(equalToIgnoringCase("test title")));
+        GroupList group = new GroupList("test title");
+        assertThat(groupListService.save(group).getTitle(), is(equalToIgnoringCase("test title")));
     }
 
     @Test
     public void testSaveGroupLists() throws Exception {
-        List<GroupListDTO> dtos = new ArrayList<>();
+        List<GroupList> items = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            dtos.add(new GroupListDTO("title " + i));
+            items.add(new GroupList("title " + i));
         }
-        groupListService.save(dtos);
+        groupListService.save(items);
         assertThat(this.groupListList, hasSize(10));
     }
 
@@ -67,7 +67,7 @@ public class SimpleGroupListServiceTest {
         items.add(new GroupableItem<>("b"));
         items.add(new GroupableItem<>("c"));
 
-        Map<GroupListDTO, List<GroupListItem>> result = groupListService.makeGroupLists(items);
+        Map<GroupList, List<GroupListItem>> result = groupListService.makeGroupLists(items);
         assertThat(result.size(), is(3));
         assertThat(groupListList, hasSize(3));
     }
