@@ -9,14 +9,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
-import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.groupList.GroupListService;
+import trade.math.domain.tradeItem.TradeItem;
+import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.domain.tradeItem.TradeItem;
-
 import trade.math.model.TradeItemCategory;
-import trade.math.model.TradeUser;
 
 import java.util.List;
 
@@ -68,10 +66,8 @@ public class TradeItemServiceTest {
 
     @Test
     public void testGetPaginationList() {
-        prepareTradeList(100);
+        prepareTradeList(100, USERNAME);
         List<Integer> list = tradeItemService.findAll(new PageRequest(0, 10)).getPagination();// .getPaginationList(1, 10, 5);
-
-        System.out.println(list.toString());
 
         assertEquals(7, list.size());
         assertEquals(1, list.get(0).intValue());
@@ -81,8 +77,6 @@ public class TradeItemServiceTest {
         assertEquals(10, list.get(6).intValue());
 
         list = tradeItemService.findAll(new PageRequest(4, 10)).getPagination();// .getPaginationList(5, 10, 5);
-
-        System.out.println(list.toString());
 
         assertEquals(9, list.size());
         assertEquals(1, list.get(0).intValue());
@@ -95,43 +89,36 @@ public class TradeItemServiceTest {
 
         list = tradeItemService.findAll(new PageRequest(8, 10)).getPagination();// .getPaginationList(9, 10, 5);
 
-        System.out.println(list.toString());
-
         assertEquals(7, list.size());
         assertEquals(10, list.get(6).intValue());
         assertEquals(9, list.get(5).intValue());
         assertEquals(1, list.get(0).intValue());
         assertEquals(-1, list.get(1).intValue());
 
-        prepareTradeList(1);
+        tradeItemService.deleteAll();
+        prepareTradeList(1, USERNAME);
         list = tradeItemService.findAll(new PageRequest(0, 10)).getPagination();// .getPaginationList(1, 10, 5);
 
-        System.out.println(list.toString());
-
         assertEquals(1, list.size());
         assertEquals(1, list.get(0).intValue());
 
         list = tradeItemService.findAll(new PageRequest(2, 10)).getPagination();// .getPaginationList(3, 10, 5);
 
-        System.out.println(list.toString());
-
         assertEquals(1, list.size());
         assertEquals(1, list.get(0).intValue());
 
-        prepareTradeList(50);
+        tradeItemService.deleteAll();
+        prepareTradeList(50, USERNAME);
         list = tradeItemService.findAll(new PageRequest(2, 10)).getPagination();// .getPaginationList(3, 10, 5);
-
-        System.out.println(list.toString());
 
         assertEquals(5, list.size());
         assertEquals(1, list.get(0).intValue());
         assertEquals(5, list.get(4).intValue());
-
     }
 
     @Test
     public void testDeleteById() {
-        prepareTradeList(10);
+        prepareTradeList(10, USERNAME);
 
         List<TradeItem> allItems = tradeItemService.findAll();
 
@@ -150,7 +137,7 @@ public class TradeItemServiceTest {
 
     @Test
     public void testDeleteCheckOwner() {
-        prepareTradeList(10);
+        prepareTradeList(10, USERNAME);
 
         assertFalse(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "anotherUser"));
         assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, USERNAME));
@@ -192,20 +179,9 @@ public class TradeItemServiceTest {
         assertThat(true, is(true));
     }
 
-    //HELPERS
-    private void prepareTradeList(int count) {
-        tradeItemService.deleteAll(true);
-
-        prepareTradeList(count, USERNAME);
-    }
-
     private void prepareTradeList(int count, String userName) {
         for (int i = 0; i < count; i++) {
-            NewTradeItemForm form = new NewTradeItemForm();
-            form.setTitle("title" + i);
-            form.setDescription("desc" + i);
-            form.setBggId(i);
-
+            NewTradeItemForm form = new NewTradeItemForm("title" + i, "desc" + i, "");
             tradeItemService.save(form, userName);
         }
     }

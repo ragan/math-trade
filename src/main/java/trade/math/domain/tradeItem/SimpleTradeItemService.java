@@ -78,10 +78,9 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeItem.setImgUrl(newTradeItemForm.getImageUrl());
         tradeItem.setTradeList(tradeList);
         tradeItem.setCategory(newTradeItemForm.getCategory());
+        tradeItem.setBggId(newTradeItemForm.getBggId());
 
         tradeItem = tradeItemRepository.save(tradeItem);
-
-//        handleSaveProperties(tradeItem, newTradeItemForm);
 
         return tradeItem;
     }
