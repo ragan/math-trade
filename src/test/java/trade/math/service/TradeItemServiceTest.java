@@ -53,17 +53,6 @@ public class TradeItemServiceTest {
     }
 
     @Test
-    public void testIfImageUrlIsTheSame() throws Exception {
-        NewTradeItemForm newTradeItemForm = new NewTradeItemForm();
-        newTradeItemForm.setTitle("title");
-        newTradeItemForm.setDescription("description");
-        newTradeItemForm.setImageUrl("imageUrl");
-
-        TradeItem item = tradeItemService.save(newTradeItemForm, USERNAME);
-        assertThat(item.getImgUrl(), is(equalTo("imageUrl")));
-    }
-
-    @Test
     public void testSaveAndDeleteNewBoardGame() throws Exception {
         NewTradeItemForm form = new NewTradeItemForm("Title", "Description", "", TradeItemCategory.BOARD_GAME, 123);
 
