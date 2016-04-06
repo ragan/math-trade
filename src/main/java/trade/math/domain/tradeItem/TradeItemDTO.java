@@ -1,6 +1,6 @@
 package trade.math.domain.tradeItem;
 
-import trade.math.domain.groupList.GroupList;
+import trade.math.domain.groupList.ItemGroup;
 import trade.math.model.TradeItemCategory;
 
 public class TradeItemDTO {
@@ -19,7 +19,7 @@ public class TradeItemDTO {
 
     private Integer bggId;
 
-    private GroupList groupList;
+    private ItemGroup itemGroup;
 
     public TradeItemDTO() {
         //
@@ -32,7 +32,7 @@ public class TradeItemDTO {
         this.imgUrl = tradeItem.getImgUrl();
         this.category = tradeItem.getCategory();
         this.deletable = deletable;
-        this.groupList = tradeItem.getGroupList();
+        this.itemGroup = tradeItem.getItemGroup();
         this.bggId = tradeItem.getBggId();
     }
 
@@ -109,12 +109,12 @@ public class TradeItemDTO {
         this.bggId = bggId;
     }
 
-    public GroupList getGroupList() {
-        return groupList;
+    public ItemGroup getItemGroup() {
+        return itemGroup;
     }
 
-    public void setGroupList(GroupList groupList) {
-        this.groupList = groupList;
+    public void setItemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
     }
 
 }

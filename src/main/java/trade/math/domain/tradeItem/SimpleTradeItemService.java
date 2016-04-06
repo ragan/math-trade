@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import trade.math.domain.groupList.GroupListService;
+import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeItem.wantListItem.WantListItem;
 import trade.math.domain.tradeItem.wantListItem.WantListItemDTO;
 import trade.math.domain.tradeItem.wantListItem.WantListItemService;
@@ -41,20 +41,20 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final WantListItemService wantListItemService;
 
-    private final GroupListService groupListService;
+    private final ItemGroupService itemGroupService;
 
     @Autowired
     public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
                                   BggIdToTitleService bggIdToTitleService,
                                   TradeUserRepository tradeUserRepository,
                                   TradeListService tradeListService,
-                                  GroupListService groupListService,
+                                  ItemGroupService itemGroupService,
                                   WantListItemService wantListItemService) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
-        this.groupListService = groupListService;
+        this.itemGroupService = itemGroupService;
         this.wantListItemService = wantListItemService;
     }
 

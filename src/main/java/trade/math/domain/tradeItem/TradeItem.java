@@ -1,12 +1,12 @@
 package trade.math.domain.tradeItem;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import trade.math.domain.groupList.GroupList;
 import trade.math.domain.groupList.GroupListItem;
+import trade.math.domain.groupList.ItemGroup;
+import trade.math.domain.tradeItem.wantListItem.WantListItem;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -49,7 +49,7 @@ public class TradeItem implements GroupListItem<String> {
 
     @ManyToOne
     @JoinColumn(name = "GROUP_LIST_ID")
-    private GroupList groupList;
+    private ItemGroup itemGroup;
 
     @Column(name = "BGG_ID")
     private int bggId;
@@ -126,12 +126,12 @@ public class TradeItem implements GroupListItem<String> {
         this.wantList = wantList;
     }
 
-    public GroupList getGroupList() {
-        return groupList;
+    public ItemGroup getItemGroup() {
+        return itemGroup;
     }
 
-    public void setGroupList(GroupList groupList) {
-        this.groupList = groupList;
+    public void setItemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
     }
 
     public int getBggId() {

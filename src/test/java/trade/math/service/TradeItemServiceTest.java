@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
-import trade.math.domain.groupList.GroupListService;
+import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.form.NewTradeItemForm;
@@ -39,7 +39,7 @@ public class TradeItemServiceTest {
     private TradeUserService tradeUserService;
 
     @Autowired
-    private GroupListService groupListService;
+    private ItemGroupService itemGroupService;
 
     @Before
     public void setUp() throws Exception {

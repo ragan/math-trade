@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class GroupList {
+public class ItemGroup {
 
     @Id
     @GeneratedValue
@@ -15,11 +15,11 @@ public class GroupList {
     @Column(name = "TITLE")
     private String title;
 
-    public GroupList() {
+    public ItemGroup() {
         //
     }
 
-    public GroupList(String title) {
+    public ItemGroup(String title) {
         this.title = title;
     }
 
