@@ -19,8 +19,6 @@ public interface TradeItemService {
 
     List<TradeItem> findByTradeList(TradeList tradeList);
 
-    List<TradeItem> findByTradeList(Long tradeListId);
-
     List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName);
 
     List<TradeItem> findByRecentTradeList();

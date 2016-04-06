@@ -135,18 +135,12 @@ public class SimpleTradeItemService implements TradeItemService {
                 wantListItemService.save(item);
             }
         }
-
         return true;
     }
 
     @Override
     public List<TradeItem> findByTradeList(TradeList tradeList) {
         return tradeItemRepository.findByTradeList(tradeList);
-    }
-
-    @Override
-    public List<TradeItem> findByTradeList(Long tradeListId) {
-        return findByTradeList(tradeListService.findById(tradeListId));
     }
 
     @Override
