@@ -10,5 +10,5 @@ import java.util.List;
  * Created by daniel on 23.03.16.
  */
 public interface WantListItemRepository extends JpaRepository<WantListItem, Long> {
-    List<WantListItem> findByOfferTradeItem(TradeItem offerTradeItem);
+//    List<WantListItem> findByOfferTradeItem(TradeItem offerTradeItem);
 }

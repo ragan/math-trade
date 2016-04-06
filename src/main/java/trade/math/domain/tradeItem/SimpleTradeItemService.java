@@ -5,12 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.domain.groupList.ItemGroupService;
-import trade.math.domain.wantListItem.WantListItem;
-import trade.math.domain.wantListItem.WantListItemDTO;
-import trade.math.domain.wantListItem.WantListItemService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
+import trade.math.domain.wantListItem.WantListItemDTO;
+import trade.math.domain.wantListItem.WantListItemService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
 import trade.math.repository.TradeItemRepository;
@@ -19,10 +18,8 @@ import trade.math.service.BggIdToTitleService;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -89,50 +86,51 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public boolean updateWantList(Long tradeItemId, Long[] wantIds) {
-        TradeItem tradeItem = tradeItemRepository.findOne(tradeItemId);
-
-        if (tradeItem == null)
-            return false;
-
-        List<WantListItem> wantList = tradeItem.getWantList();
-
-        if (wantList == null)
-            wantList = new ArrayList<>();
-
-
-        //Remove unused
-        List<WantListItem> toRemove = new ArrayList<>();
-
-        for (WantListItem wantListItem : wantList)
-            if (wantListItem.getOfferTradeItem().getId() != tradeItemId ||
-                    !Stream.of(wantIds).anyMatch(value -> value.equals(wantListItem.getWantTradeItem().getId())))
-                toRemove.add(wantListItem);
-
-        for (int i = 0; i < toRemove.size(); i++)
-            wantListItemService.delete(toRemove.get(i), this);
-        toRemove.clear();
-
-        //Update and create new
-        for (int i = 0; i < wantIds.length; i++) {
-            int priority = i;
-            WantListItem item = wantList.stream().filter(wantListItem -> wantListItem.getWantTradeItem().getId().equals(wantIds[priority])).findFirst().orElse(null);
-
-            if (item != null) {
-                item.setPriority(i + 1);
-                wantListItemService.update(item);
-            } else {
-                TradeItem wantItem = tradeItemRepository.findOne(wantIds[i]);
-                if (wantItem == null)
-                    continue;
-
-                item = new WantListItem();
-                item.setWantTradeItem(tradeItemRepository.findOne(wantIds[i]));
-                item.setPriority(i + 1);
-                item.setOfferTradeItem(tradeItem);
-                wantListItemService.save(item);
-            }
-        }
-        return true;
+        return false;
+//        TradeItem tradeItem = tradeItemRepository.findOne(tradeItemId);
+//
+//        if (tradeItem == null)
+//            return false;
+//
+//        List<WantListItem> wantList = tradeItem.getWantList();
+//
+//        if (wantList == null)
+//            wantList = new ArrayList<>();
+//
+//
+//        //Remove unused
+//        List<WantListItem> toRemove = new ArrayList<>();
+//
+//        for (WantListItem wantListItem : wantList)
+//            if (wantListItem.getOffer().getId() != tradeItemId ||
+//                    !Stream.of(wantIds).anyMatch(value -> value.equals(wantListItem.getWant().getId())))
+//                toRemove.add(wantListItem);
+//
+//        for (int i = 0; i < toRemove.size(); i++)
+//            wantListItemService.delete(toRemove.get(i), this);
+//        toRemove.clear();
+//
+//        //Update and create new
+//        for (int i = 0; i < wantIds.length; i++) {
+//            int priority = i;
+//            WantListItem item = wantList.stream().filter(wantListItem -> wantListItem.getWant().getId().equals(wantIds[priority])).findFirst().orElse(null);
+//
+//            if (item != null) {
+//                item.setPriority(i + 1);
+//                wantListItemService.update(item);
+//            } else {
+//                TradeItem wantItem = tradeItemRepository.findOne(wantIds[i]);
+//                if (wantItem == null)
+//                    continue;
+//
+//                item = new WantListItem();
+//                item.setWant(tradeItemRepository.findOne(wantIds[i]));
+//                item.setPriority(i + 1);
+//                item.setOffer(tradeItem);
+//                wantListItemService.save(item);
+//            }
+//        }
+//        return true;
     }
 
     @Override
@@ -264,21 +262,22 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public String generateTradeWantListTM(String userName) {
-        String tmText = "";
-        List<TradeItem> tradeItems = findByRecentTradeListAndOwner(userName);
-
-        if (tradeItems == null)
-            return tmText;
-
-
-        for (TradeItem tradeItem : tradeItems) {
-            if (tradeItem.getWantList() == null || tradeItem.getWantList().size() == 0)
-                continue;
-            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
-            for (WantListItemDTO wantItem : wantListItemService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
-                tmText += wantItem.getWantTradeItemId() + " ";
-        }
-        return tmText;
+        return "";
+//        String tmText = "";
+//        List<TradeItem> tradeItems = findByRecentTradeListAndOwner(userName);
+//
+//        if (tradeItems == null)
+//            return tmText;
+//
+//
+//        for (TradeItem tradeItem : tradeItems) {
+//            if (tradeItem.getWantList() == null || tradeItem.getWantList().getWant().size() == 0)
+//                continue;
+//            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
+//            for (WantListItemDTO wantItem : wantListItemService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
+//                tmText += wantItem.getWantTradeItemId() + " ";
+//        }
+//        return tmText;
     }
 
 }

@@ -3,16 +3,15 @@ package trade.math.domain.tradeItem;
 import org.hibernate.validator.constraints.NotEmpty;
 import trade.math.domain.groupList.GroupListItem;
 import trade.math.domain.groupList.ItemGroup;
-import trade.math.domain.wantListItem.WantListItem;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Entity
+@Table(name = "TRADE_ITEM")
 public class TradeItem implements GroupListItem<String> {
 
     @Id
@@ -43,9 +42,6 @@ public class TradeItem implements GroupListItem<String> {
     @Column(name = "CATEGORY")
     @Enumerated(EnumType.STRING)
     private TradeItemCategory category;
-
-    @OneToMany(mappedBy = "offerTradeItemId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<WantListItem> wantList;
 
     @ManyToOne
     @JoinColumn(name = "GROUP_LIST_ID")
@@ -116,14 +112,6 @@ public class TradeItem implements GroupListItem<String> {
 
     public void setCategory(TradeItemCategory category) {
         this.category = category;
-    }
-
-    public List<WantListItem> getWantList() {
-        return wantList;
-    }
-
-    public void setWantList(List<WantListItem> wantList) {
-        this.wantList = wantList;
     }
 
     public ItemGroup getItemGroup() {

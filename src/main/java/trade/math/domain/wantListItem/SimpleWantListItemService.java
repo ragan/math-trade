@@ -26,13 +26,14 @@ public class SimpleWantListItemService implements WantListItemService {
 
     @Override
     public List<WantListItemDTO> findWantListByOfferTradeItem(TradeItem offerTradeItem) {
-        return wantListItemRepository.findByOfferTradeItem(offerTradeItem).stream()
-                .parallel()
-                .map(wantListItem -> new WantListItemDTO(wantListItem.getWantTradeItem().getId(),
-                        wantListItem.getWantTradeItem().getTitle(),
-                        wantListItem.getPriority()))
-                .sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority()))
-                .collect(Collectors.toList());
+//        return wantListItemRepository.findByOfferTradeItem(offerTradeItem).stream()
+//                .parallel()
+//                .map(wantListItem -> new WantListItemDTO(wantListItem.getWant().getId(),
+//                        wantListItem.getWant().getTitle(),
+//                        wantListItem.getPriority()))
+//                .sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority()))
+//                .collect(Collectors.toList());
+        return null;
     }
 
     @Override
@@ -42,10 +43,10 @@ public class SimpleWantListItemService implements WantListItemService {
 
     @Override
     public boolean update(WantListItem wantListItem) {
-        try{
+        try {
             wantListItemRepository.save(wantListItem);
             return true;
-        }catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
 
@@ -54,16 +55,18 @@ public class SimpleWantListItemService implements WantListItemService {
 
     @Override
     public boolean delete(WantListItem wantListItem, TradeItemService tradeItemService) {
-        try {
-            wantListItem.getOfferTradeItem().getWantList().remove(wantListItem);
-            tradeItemService.update(wantListItem.getOfferTradeItem());
-
-            wantListItemRepository.delete(wantListItem);
-            return true;
-        }catch (Exception exception){
-            exception.printStackTrace();
-        }
-
-        return false;
+//        try {
+//            wantListItem.getOffer().getWantList().remove(wantListItem);
+//            tradeItemService.update(wantListItem.getOffer());
+//
+//            wantListItemRepository.delete(wantListItem);
+//            return true;
+//        }catch (Exception exception){
+//            exception.printStackTrace();
+//        }
+//
+//        return false;
+        wantListItemRepository.delete(wantListItem);
+        return true;
     }
 }
