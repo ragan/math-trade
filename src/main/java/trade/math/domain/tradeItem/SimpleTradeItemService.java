@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Created by karol on 17.02.16.
- */
 @Service
 @Transactional
 public class SimpleTradeItemService implements TradeItemService {

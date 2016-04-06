@@ -49,7 +49,7 @@ public class WantListItemServiceTest {
     }
 
     @Test
-    public void saveWantListItemTest(){
+    public void saveWantListItemTest() {
         List<TradeItem> list1 = generateArrayItems(10, "test", "username");
         List<TradeItem> list2 = generateArrayItems(15, "want", "username1");
 
@@ -71,7 +71,7 @@ public class WantListItemServiceTest {
         assertTrue(wantList.get(0).getWantTradeItem().getTitle().equals(list2.get(0).getTitle()));
 
 
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             item = new WantListItem();
             item.setOfferTradeItem(list1.get(0));
             item.setWantTradeItem(list2.get(i));
@@ -86,7 +86,7 @@ public class WantListItemServiceTest {
     }
 
     @Test
-    public void updateWantListItemTest(){
+    public void updateWantListItemTest() {
         TradeItem item = tradeItemService.save(new NewTradeItemForm("test", "test", null), "username");
         TradeItem wantItem = tradeItemService.save(new NewTradeItemForm("want", "want", null), "username1");
 
@@ -112,7 +112,7 @@ public class WantListItemServiceTest {
     }
 
     @Test
-    public void deleteWantListItemTest(){
+    public void deleteWantListItemTest() {
         TradeItem item = tradeItemService.save(new NewTradeItemForm("test", "test", null), "username");
         TradeItem wantItem = tradeItemService.save(new NewTradeItemForm("want", "want", null), "username1");
 
@@ -139,7 +139,7 @@ public class WantListItemServiceTest {
     }
 
     @Test
-    public void updateWantListTest(){
+    public void updateWantListTest() {
         List<TradeItem> list1 = generateArrayItems(10, "test", "username");
         List<TradeItem> list2 = generateArrayItems(15, "want", "username1");
 
@@ -154,7 +154,7 @@ public class WantListItemServiceTest {
         assertEquals(0, item.getWantList().size());
 
         //Check failure id
-        Long[] array =  ArrayUtils.toObject(list2.stream().limit(5).mapToLong(value -> value.getId()).toArray());
+        Long[] array = ArrayUtils.toObject(list2.stream().limit(5).mapToLong(value -> value.getId()).toArray());
         array[4] = 192736L;
         tradeItemService.updateWantList(item.getId(), array);
         item = tradeItemService.findById(list1.get(0).getId());
@@ -180,10 +180,10 @@ public class WantListItemServiceTest {
     }
 
 
-    private List<TradeItem> generateArrayItems(int num, String prefix, String username){
+    private List<TradeItem> generateArrayItems(int num, String prefix, String username) {
         List<TradeItem> list = new ArrayList<>();
 
-        for(int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++)
             list.add(tradeItemService.save(new NewTradeItemForm(prefix + String.valueOf(i), prefix + String.valueOf(i), null), username));
 
         return list;
