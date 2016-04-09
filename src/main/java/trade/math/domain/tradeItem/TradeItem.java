@@ -44,7 +44,7 @@ public class TradeItem implements GroupListItem<String> {
     private TradeItemCategory category;
 
     @ManyToOne
-    @JoinColumn(name = "GROUP_LIST_ID")
+    @JoinColumn(name = "ITEM_GROUP_ID")
     private ItemGroup itemGroup;
 
     @Column(name = "BGG_ID")

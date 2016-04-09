@@ -1,11 +1,9 @@
 package trade.math.domain.groupList;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "ITEM_GROUP")
 public class ItemGroup {
 
     @Id

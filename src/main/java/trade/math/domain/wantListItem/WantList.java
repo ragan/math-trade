@@ -10,6 +10,7 @@ import java.util.List;
 public class WantList {
 
     @Id
+    @Column(name = "ID")
     private Long id;
 
     @ManyToOne
