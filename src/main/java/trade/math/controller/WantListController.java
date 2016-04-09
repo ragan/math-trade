@@ -9,23 +9,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.wantListItem.WantListItemDTO;
-import trade.math.domain.wantListItem.WantListItemService;
+import trade.math.domain.wantListItem.WantListService;
 
 import java.security.Principal;
 import java.util.List;
 
-/**
- * Created by daniel on 25.03.16.
- */
 @Controller
 public class WantListController {
 
     private TradeItemService tradeItemService;
-    private WantListItemService wantListItemService;
+    private WantListService wantListItemService;
 
 
     @Autowired
-    public WantListController(TradeItemService tradeItemService, WantListItemService wantListItemService) {
+    public WantListController(TradeItemService tradeItemService, WantListService wantListItemService) {
         this.tradeItemService = tradeItemService;
         this.wantListItemService = wantListItemService;
     }

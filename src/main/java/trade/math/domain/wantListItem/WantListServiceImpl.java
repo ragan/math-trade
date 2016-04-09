@@ -8,19 +8,15 @@ import trade.math.repository.WantListItemRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
-/**
- * Created by daniel on 25.03.16.
- */
 @Service
 @Transactional
-public class SimpleWantListItemService implements WantListItemService {
+public class WantListServiceImpl implements WantListService {
 
     private final WantListItemRepository wantListItemRepository;
 
     @Autowired
-    public SimpleWantListItemService(WantListItemRepository wantListItemRepository) {
+    public WantListServiceImpl(WantListItemRepository wantListItemRepository) {
         this.wantListItemRepository = wantListItemRepository;
     }
 
@@ -37,14 +33,14 @@ public class SimpleWantListItemService implements WantListItemService {
     }
 
     @Override
-    public WantListItem save(WantListItem wantListItem) {
-        return wantListItemRepository.save(wantListItem);
+    public WantListEntry save(WantListEntry wantListEntry) {
+        return wantListItemRepository.save(wantListEntry);
     }
 
     @Override
-    public boolean update(WantListItem wantListItem) {
+    public boolean update(WantListEntry wantListEntry) {
         try {
-            wantListItemRepository.save(wantListItem);
+            wantListItemRepository.save(wantListEntry);
             return true;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -54,7 +50,7 @@ public class SimpleWantListItemService implements WantListItemService {
     }
 
     @Override
-    public boolean delete(WantListItem wantListItem, TradeItemService tradeItemService) {
+    public boolean delete(WantListEntry wantListEntry, TradeItemService tradeItemService) {
 //        try {
 //            wantListItem.getOffer().getWantList().remove(wantListItem);
 //            tradeItemService.update(wantListItem.getOffer());
@@ -66,7 +62,7 @@ public class SimpleWantListItemService implements WantListItemService {
 //        }
 //
 //        return false;
-        wantListItemRepository.delete(wantListItem);
+        wantListItemRepository.delete(wantListEntry);
         return true;
     }
 }

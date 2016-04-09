@@ -9,7 +9,7 @@ import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
 import trade.math.domain.wantListItem.WantListItemDTO;
-import trade.math.domain.wantListItem.WantListItemService;
+import trade.math.domain.wantListItem.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
 import trade.math.repository.TradeItemRepository;
@@ -33,7 +33,7 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeListService tradeListService;
 
-    private final WantListItemService wantListItemService;
+    private final WantListService wantListService;
 
     private final ItemGroupService itemGroupService;
 
@@ -43,13 +43,13 @@ public class SimpleTradeItemService implements TradeItemService {
                                   TradeUserRepository tradeUserRepository,
                                   TradeListService tradeListService,
                                   ItemGroupService itemGroupService,
-                                  WantListItemService wantListItemService) {
+                                  WantListService wantListService) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
         this.itemGroupService = itemGroupService;
-        this.wantListItemService = wantListItemService;
+        this.wantListService = wantListService;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //                toRemove.add(wantListItem);
 //
 //        for (int i = 0; i < toRemove.size(); i++)
-//            wantListItemService.delete(toRemove.get(i), this);
+//            wantListService.delete(toRemove.get(i), this);
 //        toRemove.clear();
 //
 //        //Update and create new
@@ -117,7 +117,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //
 //            if (item != null) {
 //                item.setPriority(i + 1);
-//                wantListItemService.update(item);
+//                wantListService.update(item);
 //            } else {
 //                TradeItem wantItem = tradeItemRepository.findOne(wantIds[i]);
 //                if (wantItem == null)
@@ -127,7 +127,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //                item.setWant(tradeItemRepository.findOne(wantIds[i]));
 //                item.setPriority(i + 1);
 //                item.setOffer(tradeItem);
-//                wantListItemService.save(item);
+//                wantListService.save(item);
 //            }
 //        }
 //        return true;
@@ -274,7 +274,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //            if (tradeItem.getWantList() == null || tradeItem.getWantList().getWant().size() == 0)
 //                continue;
 //            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
-//            for (WantListItemDTO wantItem : wantListItemService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
+//            for (WantListItemDTO wantItem : wantListService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
 //                tmText += wantItem.getWantTradeItemId() + " ";
 //        }
 //        return tmText;

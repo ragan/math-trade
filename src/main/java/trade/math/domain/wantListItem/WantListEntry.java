@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "WANT_LIST_ENTRY")
-public class WantListItem {
+public class WantListEntry {
 
     @Id
     private Long id;

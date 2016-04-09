@@ -18,7 +18,7 @@ public class WantList {
     private TradeItem offer;
 
     @OneToMany(mappedBy = "wantList")
-    private List<WantListItem> wantListItems;
+    private List<WantListEntry> wantListEntries;
 
     public Long getId() {
         return id;
@@ -36,11 +36,11 @@ public class WantList {
         this.offer = offer;
     }
 
-    public List<WantListItem> getWantListItems() {
-        return wantListItems;
+    public List<WantListEntry> getWantListEntries() {
+        return wantListEntries;
     }
 
-    public void setWantListItems(List<WantListItem> wantListItems) {
-        this.wantListItems = wantListItems;
+    public void setWantListEntries(List<WantListEntry> wantListEntries) {
+        this.wantListEntries = wantListEntries;
     }
 }

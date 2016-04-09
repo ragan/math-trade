@@ -1,8 +1,5 @@
 package trade.math.service;
 
-import static org.junit.Assert.*;
-
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,11 +9,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.domain.wantListItem.WantListItemService;
+import trade.math.domain.wantListItem.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItem;
-import trade.math.domain.wantListItem.WantListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +23,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MtApplication.class)
 @ActiveProfiles("test")
-public class WantListItemServiceTest {
+public class WantListEntryServiceTest {
 
     @Autowired
     private TradeItemService tradeItemService;
@@ -36,7 +32,7 @@ public class WantListItemServiceTest {
     private TradeUserService tradeUserService;
 
     @Autowired
-    private WantListItemService wantListItemService;
+    private WantListService wantListItemService;
 
     @Before
     public void setUp() throws Exception {
