@@ -13,7 +13,9 @@ public class WantListEntryDTO {
     }
 
     public WantListEntryDTO(WantListEntry entry) {
-
+        this.wantTradeItemId = entry.getItem().getId();
+        this.wantTradeItemTitle = entry.getItem().getTitle();
+        this.priority = entry.getPriority();
     }
 
     public Long getWantTradeItemId() {
