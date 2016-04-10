@@ -24,11 +24,11 @@ public interface TradeItemService {
 
     List<TradeItem> findByRecentTradeListAndOwner(String userName);
 
-    TradeItem update(TradeItem item);
-
     List<TradeItem> findAll();
 
     TradeItem findById(Long itemId);
+
+    List<TradeItem> findByIds(List<Long> ids);
 
     WantListDTO findByIdWantItem(Long itemId);
 
@@ -47,8 +47,6 @@ public interface TradeItemService {
     boolean canDelete(TradeItem item, Optional<TradeUser> user);
 
     boolean canDelete(TradeItem item, String username);
-
-    void makeGroupLists();
 
     String generateTradeWantListTM(String userName);
 }

@@ -17,9 +17,12 @@ import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItemCategory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -64,6 +67,23 @@ public class TradeItemServiceTest {
         assertThat(tradeItemService.findById(id).getImgUrl(), is(equalToIgnoringCase("")));
         assertThat(tradeItemService.findById(id).getCategory(), is(TradeItemCategory.BOARD_GAME));
         assertThat(tradeItemService.findById(id).getBggId(), is(123));
+    }
+
+    @Test
+    public void testFindByManyIds() throws Exception {
+        int count = 10;
+        prepareTradeList(count, USERNAME);
+        List<TradeItem> items = tradeItemService.findAll();
+        assertThat(items, hasSize(count));
+
+        Long[] arr = new Long[count];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = items.get(i).getId();
+        }
+
+        List<TradeItem> found = tradeItemService.findByIds(Arrays.asList(arr));
+        assertThat(found, hasSize(count));
+        //TODO: assert contains each id
     }
 
     @Test

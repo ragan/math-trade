@@ -44,6 +44,7 @@ public class MainController {
     private TradeBoardGameService tradeBoardGameService;
 
     public MainController() {
+        //
     }
 
     @Autowired
@@ -54,9 +55,18 @@ public class MainController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String main(Model model, Authentication authentication, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        model.addAttribute("mainList", tradeItemService.findAllByRecentTradeList(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), getUserName(authentication)));
-
+    public String main(
+            Model model,
+            Authentication authentication,
+            @RequestParam(value = "page", required = false)
+            Optional<Integer> pageNum
+    ) {
+        model.addAttribute("mainList", tradeItemService.findAllByRecentTradeList
+                        (
+                                new PageRequest(pageNum.orElse(1) - 1, 10),
+                                isAdmin(authentication),
+                                getUserName(authentication))
+        );
         return "index";
     }
 
@@ -67,10 +77,13 @@ public class MainController {
 
     @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId, Authentication authentication) {
-        String username = authentication.getName();
+    public String deleteTradeItem(
+            @RequestParam(value = "deleteId")
+            Integer deleteId, Authentication auth
+    ) {
+        String username = auth.getName();
         TradeUser user = tradeUserService
-                .findByUsername(authentication.getName())
+                .findByUsername(auth.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with %s not found", username)));
         TradeItem item = tradeItemService.findById(deleteId.longValue());
         if (tradeItemService.canDelete(item, user)) {
@@ -98,10 +111,12 @@ public class MainController {
     }
 
     @RequestMapping(value = "/addItem", method = RequestMethod.POST)
-    public String doAddTradeItem(@Valid NewTradeItemForm newTradeItemForm,
-                                 BindingResult bindingResult,
-                                 RedirectAttributes redirectAttributes,
-                                 Principal principal) {
+    public String doAddTradeItem(
+            @Valid
+            NewTradeItemForm newTradeItemForm,
+            BindingResult bindingResult,
+            Principal principal
+    ) {
         if (bindingResult.hasErrors())
             return "addItem";
         tradeItemService.save(newTradeItemForm, principal.getName());
@@ -117,7 +132,8 @@ public class MainController {
     @RequestMapping("/searchOnTradeList")
     @ResponseBody
     public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal) {
-        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName()).stream()
+        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName())
+                .stream()
                 .map(item -> new TradeItemDTO(item, false))
                 .collect(toList());
     }

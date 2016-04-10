@@ -86,11 +86,6 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public TradeItem update(TradeItem item) {
-        return tradeItemRepository.save(item);
-    }
-
-    @Override
     public List<TradeItem> findByTradeList(TradeList tradeList) {
         return tradeItemRepository.findByTradeList(tradeList);
     }
@@ -137,13 +132,17 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public void deleteAll() {
         wantListService.deleteAll();
-
         tradeItemRepository.deleteAll();
     }
 
     @Override
     public TradeItem findById(Long itemId) {
         return tradeItemRepository.findOne(itemId);
+    }
+
+    @Override
+    public List<TradeItem> findByIds(List<Long> ids) {
+        return ids.stream().map(tradeItemRepository::findOne).collect(toList());
     }
 
     @Override
@@ -203,10 +202,6 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public boolean canDelete(TradeItem item, String username) {
         return canDelete(item, tradeUserService.findByUsername(username));
-    }
-
-    @Override
-    public void makeGroupLists() {
     }
 
     @Override
