@@ -18,7 +18,7 @@ public interface TradeItemService {
 
     List<TradeItem> findByTradeList(TradeList tradeList);
 
-    List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName);
+    List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, String userName);
 
     List<TradeItem> findByRecentTradeList();
 

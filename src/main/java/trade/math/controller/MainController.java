@@ -28,6 +28,9 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * Created by danielpietrzak on 15.02.2016.
@@ -115,7 +118,9 @@ public class MainController {
     @RequestMapping("/searchOnTradeList")
     @ResponseBody
     public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal) {
-        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName());
+        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName()).stream()
+                .map(item -> new TradeItemDTO(item, false))
+                .collect(toList());
     }
 
 
