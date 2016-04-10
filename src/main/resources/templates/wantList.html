@@ -15,7 +15,8 @@
         </div>
         <div class="panel-body">
             <div class="list-group">
-                <a class="list-group-item" th:each="item : ${myGames}" th:id="${item.id}" onclick="edit(this)">
+                <a class="list-group-item" th:each="wantList : ${wantLists}" th:id="${item.id}">
+                    <!--onclick="edit(this)"-->
                     <h4 class="list-group-item-heading" th:text="${item.title}"></h4>
 
                     <p class="list-group-item-text">

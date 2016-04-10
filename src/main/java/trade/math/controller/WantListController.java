@@ -25,25 +25,26 @@ public class WantListController {
 
     private final TradeItemService tradeItemService;
 
-    private final WantListService wantListItemService;
+    private final WantListService wantListService;
 
     private final TradeUserService tradeUserService;
 
     @Autowired
     public WantListController(
             TradeItemService tradeItemService,
-            WantListService wantListItemService,
+            WantListService wantListService,
             TradeUserService tradeUserService
     ) {
         this.tradeItemService = tradeItemService;
-        this.wantListItemService = wantListItemService;
+        this.wantListService = wantListService;
         this.tradeUserService = tradeUserService;
     }
 
     @RequestMapping(value = "/wantList", method = RequestMethod.GET)
     public String wantListComposer(Model model, Principal principal) {
         TradeUser user = tradeUserService.findByUsername(principal.getName());
-        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(user));
+        List<TradeItem> items = tradeItemService.findByOwner(user);
+        model.addAttribute("wantLists", wantListService.findByItems(items));
 
         return "wantList";
     }
@@ -51,7 +52,7 @@ public class WantListController {
     @RequestMapping(value = "/wantList/getList.command", method = RequestMethod.POST)
     @ResponseBody
     public List<WantListEntryDTO> getWantListItems(@RequestParam Long itemId) {
-        return wantListItemService.findEntries(
+        return wantListService.findEntries(
                 tradeItemService.findById(itemId)).stream().map(WantListEntryDTO::new).collect(toList());
     }
 
@@ -65,7 +66,7 @@ public class WantListController {
     ) {
         TradeItem item = tradeItemService.findById(itemId);
         List<TradeItem> offers = tradeItemService.findByIds(Arrays.asList(wantIds));
-        wantListItemService.setWants(item, offers);
+        wantListService.setWants(item, offers);
         return true;
     }
 

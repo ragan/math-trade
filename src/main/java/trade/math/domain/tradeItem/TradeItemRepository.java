@@ -11,6 +11,8 @@ import java.util.List;
 
 interface TradeItemRepository extends JpaRepository<TradeItem, Long> {
 
+    List<TradeItem> findByOwner(TradeUser owner);
+
     List<TradeItem> findByTradeList(TradeList tradeList);
 
     Page<TradeItem> findByTradeList(TradeList tradeList, Pageable pageable);

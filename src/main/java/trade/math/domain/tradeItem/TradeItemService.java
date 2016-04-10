@@ -29,6 +29,8 @@ public interface TradeItemService {
 
     List<TradeItem> findByIds(List<Long> ids);
 
+    List<TradeItem> findByOwner(TradeUser owner);
+
     PageWrapper<TradeItemDTO> findAll(Pageable pageable);
 
     PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, TradeUser user);

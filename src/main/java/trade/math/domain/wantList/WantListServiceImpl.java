@@ -3,6 +3,7 @@ package trade.math.domain.wantList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import trade.math.domain.tradeItem.TradeItem;
+import trade.math.model.TradeUser;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -28,6 +29,11 @@ public class WantListServiceImpl implements WantListService {
     @Override
     public WantList findByItem(TradeItem item) {
         return wantListRepository.findByItem(item).orElseThrow(WantListNotFoundException::new);
+    }
+
+    @Override
+    public List<WantList> findByItems(List<TradeItem> items) {
+        return items.stream().map(this::findByItem).collect(Collectors.toList());
     }
 
     @Override

@@ -2,6 +2,7 @@ package trade.math.domain.wantList;
 
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
+import trade.math.model.TradeUser;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ public interface WantListService {
     int PRIORITY_MAX = 100;
 
     WantList findByItem(TradeItem item);
+
+    List<WantList> findByItems(List<TradeItem> items);
 
     WantList save(WantList wantList);
 

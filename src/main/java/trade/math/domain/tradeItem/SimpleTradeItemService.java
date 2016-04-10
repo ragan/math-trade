@@ -144,6 +144,11 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public List<TradeItem> findByOwner(TradeUser owner) {
+        return tradeItemRepository.findByOwner(owner);
+    }
+
+    @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable) {
         return findAll(pageable, false, null);
     }
