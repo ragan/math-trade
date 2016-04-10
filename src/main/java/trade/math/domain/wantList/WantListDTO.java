@@ -1,15 +1,12 @@
-package trade.math.domain.wantListItem;
+package trade.math.domain.wantList;
 
-/**
- * Created by daniel on 01.04.16.
- */
-public class WantListItemDTO {
+public class WantListDTO {
 
     private Long wantTradeItemId;
     private String wantTradeItemTitle;
     private int priority;
 
-    public WantListItemDTO(Long wantTradeItemId, String wantTradeItemTitle, int priority) {
+    public WantListDTO(Long wantTradeItemId, String wantTradeItemTitle, int priority) {
         this.wantTradeItemId = wantTradeItemId;
         this.wantTradeItemTitle = wantTradeItemTitle;
         this.priority = priority;

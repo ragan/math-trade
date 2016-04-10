@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.domain.wantListItem.WantListItemDTO;
-import trade.math.domain.wantListItem.WantListService;
+import trade.math.domain.wantList.WantListDTO;
+import trade.math.domain.wantList.WantListService;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -36,8 +38,9 @@ public class WantListController {
 
     @RequestMapping(value = "/wantList/getList.command", method = RequestMethod.POST)
     @ResponseBody
-    public List<WantListItemDTO> getWantListItems(@RequestParam Long itemId) {
-        return wantListItemService.findWantListByOfferTradeItem(tradeItemService.findById(itemId));
+    public List<WantListDTO> getWantListItems(@RequestParam Long itemId) {
+//        return wantListItemService.findWantListByOfferTradeItem(tradeItemService.findById(itemId));
+        return Collections.emptyList(); //TODO: do
     }
 
     @RequestMapping(value = "/wantList/saveList.command", method = RequestMethod.POST)
@@ -49,13 +52,13 @@ public class WantListController {
 
     @RequestMapping("/wantList/findItemById")
     @ResponseBody
-    public WantListItemDTO findItemById(@RequestParam long id){
+    public WantListDTO findItemById(@RequestParam long id) {
         return tradeItemService.findByIdWantItem(id);
     }
 
     @RequestMapping("/wantList/getListTM.command")
     @ResponseBody
-    public String getWantListTM(Principal principal){
+    public String getWantListTM(Principal principal) {
         return tradeItemService.generateTradeWantListTM(principal.getName());
     }
 }

@@ -1,4 +1,6 @@
-package trade.math.domain.wantListItem;
+package trade.math.domain.wantList;
+
+import trade.math.domain.tradeItem.TradeItem;
 
 import javax.persistence.*;
 
@@ -7,11 +9,16 @@ import javax.persistence.*;
 public class WantListEntry {
 
     @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "WANT_LIST_ID")
     private WantList wantList;
+
+    @ManyToOne
+    @JoinColumn(name = "TRADE_ITEM_ID")
+    private TradeItem item;
 
     private int priority;
 
@@ -37,5 +44,13 @@ public class WantListEntry {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public TradeItem getItem() {
+        return item;
+    }
+
+    public void setItem(TradeItem item) {
+        this.item = item;
     }
 }

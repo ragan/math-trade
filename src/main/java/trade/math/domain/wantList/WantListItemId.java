@@ -1,4 +1,4 @@
-package trade.math.domain.wantListItem;
+package trade.math.domain.wantList;
 
 import java.io.Serializable;
 

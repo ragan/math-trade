@@ -8,8 +8,9 @@ import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
-import trade.math.domain.wantListItem.WantListItemDTO;
-import trade.math.domain.wantListItem.WantListService;
+import trade.math.domain.wantList.WantList;
+import trade.math.domain.wantList.WantListDTO;
+import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
 import trade.math.repository.TradeItemRepository;
@@ -76,6 +77,10 @@ public class SimpleTradeItemService implements TradeItemService {
 
         tradeItem = tradeItemRepository.save(tradeItem);
 
+        WantList wantList = new WantList();
+        wantList.setItem(tradeItem);
+        wantListService.save(wantList);
+
         return tradeItem;
     }
 
@@ -101,10 +106,10 @@ public class SimpleTradeItemService implements TradeItemService {
 //        //Remove unused
 //        List<WantListItem> toRemove = new ArrayList<>();
 //
-//        for (WantListItem wantListItem : wantList)
-//            if (wantListItem.getOffer().getId() != tradeItemId ||
-//                    !Stream.of(wantIds).anyMatch(value -> value.equals(wantListItem.getWant().getId())))
-//                toRemove.add(wantListItem);
+//        for (WantListItem wantList : wantList)
+//            if (wantList.getItem().getId() != tradeItemId ||
+//                    !Stream.of(wantIds).anyMatch(value -> value.equals(wantList.getWant().getId())))
+//                toRemove.add(wantList);
 //
 //        for (int i = 0; i < toRemove.size(); i++)
 //            wantListService.delete(toRemove.get(i), this);
@@ -113,7 +118,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //        //Update and create new
 //        for (int i = 0; i < wantIds.length; i++) {
 //            int priority = i;
-//            WantListItem item = wantList.stream().filter(wantListItem -> wantListItem.getWant().getId().equals(wantIds[priority])).findFirst().orElse(null);
+//            WantListItem item = wantList.stream().filter(wantList -> wantList.getWant().getId().equals(wantIds[priority])).findFirst().orElse(null);
 //
 //            if (item != null) {
 //                item.setPriority(i + 1);
@@ -126,7 +131,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //                item = new WantListItem();
 //                item.setWant(tradeItemRepository.findOne(wantIds[i]));
 //                item.setPriority(i + 1);
-//                item.setOffer(tradeItem);
+//                item.setItem(tradeItem);
 //                wantListService.save(item);
 //            }
 //        }
@@ -215,9 +220,9 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public WantListItemDTO findByIdWantItem(Long itemId) {
+    public WantListDTO findByIdWantItem(Long itemId) {
         TradeItem item = tradeItemRepository.findOne(itemId);
-        return item != null ? new WantListItemDTO(item.getId(), item.getTitle(), 0) : new WantListItemDTO(0L, "", 0);
+        return item != null ? new WantListDTO(item.getId(), item.getTitle(), 0) : new WantListDTO(0L, "", 0);
     }
 
     @Override
@@ -274,7 +279,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //            if (tradeItem.getWantList() == null || tradeItem.getWantList().getWant().size() == 0)
 //                continue;
 //            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
-//            for (WantListItemDTO wantItem : wantListService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
+//            for (WantListDTO wantItem : wantListService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
 //                tmText += wantItem.getWantTradeItemId() + " ";
 //        }
 //        return tmText;
