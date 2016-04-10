@@ -75,7 +75,8 @@ public class WantListServiceImpl implements WantListService {
         wantListEntryRepository.delete(findEntry(offer, want));
     }
 
-    private WantListEntry findEntry(TradeItem offer, TradeItem want) {
+    @Override
+    public WantListEntry findEntry(TradeItem offer, TradeItem want) {
         WantList wantList = findByItem(offer);
         return findEntry(wantList, want);
     }

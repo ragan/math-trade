@@ -35,5 +35,7 @@ public interface WantListService {
 
     void deleteWant(TradeItem offer, TradeItem want);
 
+    WantListEntry findEntry(TradeItem offer, TradeItem want);
+
     void setWants(TradeItem offer, List<TradeItem> wants);
 }

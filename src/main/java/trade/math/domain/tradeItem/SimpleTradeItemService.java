@@ -89,54 +89,54 @@ public class SimpleTradeItemService implements TradeItemService {
         return tradeItemRepository.save(item);
     }
 
-    @Override
-    public boolean updateWantList(Long tradeItemId, Long[] wantIds) {
-        return false;
-//        TradeItem tradeItem = tradeItemRepository.findOne(tradeItemId);
-//
-//        if (tradeItem == null)
-//            return false;
-//
-//        List<WantListItem> wantList = tradeItem.getWantList();
-//
-//        if (wantList == null)
-//            wantList = new ArrayList<>();
-//
-//
-//        //Remove unused
-//        List<WantListItem> toRemove = new ArrayList<>();
-//
-//        for (WantListItem wantList : wantList)
-//            if (wantList.getItem().getId() != tradeItemId ||
-//                    !Stream.of(wantIds).anyMatch(value -> value.equals(wantList.getWant().getId())))
-//                toRemove.add(wantList);
-//
-//        for (int i = 0; i < toRemove.size(); i++)
-//            wantListService.delete(toRemove.get(i), this);
-//        toRemove.clear();
-//
-//        //Update and create new
-//        for (int i = 0; i < wantIds.length; i++) {
-//            int priority = i;
-//            WantListItem item = wantList.stream().filter(wantList -> wantList.getWant().getId().equals(wantIds[priority])).findFirst().orElse(null);
-//
-//            if (item != null) {
-//                item.setPriority(i + 1);
-//                wantListService.update(item);
-//            } else {
-//                TradeItem wantItem = tradeItemRepository.findOne(wantIds[i]);
-//                if (wantItem == null)
-//                    continue;
-//
-//                item = new WantListItem();
-//                item.setWant(tradeItemRepository.findOne(wantIds[i]));
-//                item.setPriority(i + 1);
-//                item.setItem(tradeItem);
-//                wantListService.save(item);
-//            }
-//        }
-//        return true;
-    }
+//    @Override
+//    public boolean updateWantList(Long tradeItemId, Long[] wantIds) {
+//        return false;
+////        TradeItem tradeItem = tradeItemRepository.findOne(tradeItemId);
+////
+////        if (tradeItem == null)
+////            return false;
+////
+////        List<WantListItem> wantList = tradeItem.getWantList();
+////
+////        if (wantList == null)
+////            wantList = new ArrayList<>();
+////
+////
+////        //Remove unused
+////        List<WantListItem> toRemove = new ArrayList<>();
+////
+////        for (WantListItem wantList : wantList)
+////            if (wantList.getItem().getId() != tradeItemId ||
+////                    !Stream.of(wantIds).anyMatch(value -> value.equals(wantList.getWant().getId())))
+////                toRemove.add(wantList);
+////
+////        for (int i = 0; i < toRemove.size(); i++)
+////            wantListService.delete(toRemove.get(i), this);
+////        toRemove.clear();
+////
+////        //Update and create new
+////        for (int i = 0; i < wantIds.length; i++) {
+////            int priority = i;
+////            WantListItem item = wantList.stream().filter(wantList -> wantList.getWant().getId().equals(wantIds[priority])).findFirst().orElse(null);
+////
+////            if (item != null) {
+////                item.setPriority(i + 1);
+////                wantListService.update(item);
+////            } else {
+////                TradeItem wantItem = tradeItemRepository.findOne(wantIds[i]);
+////                if (wantItem == null)
+////                    continue;
+////
+////                item = new WantListItem();
+////                item.setWant(tradeItemRepository.findOne(wantIds[i]));
+////                item.setPriority(i + 1);
+////                item.setItem(tradeItem);
+////                wantListService.save(item);
+////            }
+////        }
+////        return true;
+//    }
 
     @Override
     public List<TradeItem> findByTradeList(TradeList tradeList) {

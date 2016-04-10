@@ -46,7 +46,8 @@ public class WantListController {
     @RequestMapping(value = "/wantList/saveList.command", method = RequestMethod.POST)
     @ResponseBody
     public boolean saveWantListItems(@RequestParam Long itemId, @RequestParam(value = "wantIds[]", required = false) Long[] wantIds) {
-        return tradeItemService.updateWantList(itemId, (wantIds == null ? new Long[0] : wantIds));
+        return false;
+//        return tradeItemService.updateWantList(itemId, (wantIds == null ? new Long[0] : wantIds));
     }
 
 

@@ -11,6 +11,7 @@ import trade.math.MtApplication;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.wantList.WantList;
 import trade.math.domain.wantList.WantListEntry;
+import trade.math.domain.wantList.WantListEntryNotFoundException;
 import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
@@ -102,7 +103,7 @@ public class WantListEntryServiceTest {
         int priority = entry.getPriority();
         wantListService.setPriority(offer, want, 101);
 
-        assertThat(entry.getPriority(),is(equalTo(priority)));
+        assertThat(entry.getPriority(), is(equalTo(priority)));
     }
 
     @Test
@@ -113,6 +114,19 @@ public class WantListEntryServiceTest {
         assertThat(wantListService.findByItem(offer).getEntries(), hasSize(3));
 
         wantListService.setWants(offer, Collections.emptyList());
+        assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
+    }
+
+    @Test
+    public void testDeleteSingleEntry() throws Exception {
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), USERNAME_0);
+        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), USERNAME_1);
+
+        wantListService.setWant(offer, want);
+        assertThat(wantListService.findByItem(offer).getEntries(), hasSize(1));
+        assertThat(wantListService.findEntry(offer, want), is(notNullValue()));
+
+        wantListService.deleteWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
     }
 
