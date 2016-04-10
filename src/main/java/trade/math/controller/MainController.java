@@ -22,13 +22,12 @@ import trade.math.domain.tradeItem.TradeItemDTO;
 import trade.math.model.TradeUser;
 import trade.math.service.TradeBoardGameService;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.service.TradeUserService;
+import trade.math.domain.tradeUser.TradeUserService;
 
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 

@@ -11,6 +11,7 @@ import trade.math.MtApplication;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeList.IllegalTradeListStateChange;
 import trade.math.domain.tradeList.TradeListService;
+import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItem;

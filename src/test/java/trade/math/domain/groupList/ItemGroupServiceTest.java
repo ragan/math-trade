@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.form.NewTradeUserForm;
-import trade.math.service.TradeUserService;
+import trade.math.domain.tradeUser.TradeUserService;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,12 +9,12 @@ import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
+import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.domain.wantList.WantList;
 import trade.math.domain.wantList.WantListDTO;
 import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
-import trade.math.repository.TradeUserRepository;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
@@ -31,27 +31,27 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeItemRepository tradeItemRepository;
 
-    private final TradeUserRepository tradeUserRepository;
-
     private final TradeListService tradeListService;
 
     private final WantListService wantListService;
+
+    private final TradeUserService tradeUserService;
 
     private final ItemGroupService itemGroupService;
 
     @Autowired
     public SimpleTradeItemService(
             TradeItemRepository tradeItemRepository,
-            TradeUserRepository tradeUserRepository,
             TradeListService tradeListService,
             ItemGroupService itemGroupService,
-            WantListService wantListService
+            WantListService wantListService,
+            TradeUserService tradeUserService
     ) {
         this.tradeItemRepository = tradeItemRepository;
-        this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
         this.itemGroupService = itemGroupService;
         this.wantListService = wantListService;
+        this.tradeUserService = tradeUserService;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SimpleTradeItemService implements TradeItemService {
     public TradeItem save(NewTradeItemForm newTradeItemForm, String username, TradeList tradeList) {
         TradeItem tradeItem = new TradeItem();
 
-        tradeItem.setOwner(tradeUserRepository.findOneByUsername(username));
+        tradeItem.setOwner(tradeUserService.findByUsername(username).get());
 
         tradeItem.setDescription(newTradeItemForm.getDescription());
         tradeItem.setForTrade(false);
@@ -98,7 +98,7 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, String userName) {
         TradeList recentList = tradeListService.findMostRecentList().orElse(null);
-        TradeUser owner = tradeUserRepository.findOneByUsername(userName);
+        TradeUser owner = tradeUserService.findByUsername(userName).orElse(null);
 
         if (owner == null)
             return null;
@@ -118,7 +118,8 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public List<TradeItem> findByRecentTradeListAndOwner(String userName) {
-        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), tradeUserRepository.findOneByUsername(userName));
+        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null),
+                tradeUserService.findByUsername(userName).get());
     }
 
     @Override
@@ -201,8 +202,7 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public boolean canDelete(TradeItem item, String username) {
-        TradeUser user = tradeUserRepository.findOneByUsername(username);
-        return canDelete(item, Optional.ofNullable(user));
+        return canDelete(item, tradeUserService.findByUsername(username));
     }
 
     @Override

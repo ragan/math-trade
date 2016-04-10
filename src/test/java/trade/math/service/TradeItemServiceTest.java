@@ -12,6 +12,7 @@ import trade.math.MtApplication;
 import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
+import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItemCategory;

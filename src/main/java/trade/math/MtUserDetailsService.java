@@ -7,9 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.extras.springsecurity4.auth.AuthUtils;
 import trade.math.model.TradeUser;
-import trade.math.service.TradeUserService;
+import trade.math.domain.tradeUser.TradeUserService;
 
 /**
  * Created by karol on 23.02.16.

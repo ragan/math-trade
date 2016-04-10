@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import trade.math.form.NewTradeUserForm;
-import trade.math.service.TradeUserService;
+import trade.math.domain.tradeUser.TradeUserService;
 
 @Component
 public class SetDefaultAdminApplicationListener implements ApplicationListener<ContextRefreshedEvent> {
