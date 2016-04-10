@@ -9,25 +9,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
-import trade.math.domain.tradeItem.wantListItem.WantListItemDTO;
-import trade.math.domain.tradeItem.wantListItem.WantListItemService;
+import trade.math.domain.wantList.WantListDTO;
+import trade.math.domain.wantList.WantListService;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by daniel on 25.03.16.
- */
 @Controller
 public class WantListController {
 
     private TradeItemService tradeItemService;
-    private WantListItemService wantListItemService;
+    private WantListService wantListItemService;
 
 
     @Autowired
-    public WantListController(TradeItemService tradeItemService, WantListItemService wantListItemService) {
+    public WantListController(TradeItemService tradeItemService, WantListService wantListItemService) {
         this.tradeItemService = tradeItemService;
         this.wantListItemService = wantListItemService;
     }
@@ -41,26 +38,28 @@ public class WantListController {
 
     @RequestMapping(value = "/wantList/getList.command", method = RequestMethod.POST)
     @ResponseBody
-    public List<WantListItemDTO> getWantListItems(@RequestParam Long itemId) {
-        return wantListItemService.findWantListByOfferTradeItem(tradeItemService.findById(itemId));
+    public List<WantListDTO> getWantListItems(@RequestParam Long itemId) {
+//        return wantListItemService.findWantListByOfferTradeItem(tradeItemService.findById(itemId));
+        return Collections.emptyList(); //TODO: do
     }
 
     @RequestMapping(value = "/wantList/saveList.command", method = RequestMethod.POST)
     @ResponseBody
     public boolean saveWantListItems(@RequestParam Long itemId, @RequestParam(value = "wantIds[]", required = false) Long[] wantIds) {
-        return tradeItemService.updateWantList(itemId, (wantIds == null ? new Long[0] : wantIds));
+        return false;
+//        return tradeItemService.updateWantList(itemId, (wantIds == null ? new Long[0] : wantIds));
     }
 
 
     @RequestMapping("/wantList/findItemById")
     @ResponseBody
-    public WantListItemDTO findItemById(@RequestParam long id){
+    public WantListDTO findItemById(@RequestParam long id) {
         return tradeItemService.findByIdWantItem(id);
     }
 
     @RequestMapping("/wantList/getListTM.command")
     @ResponseBody
-    public String getWantListTM(Principal principal){
+    public String getWantListTM(Principal principal) {
         return tradeItemService.generateTradeWantListTM(principal.getName());
     }
 }

@@ -1,6 +1,5 @@
 package trade.math.domain.groupList;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,50 +10,49 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
-public class SimpleGroupListServiceTest {
+public class SimpleItemGroupServiceTest {
 
-    private List<GroupList> groupListList;
+    private List<ItemGroup> groupListList;
 
-    private GroupListService groupListService;
+    private ItemGroupService itemGroupService;
 
     @Mock
-    private GroupListRepository groupListRepository;
+    private ItemGroupRepository itemGroupRepository;
 
     @Before
     public void setUp() throws Exception {
         groupListList = new ArrayList<>();
 
         MockitoAnnotations.initMocks(this);
-        when(groupListRepository.save(Mockito.any(GroupList.class))).then(invocation -> {
-            groupListList.add((GroupList) invocation.getArguments()[0]);
+        when(itemGroupRepository.save(Mockito.any(ItemGroup.class))).then(invocation -> {
+            groupListList.add((ItemGroup) invocation.getArguments()[0]);
             return invocation.getArguments()[0];
         });
-        when(groupListRepository.save(Mockito.<List>any())).then(invocation -> {
-            groupListList.addAll((Collection<? extends GroupList>) invocation.getArguments()[0]);
+        when(itemGroupRepository.save(Mockito.<List>any())).then(invocation -> {
+            groupListList.addAll((Collection<? extends ItemGroup>) invocation.getArguments()[0]);
             return invocation.getArguments()[0];
         });
-        groupListService = new SimpleGroupListService(groupListRepository);
+        itemGroupService = new SimpleItemGroupService(itemGroupRepository);
     }
 
     @Test
     public void testSaveGroupList() throws Exception {
-        GroupListDTO dto = new GroupListDTO("test title");
-        assertThat(groupListService.save(dto).getTitle(), is(equalToIgnoringCase("test title")));
+        ItemGroup group = new ItemGroup("test title");
+        assertThat(itemGroupService.save(group).getTitle(), is(equalToIgnoringCase("test title")));
     }
 
     @Test
     public void testSaveGroupLists() throws Exception {
-        List<GroupListDTO> dtos = new ArrayList<>();
+        List<ItemGroup> items = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            dtos.add(new GroupListDTO("title " + i));
+            items.add(new ItemGroup("title " + i));
         }
-        groupListService.save(dtos);
+        itemGroupService.save(items);
         assertThat(this.groupListList, hasSize(10));
     }
 
@@ -67,7 +65,7 @@ public class SimpleGroupListServiceTest {
         items.add(new GroupableItem<>("b"));
         items.add(new GroupableItem<>("c"));
 
-        Map<GroupListDTO, List<GroupListItem>> result = groupListService.makeGroupLists(items);
+        Map<ItemGroup, List<GroupListItem>> result = itemGroupService.makeGroupLists(items);
         assertThat(result.size(), is(3));
         assertThat(groupListList, hasSize(3));
     }

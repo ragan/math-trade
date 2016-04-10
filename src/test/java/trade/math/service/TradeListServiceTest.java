@@ -36,7 +36,7 @@ public class TradeListServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        tradeItemService.deleteAll(true);
+        tradeItemService.deleteAll();
         tradeUserService.deleteAll();
         tradeListService.deleteAll();
 
@@ -52,6 +52,7 @@ public class TradeListServiceTest {
 
     @Test
     public void testFindMostRecentList() throws Exception {
+        //TODO: ten test raz mi nie przeszedł.
         TradeList list0 = tradeListService.createNewList();
         TradeList list1 = tradeListService.createNewList();
         TradeList mostRecentList = tradeListService.findMostRecentList().get();

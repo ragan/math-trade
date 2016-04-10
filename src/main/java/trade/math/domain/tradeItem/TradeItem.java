@@ -1,18 +1,18 @@
 package trade.math.domain.tradeItem;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import trade.math.domain.groupList.GroupList;
+import trade.math.domain.groupList.GroupListItem;
+import trade.math.domain.groupList.ItemGroup;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Entity
-public class TradeItem {
+@Table(name = "TRADE_ITEM")
+public class TradeItem implements GroupListItem<String> {
 
     @Id
     @GeneratedValue
@@ -43,11 +43,12 @@ public class TradeItem {
     @Enumerated(EnumType.STRING)
     private TradeItemCategory category;
 
-    @OneToMany(mappedBy = "offerTradeItemId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<WantListItem> wantList;
     @ManyToOne
-    @JoinColumn(name = "GROUP_LIST_ID")
-    private GroupList groupList;
+    @JoinColumn(name = "ITEM_GROUP_ID")
+    private ItemGroup itemGroup;
+
+    @Column(name = "BGG_ID")
+    private int bggId;
 
     public Long getId() {
         return id;
@@ -113,19 +114,31 @@ public class TradeItem {
         this.category = category;
     }
 
-    public List<WantListItem> getWantList() {
-        return wantList;
+    public ItemGroup getItemGroup() {
+        return itemGroup;
     }
 
-    public void setWantList(List<WantListItem> wantList) {
-        this.wantList = wantList;
+    public void setItemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
     }
 
-    public GroupList getGroupList() {
-        return groupList;
+    public int getBggId() {
+        return bggId;
     }
 
-    public void setGroupList(GroupList groupList) {
-        this.groupList = groupList;
+    public void setBggId(int bggId) {
+        this.bggId = bggId;
+    }
+
+    @Override
+    public String getProperty() {
+        switch (getCategory()) {
+            case NONE:
+                return getTitle();
+            case BOARD_GAME:
+                return String.valueOf(getBggId());
+            default:
+                throw new IllegalArgumentException("Unknown category.");
+        }
     }
 }
