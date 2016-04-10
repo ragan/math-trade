@@ -4,6 +4,7 @@ import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
 
 import java.util.List;
+import java.util.Map;
 
 public interface WantListService {
 
@@ -38,4 +39,6 @@ public interface WantListService {
     WantListEntry findEntry(TradeItem offer, TradeItem want);
 
     void setWants(TradeItem offer, List<TradeItem> wants);
+
+    void setWants(TradeItem offer, Map<TradeItem, Integer> wantsAndPriorities);
 }

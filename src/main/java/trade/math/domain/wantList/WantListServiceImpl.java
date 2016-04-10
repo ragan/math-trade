@@ -6,6 +6,7 @@ import trade.math.domain.tradeItem.TradeItem;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,15 +89,22 @@ public class WantListServiceImpl implements WantListService {
 
     @Override
     public void setWants(TradeItem offer, List<TradeItem> wants) {
+        setWants(offer, wants.stream().collect(Collectors.toMap(item -> item, item -> PRIORITY_MIN)));
+    }
+
+    @Override
+    public void setWants(TradeItem offer, Map<TradeItem, Integer> wantsAndPriorities) {
         WantList wantList = findByItem(offer);
         wantListEntryRepository.delete(wantList.getEntries());
-        List<WantListEntry> entries = wants.stream().map(item -> {
+
+        List<WantListEntry> entries = wantsAndPriorities.entrySet().stream().map(ip -> {
             WantListEntry entry = new WantListEntry();
             entry.setWantList(wantList);
-            entry.setPriority(PRIORITY_MIN);
-            entry.setItem(item);
+            entry.setItem(ip.getKey());
+            entry.setPriority(ip.getValue());
             return entry;
         }).collect(Collectors.toList());
+
         wantListEntryRepository.save(entries);
         wantList.setEntries(entries);
         wantListRepository.save(wantList);
