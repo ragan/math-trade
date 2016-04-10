@@ -1,15 +1,19 @@
 package trade.math.domain.wantList;
 
-public class WantListDTO {
+public class WantListEntryDTO {
 
     private Long wantTradeItemId;
     private String wantTradeItemTitle;
     private int priority;
 
-    public WantListDTO(Long wantTradeItemId, String wantTradeItemTitle, int priority) {
+    public WantListEntryDTO(Long wantTradeItemId, String wantTradeItemTitle, int priority) {
         this.wantTradeItemId = wantTradeItemId;
         this.wantTradeItemTitle = wantTradeItemTitle;
         this.priority = priority;
+    }
+
+    public WantListEntryDTO(WantListEntry entry) {
+
     }
 
     public Long getWantTradeItemId() {

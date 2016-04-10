@@ -11,13 +11,14 @@ import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
 import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.domain.wantList.WantList;
-import trade.math.domain.wantList.WantListDTO;
+import trade.math.domain.wantList.WantListEntryDTO;
 import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -113,8 +114,10 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public List<TradeItem> findByRecentTradeListAndOwner(String userName) {
-        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null),
-                tradeUserService.findByUsername(userName).get());
+        return tradeUserService.findByUsername(userName)
+                .filter(u -> u != null)
+                .map(u -> tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), u))
+                .orElse(Collections.emptyList());
     }
 
     @Override
@@ -137,7 +140,10 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public TradeItem findById(Long itemId) {
-        return tradeItemRepository.findOne(itemId);
+        TradeItem item = tradeItemRepository.findOne(itemId);
+        if (item == null)
+            throw new IllegalArgumentException("Item not found.");
+        return item;
     }
 
     @Override
@@ -146,9 +152,9 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public WantListDTO findByIdWantItem(Long itemId) {
+    public WantListEntryDTO findByIdWantItem(Long itemId) {
         TradeItem item = tradeItemRepository.findOne(itemId);
-        return item != null ? new WantListDTO(item.getId(), item.getTitle(), 0) : new WantListDTO(0L, "", 0);
+        return item != null ? new WantListEntryDTO(item.getId(), item.getTitle(), 0) : new WantListEntryDTO(0L, "", 0);
     }
 
     @Override
@@ -218,7 +224,7 @@ public class SimpleTradeItemService implements TradeItemService {
 //            if (tradeItem.getWantList() == null || tradeItem.getWantList().getWant().size() == 0)
 //                continue;
 //            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
-//            for (WantListDTO wantItem : wantListService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
+//            for (WantListEntryDTO wantItem : wantListService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
 //                tmText += wantItem.getWantTradeItemId() + " ";
 //        }
 //        return tmText;

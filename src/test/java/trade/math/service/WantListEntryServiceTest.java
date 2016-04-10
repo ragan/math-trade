@@ -52,6 +52,17 @@ public class WantListEntryServiceTest {
     }
 
     @Test
+    public void testFindEntries() throws Exception {
+        int count = 10;
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("item_0", "description_0", ""), USERNAME_0);
+        List<TradeItem> p = makeItems(count, "p", USERNAME_1);
+        wantListService.setWants(offer, p);
+
+        List<WantListEntry> entries = wantListService.findEntries(offer);
+        assertThat(entries, hasSize(count));
+    }
+
+    @Test
     public void testWantListIsCreatedForEveryItem() throws Exception {
         TradeItem item = tradeItemService.save(new NewTradeItemForm("item_0", "description_0", ""), USERNAME_0);
 

@@ -54,6 +54,7 @@ public class TradeListServiceTest {
     @Test
     public void testFindMostRecentList() throws Exception {
         //TODO: ten test raz mi nie przeszedł.
+        //TODO: a nawet więcej razy... czasem działa, czasem nie (za szybko?).
         TradeList list0 = tradeListService.createNewList();
         TradeList list1 = tradeListService.createNewList();
         TradeList mostRecentList = tradeListService.findMostRecentList().get();

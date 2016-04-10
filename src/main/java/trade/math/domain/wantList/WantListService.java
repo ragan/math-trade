@@ -40,6 +40,8 @@ public interface WantListService {
 
     WantListEntry findEntry(TradeItem offer, TradeItem want);
 
+    List<WantListEntry> findEntries(TradeItem offer);
+
     void setWants(TradeItem offer, List<TradeItem> wants);
 
     void setWants(TradeItem offer, Map<TradeItem, Integer> wantsAndPriorities);

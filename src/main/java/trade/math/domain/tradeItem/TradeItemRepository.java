@@ -10,9 +10,15 @@ import trade.math.model.TradeUser;
 import java.util.List;
 
 interface TradeItemRepository extends JpaRepository<TradeItem, Long> {
+
     List<TradeItem> findByTradeList(TradeList tradeList);
+
     Page<TradeItem> findByTradeList(TradeList tradeList, Pageable pageable);
+
     List<TradeItem> findByTradeListAndOwner(TradeList tradeList, TradeUser tradeUser);
+
     List<TradeItem> findByTradeListAndTitleAllIgnoreCaseContainingAndOwnerNotOrderByTitleAsc(TradeList tradeList, String title, TradeUser owner);
+
     List<TradeItem> findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(TradeList tradeList, String title, TradeUser owner);
+
 }

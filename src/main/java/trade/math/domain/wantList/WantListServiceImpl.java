@@ -89,6 +89,11 @@ public class WantListServiceImpl implements WantListService {
         return findEntry(wantList, want);
     }
 
+    @Override
+    public List<WantListEntry> findEntries(TradeItem offer) {
+        return findByItem(offer).getEntries();
+    }
+
     private WantListEntry findEntry(WantList wantList, TradeItem want) {
         return wantListEntryRepository.findByWantListAndItem(wantList, want)
                 .orElseThrow(WantListEntryNotFoundException::new);

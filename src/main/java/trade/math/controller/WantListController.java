@@ -9,19 +9,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.domain.wantList.WantListDTO;
+import trade.math.domain.wantList.WantListEntryDTO;
 import trade.math.domain.wantList.WantListService;
 
 import java.security.Principal;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 public class WantListController {
 
     private TradeItemService tradeItemService;
-    private WantListService wantListItemService;
 
+    private WantListService wantListItemService;
 
     @Autowired
     public WantListController(TradeItemService tradeItemService, WantListService wantListItemService) {
@@ -38,22 +40,29 @@ public class WantListController {
 
     @RequestMapping(value = "/wantList/getList.command", method = RequestMethod.POST)
     @ResponseBody
-    public List<WantListDTO> getWantListItems(@RequestParam Long itemId) {
-//        return wantListItemService.findWantListByOfferTradeItem(tradeItemService.findById(itemId));
-        return Collections.emptyList(); //TODO: do
+    public List<WantListEntryDTO> getWantListItems(@RequestParam Long itemId) {
+        return wantListItemService.findEntries(
+                tradeItemService.findById(itemId)).stream().map(WantListEntryDTO::new).collect(toList());
     }
 
     @RequestMapping(value = "/wantList/saveList.command", method = RequestMethod.POST)
     @ResponseBody
-    public boolean saveWantListItems(@RequestParam Long itemId, @RequestParam(value = "wantIds[]", required = false) Long[] wantIds) {
-        return false;
-//        return tradeItemService.updateWantList(itemId, (wantIds == null ? new Long[0] : wantIds));
+    public boolean saveWantListItems(
+            @RequestParam
+            Long itemId,
+            @RequestParam(value = "wantIds[]", required = false)
+            Long[] wantIds
+    ) {
+        TradeItem item = tradeItemService.findById(itemId);
+        List<TradeItem> offers = tradeItemService.findByIds(Arrays.asList(wantIds));
+        wantListItemService.setWants(item, offers);
+        return true;
     }
 
 
     @RequestMapping("/wantList/findItemById")
     @ResponseBody
-    public WantListDTO findItemById(@RequestParam long id) {
+    public WantListEntryDTO findItemById(@RequestParam long id) {
         return tradeItemService.findByIdWantItem(id);
     }
 
