@@ -103,7 +103,6 @@ public class MainController {
         if (bindingResult.hasErrors())
             return "addItem";
         tradeItemService.save(newTradeItemForm, principal.getName());
-//        redirectAttributes.addAttribute("success");
         return "redirect:/addItem?success";
     }
 

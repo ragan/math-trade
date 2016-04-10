@@ -8,6 +8,7 @@ import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TradeItemService {
 
@@ -41,7 +42,9 @@ public interface TradeItemService {
 
     void deleteAll();
 
-    boolean canDelete(TradeItem item, TradeUser tradeUser);
+    boolean canDelete(TradeItem item, TradeUser user);
+
+    boolean canDelete(TradeItem item, Optional<TradeUser> user);
 
     boolean canDelete(TradeItem item, String username);
 

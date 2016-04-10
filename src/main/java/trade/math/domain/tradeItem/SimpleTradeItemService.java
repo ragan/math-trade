@@ -1,6 +1,8 @@
 package trade.math.domain.tradeItem;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +22,11 @@ import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 @Transactional
@@ -167,7 +173,7 @@ public class SimpleTradeItemService implements TradeItemService {
                         tradeItem.getDescription(),
                         tradeItem.getImgUrl(),
                         false
-                )).collect(Collectors.toList());
+                )).collect(toList());
     }
 
     @Override
@@ -217,33 +223,43 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName) {
-        return new TradeItemPageWrapper(
-                tradeItemRepository.findAll(pageable)
-                        .getContent()
-                        .stream()
-                        .parallel()
-                        .map(ti -> new TradeItemDTO(ti, canDelete(ti, userName)))
-                        .collect(Collectors.toList()),
-                pageable,
-                tradeItemRepository.count());
+        return toPageWrapper(pageable, getItemsWithCanDelete(pageable, userName), tradeItemRepository.count());
+    }
+
+    private Map<TradeItem, Boolean> getItemsWithCanDelete(Pageable pageable, String username) {
+        return getItemsWithCanDelete(tradeItemRepository.findAll(pageable).getContent(), username);
+    }
+
+    private Map<TradeItem, Boolean> getItemsWithCanDelete(List<TradeItem> items, String username) {
+        return items.stream().collect(toMap(i -> i, i -> canDelete(i, username)));
+    }
+
+    private PageWrapper<TradeItemDTO> toPageWrapper(Pageable pageable, Map<TradeItem, Boolean> items, long itemCount) {
+        List<TradeItemDTO> dtos = items.entrySet()
+                .stream()
+                .map(e -> new TradeItemDTO(e.getKey(), e.getValue()))
+                .collect(toList());
+        return new TradeItemPageWrapper(dtos, pageable, itemCount);
     }
 
     @Override
     public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName) {
         TradeList tradeList = tradeListService.findMostRecentList().orElse(null);
-        return new TradeItemPageWrapper(
-                tradeItemRepository.findByTradeList(tradeList, pageable)
-                        .getContent()
-                        .stream()
-                        .parallel()
-                        .map(ti -> new TradeItemDTO(ti, canDelete(ti, userName)))
-                        .collect(Collectors.toList()),
-                pageable,
-                tradeItemRepository.findByTradeList(tradeList).size());
+        return toPageWrapper(pageable, getItemsWithCanDelete(tradeItemRepository.findByTradeList(tradeList), userName),
+                tradeItemRepository.count());
     }
 
     @Override
-    public boolean canDelete(TradeItem item, TradeUser tradeUser) {
+    public boolean canDelete(TradeItem item, TradeUser user) {
+        return canDelete(item, Optional.ofNullable(user));
+    }
+
+    @Override
+    public boolean canDelete(TradeItem item, Optional<TradeUser> user) {
+        if (!user.isPresent()) {
+            return false;
+        }
+        TradeUser tradeUser = user.get();
         return tradeUser.getRole() == TradeUserRole.ROLE_ADMIN ||
                 item.getOwner().getUsername().equals(tradeUser.getUsername());
     }
@@ -251,7 +267,7 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public boolean canDelete(TradeItem item, String username) {
         TradeUser user = tradeUserRepository.findOneByUsername(username);
-        return canDelete(item, user);
+        return canDelete(item, Optional.ofNullable(user));
     }
 
     @Override
