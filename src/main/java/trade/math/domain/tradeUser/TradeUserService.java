@@ -27,5 +27,5 @@ public interface TradeUserService {
      */
     void deleteAll(TradeUserRole tradeUserRole);
 
-    Optional<TradeUser> findByUsername(String username);
+    TradeUser findByUsername(String username);
 }

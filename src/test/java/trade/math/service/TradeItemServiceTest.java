@@ -5,24 +5,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
-import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItemCategory;
+import trade.math.model.TradeUser;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -43,9 +42,6 @@ public class TradeItemServiceTest {
     @Autowired
     private TradeUserService tradeUserService;
 
-    @Autowired
-    private ItemGroupService itemGroupService;
-
     @Before
     public void setUp() throws Exception {
         tradeItemService.deleteAll();
@@ -58,8 +54,7 @@ public class TradeItemServiceTest {
     @Test
     public void testSaveAndDeleteNewBoardGame() throws Exception {
         NewTradeItemForm form = new NewTradeItemForm("Title", "Description", "", TradeItemCategory.BOARD_GAME, 123);
-
-        Long id = tradeItemService.save(form, USERNAME).getId();
+        Long id = tradeItemService.save(form, getUser(USERNAME)).getId();
         assertThat(tradeItemService.findAll(), hasSize(1));
 
         assertThat(tradeItemService.findById(id).getTitle(), is(equalToIgnoringCase("Title")));
@@ -67,6 +62,14 @@ public class TradeItemServiceTest {
         assertThat(tradeItemService.findById(id).getImgUrl(), is(equalToIgnoringCase("")));
         assertThat(tradeItemService.findById(id).getCategory(), is(TradeItemCategory.BOARD_GAME));
         assertThat(tradeItemService.findById(id).getBggId(), is(123));
+    }
+
+    private TradeUser getUser(String username) {
+        try {
+            return tradeUserService.findByUsername(username);
+        } catch (UsernameNotFoundException e) {
+            return null;
+        }
     }
 
     @Test
@@ -173,12 +176,12 @@ public class TradeItemServiceTest {
         prepareTradeList(10, USERNAME);
         prepareTradeList(2, USERNAME_1);
 
-        List list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", USERNAME);
+        List list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", getUser(USERNAME));
 
         assertNotNull(list);
         assertEquals(2, list.size());
 
-        list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", "test");
+        list = tradeItemService.findByRecentTradeListAndNameAndNotOwner("", getUser("test"));
         assertNull(list);
     }
 
@@ -187,12 +190,12 @@ public class TradeItemServiceTest {
         prepareTradeList(10, USERNAME);
         prepareTradeList(8, USERNAME_1);
 
-        List<TradeItem> list = tradeItemService.findByRecentTradeListAndOwner(USERNAME_1);
+        List<TradeItem> list = tradeItemService.findByRecentTradeListAndOwner(getUser(USERNAME_1));
 
         assertNotNull(list);
         assertEquals(8, list.size());
 
-        list = tradeItemService.findByRecentTradeListAndOwner("test");
+        list = tradeItemService.findByRecentTradeListAndOwner(getUser("test"));
 
         assertNotNull(list);
         assertEquals(0, list.size());
@@ -204,9 +207,10 @@ public class TradeItemServiceTest {
     }
 
     private void prepareTradeList(int count, String userName) {
+        TradeUser user = getUser(userName);
         for (int i = 0; i < count; i++) {
             NewTradeItemForm form = new NewTradeItemForm("title" + i, "desc" + i, "");
-            tradeItemService.save(form, userName);
+            tradeItemService.save(form, user);
         }
     }
 }

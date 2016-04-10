@@ -5,10 +5,11 @@ import trade.math.TradeUserRole;
 import trade.math.model.TradeUser;
 
 import java.util.List;
+import java.util.Optional;
 
 interface TradeUserRepository extends JpaRepository<TradeUser, Long> {
 
-    TradeUser findOneByUsername(String username);
+    Optional<TradeUser> findOneByUsername(String username);
 
     List<TradeUser> findAllByRole(TradeUserRole tradeUserRole);
 

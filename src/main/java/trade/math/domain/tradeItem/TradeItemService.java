@@ -12,17 +12,17 @@ import java.util.Optional;
 
 public interface TradeItemService {
 
-    TradeItem save(NewTradeItemForm newTradeItemForm, String username);
+    TradeItem save(NewTradeItemForm newTradeItemForm, TradeUser user);
 
-    TradeItem save(NewTradeItemForm newTradeItemForm, String username, TradeList tradeList);
+    TradeItem save(NewTradeItemForm newTradeItemForm, TradeUser user, TradeList tradeList);
 
     List<TradeItem> findByTradeList(TradeList tradeList);
 
-    List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, String userName);
+    List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, TradeUser user);
 
     List<TradeItem> findByRecentTradeList();
 
-    List<TradeItem> findByRecentTradeListAndOwner(String userName);
+    List<TradeItem> findByRecentTradeListAndOwner(TradeUser user);
 
     List<TradeItem> findAll();
 
@@ -34,9 +34,9 @@ public interface TradeItemService {
 
     PageWrapper<TradeItemDTO> findAll(Pageable pageable);
 
-    PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName);
+    PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, TradeUser user);
 
-    PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName);
+    PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, TradeUser user);
 
     void deleteById(Long itemId);
 
@@ -46,7 +46,5 @@ public interface TradeItemService {
 
     boolean canDelete(TradeItem item, Optional<TradeUser> user);
 
-    boolean canDelete(TradeItem item, String username);
-
-    String generateTradeWantListTM(String userName);
+    String generateTradeWantListTM(TradeUser user);
 }

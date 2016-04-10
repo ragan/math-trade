@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 import trade.math.model.TradeUser;
 import trade.math.domain.tradeUser.TradeUserService;
 
-/**
- * Created by karol on 23.02.16.
- */
 @Component
 public class MtUserDetailsService implements UserDetailsService {
 
@@ -24,10 +21,13 @@ public class MtUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        TradeUser tradeUser = tradeUserService.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User with %s not found", username)));
-        return new User(tradeUser.getUsername(), tradeUser.getPassword(),
-                AuthorityUtils.createAuthorityList(tradeUser.getRole().name()));
+    public UserDetails loadUserByUsername(String username) {
+        try {
+            TradeUser tradeUser = tradeUserService.findByUsername(username);
+            return new User(tradeUser.getUsername(), tradeUser.getPassword(),
+                    AuthorityUtils.createAuthorityList(tradeUser.getRole().name()));
+        } catch (UsernameNotFoundException e) {
+            return null;
+        }
     }
 }

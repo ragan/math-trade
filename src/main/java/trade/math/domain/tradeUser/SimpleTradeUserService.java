@@ -1,6 +1,7 @@
 package trade.math.domain.tradeUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import trade.math.TradeUserRole;
@@ -50,9 +51,8 @@ public class SimpleTradeUserService implements TradeUserService {
     }
 
     @Override
-    public Optional<TradeUser> findByUsername(String username) {
-        TradeUser oneByUsername = tradeUserRepository.findOneByUsername(username);
-        if (oneByUsername == null) return Optional.empty();
-        return Optional.of(oneByUsername);
+    public TradeUser findByUsername(String username) {
+        return tradeUserRepository.findOneByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
     }
 }

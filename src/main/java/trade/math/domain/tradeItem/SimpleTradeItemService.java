@@ -18,7 +18,6 @@ import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,8 +35,6 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final WantListService wantListService;
 
-    private final TradeUserService tradeUserService;
-
     private final ItemGroupService itemGroupService;
 
     @Autowired
@@ -52,22 +49,21 @@ public class SimpleTradeItemService implements TradeItemService {
         this.tradeListService = tradeListService;
         this.itemGroupService = itemGroupService;
         this.wantListService = wantListService;
-        this.tradeUserService = tradeUserService;
     }
 
     @Override
-    public TradeItem save(NewTradeItemForm tradeItemForm, String username) {
+    public TradeItem save(NewTradeItemForm tradeItemForm, TradeUser user) {
         TradeList list = tradeListService.findMostRecentList().orElse(null);
         if (list != null && list.getState() == TradeListState.CLOSED)
             list = null;
-        return save(tradeItemForm, username, list);
+        return save(tradeItemForm, user, list);
     }
 
     @Override
-    public TradeItem save(NewTradeItemForm newTradeItemForm, String username, TradeList tradeList) {
+    public TradeItem save(NewTradeItemForm newTradeItemForm, TradeUser user, TradeList tradeList) {
         TradeItem tradeItem = new TradeItem();
 
-        tradeItem.setOwner(tradeUserService.findByUsername(username).get());
+        tradeItem.setOwner(user);
 
         tradeItem.setDescription(newTradeItemForm.getDescription());
         tradeItem.setForTrade(false);
@@ -92,16 +88,15 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, String userName) {
+    public List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, TradeUser user) {
         TradeList recentList = tradeListService.findMostRecentList().orElse(null);
-        TradeUser owner = tradeUserService.findByUsername(userName).orElse(null);
 
-        if (owner == null)
+        if (user == null)
             return null;
 
-        List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), owner);
+        List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), user);
 
-        List<TradeItem> containing = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseContainingAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), owner);
+        List<TradeItem> containing = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseContainingAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), user);
         exact.addAll(containing);
 
         return exact;
@@ -113,11 +108,8 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public List<TradeItem> findByRecentTradeListAndOwner(String userName) {
-        return tradeUserService.findByUsername(userName)
-                .filter(u -> u != null)
-                .map(u -> tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), u))
-                .orElse(Collections.emptyList());
+    public List<TradeItem> findByRecentTradeListAndOwner(TradeUser user) {
+        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), user);
     }
 
     @Override
@@ -159,20 +151,20 @@ public class SimpleTradeItemService implements TradeItemService {
 
     @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable) {
-        return findAll(pageable, false, "");
+        return findAll(pageable, false, null);
     }
 
     @Override
-    public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName) {
-        return toPageWrapper(pageable, getItemsWithCanDelete(pageable, userName), tradeItemRepository.count());
+    public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, TradeUser user) {
+        return toPageWrapper(pageable, getItemsWithCanDelete(pageable, user), tradeItemRepository.count());
     }
 
-    private Map<TradeItem, Boolean> getItemsWithCanDelete(Pageable pageable, String username) {
-        return getItemsWithCanDelete(tradeItemRepository.findAll(pageable).getContent(), username);
+    private Map<TradeItem, Boolean> getItemsWithCanDelete(Pageable pageable, TradeUser user) {
+        return getItemsWithCanDelete(tradeItemRepository.findAll(pageable).getContent(), user);
     }
 
-    private Map<TradeItem, Boolean> getItemsWithCanDelete(List<TradeItem> items, String username) {
-        return items.stream().collect(toMap(i -> i, i -> canDelete(i, username)));
+    private Map<TradeItem, Boolean> getItemsWithCanDelete(List<TradeItem> items, TradeUser user) {
+        return items.stream().collect(toMap(i -> i, i -> canDelete(i, user)));
     }
 
     private PageWrapper<TradeItemDTO> toPageWrapper(Pageable pageable, Map<TradeItem, Boolean> items, long itemCount) {
@@ -184,9 +176,9 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName) {
+    public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, TradeUser user) {
         TradeList tradeList = tradeListService.findMostRecentList().orElse(null);
-        return toPageWrapper(pageable, getItemsWithCanDelete(tradeItemRepository.findByTradeList(tradeList), userName),
+        return toPageWrapper(pageable, getItemsWithCanDelete(tradeItemRepository.findByTradeList(tradeList), user),
                 tradeItemRepository.count());
     }
 
@@ -206,12 +198,7 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public boolean canDelete(TradeItem item, String username) {
-        return canDelete(item, tradeUserService.findByUsername(username));
-    }
-
-    @Override
-    public String generateTradeWantListTM(String userName) {
+    public String generateTradeWantListTM(TradeUser user) {
         return "";
 //        String tmText = "";
 //        List<TradeItem> tradeItems = findByRecentTradeListAndOwner(userName);

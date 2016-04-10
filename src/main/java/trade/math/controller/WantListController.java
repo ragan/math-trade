@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
+import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.domain.wantList.WantListEntryDTO;
 import trade.math.domain.wantList.WantListService;
+import trade.math.model.TradeUser;
 
 import java.security.Principal;
 import java.util.Arrays;
@@ -21,19 +23,27 @@ import static java.util.stream.Collectors.toList;
 @Controller
 public class WantListController {
 
-    private TradeItemService tradeItemService;
+    private final TradeItemService tradeItemService;
 
-    private WantListService wantListItemService;
+    private final WantListService wantListItemService;
+
+    private final TradeUserService tradeUserService;
 
     @Autowired
-    public WantListController(TradeItemService tradeItemService, WantListService wantListItemService) {
+    public WantListController(
+            TradeItemService tradeItemService,
+            WantListService wantListItemService,
+            TradeUserService tradeUserService
+    ) {
         this.tradeItemService = tradeItemService;
         this.wantListItemService = wantListItemService;
+        this.tradeUserService = tradeUserService;
     }
 
     @RequestMapping(value = "/wantList", method = RequestMethod.GET)
     public String wantListComposer(Model model, Principal principal) {
-        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(principal.getName()));
+        TradeUser user = tradeUserService.findByUsername(principal.getName());
+        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(user));
 
         return "wantList";
     }
@@ -69,6 +79,7 @@ public class WantListController {
     @RequestMapping("/wantList/getListTM.command")
     @ResponseBody
     public String getWantListTM(Principal principal) {
-        return tradeItemService.generateTradeWantListTM(principal.getName());
+        TradeUser user = tradeUserService.findByUsername(principal.getName());
+        return tradeItemService.generateTradeWantListTM(user);
     }
 }

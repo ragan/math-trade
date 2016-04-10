@@ -16,6 +16,7 @@ import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItem;
+import trade.math.model.TradeUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +55,7 @@ public class WantListEntryServiceTest {
     @Test
     public void testFindEntries() throws Exception {
         int count = 10;
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("item_0", "description_0", ""), USERNAME_0);
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("item_0", "description_0", ""), getUser(USERNAME_0));
         List<TradeItem> p = makeItems(count, "p", USERNAME_1);
         wantListService.setWants(offer, p);
 
@@ -62,9 +63,13 @@ public class WantListEntryServiceTest {
         assertThat(entries, hasSize(count));
     }
 
+    private TradeUser getUser(String username) {
+        return tradeUserService.findByUsername(username);
+    }
+
     @Test
     public void testWantListIsCreatedForEveryItem() throws Exception {
-        TradeItem item = tradeItemService.save(new NewTradeItemForm("item_0", "description_0", ""), USERNAME_0);
+        TradeItem item = tradeItemService.save(new NewTradeItemForm("item_0", "description_0", ""), getUser(USERNAME_0));
 
         WantList wantList = wantListService.findByItem(item);
         assertThat(wantList, is(notNullValue()));
@@ -77,8 +82,8 @@ public class WantListEntryServiceTest {
     public void testPriorities() throws Exception {
         WantList wantList;
 
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), USERNAME_0);
-        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), USERNAME_1);
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
+        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
         assertThat(wantListService.findByItem(want).getEntries(), is(empty()));
@@ -96,8 +101,8 @@ public class WantListEntryServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUserCannotAddOwnItems() throws Exception {
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), USERNAME_0);
-        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), USERNAME_0);
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
+        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_0));
 
         wantListService.setWant(offer, want);
 
@@ -107,8 +112,8 @@ public class WantListEntryServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testPriorityMinMax() throws Exception {
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), USERNAME_0);
-        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), USERNAME_1);
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
+        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
         WantListEntry entry = wantListService.setWant(offer, want);
         int priority = entry.getPriority();
@@ -119,7 +124,7 @@ public class WantListEntryServiceTest {
 
     @Test
     public void testDeleteAllEntries() throws Exception {
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), USERNAME_0);
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
         List<TradeItem> items = makeItems(3, "p", USERNAME_1);
         wantListService.setWants(offer, items);
         assertThat(wantListService.findByItem(offer).getEntries(), hasSize(3));
@@ -130,8 +135,8 @@ public class WantListEntryServiceTest {
 
     @Test
     public void testDeleteSingleEntry() throws Exception {
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), USERNAME_0);
-        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), USERNAME_1);
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
+        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
         wantListService.setWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), hasSize(1));
@@ -143,8 +148,8 @@ public class WantListEntryServiceTest {
 
     @Test
     public void testDeleteWantListEntry() throws Exception {
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), USERNAME_0);
-        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), USERNAME_1);
+        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
+        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
         wantListService.setWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), is(not(empty())));
@@ -285,9 +290,10 @@ public class WantListEntryServiceTest {
 
     private List<TradeItem> makeItems(int num, String prefix, String username) {
         List<TradeItem> list = new ArrayList<>();
-
-        for (int i = 0; i < num; i++)
-            list.add(tradeItemService.save(new NewTradeItemForm(prefix + String.valueOf(i), prefix + String.valueOf(i), null), username));
+        TradeUser user = getUser(username);
+        for (int i = 0; i < num; i++) {
+            list.add(tradeItemService.save(new NewTradeItemForm(prefix + String.valueOf(i), prefix + String.valueOf(i), null), user));
+        }
 
         return list;
     }
