@@ -17,6 +17,7 @@ import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeItemCategory;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -43,7 +44,7 @@ public class TradeItemServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        tradeItemService.deleteAll(true);
+        tradeItemService.deleteAll();
 
         tradeUserService.deleteAll();
         tradeUserService.save(new NewTradeUserForm(USERNAME, "some@email.com", "password", "password"));
@@ -124,25 +125,27 @@ public class TradeItemServiceTest {
 
         Long deletedItemId = allItems.get(4).getId();
 
-        assertTrue(tradeItemService.deleteById(deletedItemId, true, ""));
+//        assertTrue(tradeItemService.deleteById(deletedItemId));
+        tradeItemService.deleteById(deletedItemId);
 
         allItems = tradeItemService.findAll();
 
         assertEquals(9, allItems.size());
 
-        for (TradeItem item : allItems) assertFalse(item.getId() == deletedItemId);
+        for (TradeItem item : allItems) assertFalse(Objects.equals(item.getId(), deletedItemId));
 
-        assertFalse(tradeItemService.deleteById(deletedItemId, true, ""));
+//        assertFalse(tradeItemService.deleteById(deletedItemId));
+//        tradeItemService.deleteById(deletedItemId);
     }
 
-    @Test
-    public void testDeleteCheckOwner() {
-        prepareTradeList(10, USERNAME);
-
-        assertFalse(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "anotherUser"));
-        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, USERNAME));
-        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), true, "anotherUser"));
-    }
+//    @Test
+//    public void testDeleteCheckOwner() {
+//        prepareTradeList(10, USERNAME);
+//
+//        assertFalse(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "anotherUser"));
+//        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, USERNAME));
+//        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), true, "anotherUser"));
+//    }
 
     @Test
     public void testFindByRecentTradeListAndNameAndNotOwner() {

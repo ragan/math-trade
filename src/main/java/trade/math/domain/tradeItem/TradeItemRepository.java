@@ -1,4 +1,4 @@
-package trade.math.repository;
+package trade.math.domain.tradeItem;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +9,7 @@ import trade.math.model.TradeUser;
 
 import java.util.List;
 
-public interface TradeItemRepository extends JpaRepository<TradeItem, Long> {
+interface TradeItemRepository extends JpaRepository<TradeItem, Long> {
     List<TradeItem> findByTradeList(TradeList tradeList);
     Page<TradeItem> findByTradeList(TradeList tradeList, Pageable pageable);
     List<TradeItem> findByTradeListAndOwner(TradeList tradeList, TradeUser tradeUser);

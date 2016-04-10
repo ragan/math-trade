@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trade.math.TradeUserRole;
 import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
@@ -13,7 +14,6 @@ import trade.math.domain.wantList.WantListDTO;
 import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
-import trade.math.repository.TradeItemRepository;
 import trade.math.repository.TradeUserRepository;
 import trade.math.service.BggIdToTitleService;
 import trade.math.wrappers.PageWrapper;
@@ -39,12 +39,14 @@ public class SimpleTradeItemService implements TradeItemService {
     private final ItemGroupService itemGroupService;
 
     @Autowired
-    public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
-                                  BggIdToTitleService bggIdToTitleService,
-                                  TradeUserRepository tradeUserRepository,
-                                  TradeListService tradeListService,
-                                  ItemGroupService itemGroupService,
-                                  WantListService wantListService) {
+    public SimpleTradeItemService(
+            TradeItemRepository tradeItemRepository,
+            BggIdToTitleService bggIdToTitleService,
+            TradeUserRepository tradeUserRepository,
+            TradeListService tradeListService,
+            ItemGroupService itemGroupService,
+            WantListService wantListService
+    ) {
         this.tradeItemRepository = tradeItemRepository;
         this.bggIdToTitleService = bggIdToTitleService;
         this.tradeUserRepository = tradeUserRepository;
@@ -184,34 +186,17 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public void deleteById(Long itemId) {
+        TradeItem item = tradeItemRepository.findOne(itemId);
+        wantListService.deleteWantList(item);
+        tradeItemRepository.delete(itemId);
+    }
+
+    @Override
     public void deleteAll() {
-        deleteAll(true);
-    }
+        wantListService.deleteAll();
 
-    @Override
-    public void deleteAll(boolean isAdmin) { //TODO: WTF?
-        if (isAdmin) {
-//            tradeBoardGamePropertiesService.deleteAll();
-            tradeItemRepository.deleteAll();
-        }
-    }
-
-    @Override
-    public boolean deleteById(Long itemId, boolean isAdmin, String userName) {
-        TradeItem item = findById(itemId);
-        if (item == null || !checkPermission(item.getOwner(), isAdmin, userName))
-            return false;
-
-//        handleDeleteProperties(item);
-
-        try {
-            tradeItemRepository.delete(itemId);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        tradeItemRepository.deleteAll();
     }
 
     @Override
@@ -237,7 +222,7 @@ public class SimpleTradeItemService implements TradeItemService {
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName)))
+                        .map(ti -> new TradeItemDTO(ti, canDelete(ti, userName)))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.count());
@@ -251,14 +236,22 @@ public class SimpleTradeItemService implements TradeItemService {
                         .getContent()
                         .stream()
                         .parallel()
-                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName)))
+                        .map(ti -> new TradeItemDTO(ti, canDelete(ti, userName)))
                         .collect(Collectors.toList()),
                 pageable,
                 tradeItemRepository.findByTradeList(tradeList).size());
     }
 
-    private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {
-        return isAdmin || owner != null && userName.equals(owner.getUsername());
+    @Override
+    public boolean canDelete(TradeItem item, TradeUser tradeUser) {
+        return tradeUser.getRole() == TradeUserRole.ROLE_ADMIN ||
+                item.getOwner().getUsername().equals(tradeUser.getUsername());
+    }
+
+    @Override
+    public boolean canDelete(TradeItem item, String username) {
+        TradeUser user = tradeUserRepository.findOneByUsername(username);
+        return canDelete(item, user);
     }
 
     @Override

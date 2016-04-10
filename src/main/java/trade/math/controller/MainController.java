@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
+import trade.math.domain.tradeItem.TradeItem;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItemDTO;
+import trade.math.model.TradeUser;
 import trade.math.service.TradeBoardGameService;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.service.TradeUserService;
@@ -63,7 +66,16 @@ public class MainController {
     @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
     @ResponseBody
     public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId, Authentication authentication) {
-        return tradeItemService.deleteById(deleteId.longValue(), isAdmin(authentication), getUserName(authentication)) ? "success" : "failure";
+        String username = authentication.getName();
+        TradeUser user = tradeUserService
+                .findByUsername(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User with %s not found", username)));
+        TradeItem item = tradeItemService.findById(deleteId.longValue());
+        if (tradeItemService.canDelete(item, user)) {
+            tradeItemService.deleteById(deleteId.longValue());
+            return "success";
+        }
+        return "failure";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
@@ -103,7 +115,7 @@ public class MainController {
 
     @RequestMapping("/searchOnTradeList")
     @ResponseBody
-    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal){
+    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal) {
         return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName());
     }
 
@@ -116,10 +128,9 @@ public class MainController {
     }
 
     private boolean isAdmin(Authentication authentication) {
-
         if (authentication != null)
             for (GrantedAuthority authority : authentication.getAuthorities())
-                if (authority.getAuthority().equals(TradeUserRole.ROLE_ADMIN.name()))
+                if (authority.getAuthority().equals(TradeUserRole.ROLE_ADMIN.name())) //TODO: może mieć kilka...
                     return true;
 
         return false;

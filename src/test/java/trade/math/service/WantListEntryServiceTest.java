@@ -44,7 +44,7 @@ public class WantListEntryServiceTest {
     @Before
     public void setUp() throws Exception {
         wantListService.deleteAll();
-        tradeItemService.deleteAll(true);
+        tradeItemService.deleteAll();
 
         tradeUserService.deleteAll();
         tradeUserService.save(new NewTradeUserForm(USERNAME_0, "some@email.com", "password", "password"));

@@ -36,7 +36,7 @@ public class TradeListServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        tradeItemService.deleteAll(true);
+        tradeItemService.deleteAll();
         tradeUserService.deleteAll();
         tradeListService.deleteAll();
 

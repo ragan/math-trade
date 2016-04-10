@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import trade.math.domain.wantList.WantListDTO;
 import trade.math.form.NewTradeItemForm;
 import trade.math.domain.tradeList.TradeList;
+import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 
 import java.util.List;
@@ -24,8 +25,6 @@ public interface TradeItemService {
 
     TradeItem update(TradeItem item);
 
-//    boolean updateWantList(Long tradeItemId, Long[] wantIds);
-
     List<TradeItem> findAll();
 
     TradeItem findById(Long itemId);
@@ -38,11 +37,13 @@ public interface TradeItemService {
 
     PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName);
 
+    void deleteById(Long itemId);
+
     void deleteAll();
 
-    void deleteAll(boolean isAdmin);
+    boolean canDelete(TradeItem item, TradeUser tradeUser);
 
-    boolean deleteById(Long itemId, boolean isAdmin, String userName);
+    boolean canDelete(TradeItem item, String username);
 
     void makeGroupLists();
 
