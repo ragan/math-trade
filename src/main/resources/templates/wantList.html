@@ -10,7 +10,9 @@
     </div>
 
     <div class="panel panel-primary">
-        <div class="panel-heading"><h4>Games to trade (Click to edit)</h4></div>
+        <div class="panel-heading">
+            <h4>Games to trade (Click to edit)</h4>
+        </div>
         <div class="panel-body">
             <div class="list-group">
                 <a class="list-group-item" th:each="item : ${myGames}" th:id="${item.id}" onclick="edit(this)">

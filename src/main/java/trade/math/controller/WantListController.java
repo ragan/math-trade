@@ -73,7 +73,8 @@ public class WantListController {
     @RequestMapping("/wantList/findItemById")
     @ResponseBody
     public WantListEntryDTO findItemById(@RequestParam long id) {
-        return tradeItemService.findByIdWantItem(id);
+        TradeItem item = tradeItemService.findById(id);
+        return null;
     }
 
     @RequestMapping("/wantList/getListTM.command")

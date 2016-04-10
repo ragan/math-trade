@@ -1,9 +1,8 @@
 package trade.math.domain.tradeItem;
 
 import org.springframework.data.domain.Pageable;
-import trade.math.domain.wantList.WantListEntryDTO;
-import trade.math.form.NewTradeItemForm;
 import trade.math.domain.tradeList.TradeList;
+import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 
@@ -29,8 +28,6 @@ public interface TradeItemService {
     TradeItem findById(Long itemId);
 
     List<TradeItem> findByIds(List<Long> ids);
-
-    WantListEntryDTO findByIdWantItem(Long itemId);
 
     PageWrapper<TradeItemDTO> findAll(Pageable pageable);
 

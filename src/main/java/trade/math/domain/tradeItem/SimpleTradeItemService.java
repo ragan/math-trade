@@ -144,12 +144,6 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public WantListEntryDTO findByIdWantItem(Long itemId) {
-        TradeItem item = tradeItemRepository.findOne(itemId);
-        return item != null ? new WantListEntryDTO(item.getId(), item.getTitle(), 0) : new WantListEntryDTO(0L, "", 0);
-    }
-
-    @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable) {
         return findAll(pageable, false, null);
     }
