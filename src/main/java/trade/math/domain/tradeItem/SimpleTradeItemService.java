@@ -42,8 +42,7 @@ public class SimpleTradeItemService implements TradeItemService {
             TradeItemRepository tradeItemRepository,
             TradeListService tradeListService,
             ItemGroupService itemGroupService,
-            WantListService wantListService,
-            TradeUserService tradeUserService
+            WantListService wantListService
     ) {
         this.tradeItemRepository = tradeItemRepository;
         this.tradeListService = tradeListService;
