@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeUser.TradeUserService;
+import trade.math.domain.wantList.WantListDTO;
 import trade.math.domain.wantList.WantListEntryDTO;
 import trade.math.domain.wantList.WantListService;
 import trade.math.model.TradeUser;
@@ -44,16 +45,18 @@ public class WantListController {
     public String wantListComposer(Model model, Principal principal) {
         TradeUser user = tradeUserService.findByUsername(principal.getName());
         List<TradeItem> items = tradeItemService.findByOwner(user);
-        model.addAttribute("wantLists", wantListService.findByItems(items));
+        List<WantListDTO> dtos = wantListService.findByItems(items).stream().map(WantListDTO::new).collect(toList());
+        model.addAttribute("wantLists", dtos);
 
         return "wantList";
     }
 
-    @RequestMapping(value = "/wantList/getList.command", method = RequestMethod.POST)
+    @RequestMapping(value = "/wantList/entries", method = RequestMethod.GET)
     @ResponseBody
-    public List<WantListEntryDTO> getWantListItems(@RequestParam Long itemId) {
-        return wantListService.findEntries(
-                tradeItemService.findById(itemId)).stream().map(WantListEntryDTO::new).collect(toList());
+    public List<WantListEntryDTO> getWantListItems(@RequestParam Long id) {
+        //TODO: trzeba się upewnić, że użytkownik przegląda tylko swoje listy
+        return wantListService.findEntries(tradeItemService.findById(id)).stream().map(WantListEntryDTO::new)
+                .collect(toList());
     }
 
     @RequestMapping(value = "/wantList/saveList.command", method = RequestMethod.POST)

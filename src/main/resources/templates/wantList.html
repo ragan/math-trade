@@ -15,13 +15,14 @@
         </div>
         <div class="panel-body">
             <div class="list-group">
-                <a class="list-group-item" th:each="wantList : ${wantLists}" th:id="${item.id}">
+                <a class="list-group-item" th:each="wantList : ${wantLists}" th:id="${wantList.id}">
                     <!--onclick="edit(this)"-->
-                    <h4 class="list-group-item-heading" th:text="${item.title}"></h4>
+                    <h4 class="list-group-item-heading" th:text="${wantList.offerTitle}"></h4>
 
                     <p class="list-group-item-text">
-                        <th:block th:each="wantListItem : ${item.wantList}"
-                                  th:text="${(#strings.length(wantListItem.wantTradeItem.title) > 15 ? #strings.substring(wantListItem.wantTradeItem.title, 0, 15) + '... | ' : wantListItem.wantTradeItem.title + ' | ')}"/>
+                        <th:block th:each="entry : ${wantList.entries}">
+                            <span th:text="entry.shortTitle"></span>
+                        </th:block>
                     </p>
                 </a>
             </div>
@@ -29,22 +30,26 @@
     </div>
 
     <div class="panel panel-primary collapse" id="editPanel">
-        <div class="panel-heading"><h4 id="editTitle">Edit want list</h4></div>
+        <div class="panel-heading">
+            <h4 id="editTitle">Edit want list</h4>
+        </div>
         <div class="panel-body">
-            <ul class="list-group" id="ourList">
-            </ul>
+            <ul class="list-group" id="ourList"></ul>
             <div class="input-group">
-                <select class="form-control" id="selector" style="width: 100%">
-                    <option selected="selected"></option>
-                </select>
+                <label>
+                    <select class="form-control" id="selector">
+                        <option selected="selected"></option>
+                    </select>
+                </label>
 
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default" onclick="addGame()">Add</button>
+                    <button id="add-game-button" type="button" class="btn btn-default">Add</button>
                 </div>
             </div>
             <div class="text-right" style="padding-top: 20px">
                 <button type="button" class="btn btn-success" onclick="save()">Save</button>
-                <button type="button" class="btn btn-danger" onclick="stopEdit()">Cancel</button>
+                <button id="stop-edit-button" type="button" class="btn btn-danger">Cancel</button>
+                <!--stopedit-->
             </div>
         </div>
     </div>
@@ -58,181 +63,15 @@
 <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $('#selector').select2({
-        ajax: {
-            url: "/searchOnTradeList",
-            dataType: 'json',
-            delay: 250,
-            data: function (param) {
-                var tit = param.term;
-                if (!tit)
-                    tit = '';
-
-                return {
-                    title: (param.term ? param.term : '')
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data
-                };
-            },
-            cache: true
-        },
-        templateResult: templateResult,
-        templateSelection: function (item) {
-            return item.title;
-        },
-        theme: "bootstrap"
+<script th:src="@{/js/wantList.js}" src="../static/js/wantList.js"></script>
+<script type="text/javascript">
+    $(function () {
+        Want.editPanel = $('#editPanel');
+        Want.entriesList = $('#ourList');
     });
-
-    function templateResult(item) {
-        if (item.loading) return item.text;
-
-        return $('<div/>').attr({class: 'media'})
-                .append($('<div/>').attr({class: 'media-left'})
-                        .append($('<a/>').attr({href: '#'})
-                                .append($('<img/>').attr({src: item.imgUrl, width: 100}))))
-                .append($('<div/>').attr({class: 'media-body'})
-                        .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
-    }
-
-    var sort = Sortable.create($('#ourList')[0], {
-        ghostClass: 'ghost',
-        animation: 150
-    });
-
-    function addGame() {
-        $.ajax({
-            url: '/wantList/findItemById',
-            dataType: 'json',
-            data: {
-                id: $('#selector').val()
-            },
-            success: function (data) {
-                if (data)
-                    $('#ourList').append('<li data-id="' + data.wantTradeItemId + '" class="list-group-item">' + data.wantTradeItemTitle + '</li>');
-            }
-        });
-    }
-
-    function save() {
-        $.ajax({
-            url: '/wantList/saveList.command',
-            dataType: 'json',
-            method: "POST",
-            data: {
-                itemId: $(editedButton).attr('id'),
-                wantIds: sort.toArray(),
-                    [[${_csrf.parameterName}]]
-    :
-        [[${_csrf.token}]]
-    }
-    ,
-    success: function (data, status) {
-        location.reload();
-    }
-
-    ,
-    error: function (data, status, error) {
-        alert(status + ' - ' + error);
-    }
-    }
-    )
-    ;
-    }
-
-    var editedButton = null;
-
-    function edit(button) {
-        if (editedButton == button)
-            stopEdit();
-        else
-            startEdit(button);
-
-    }
-
-    function startEdit(button) {
-        if (editedButton != null)
-            $(editedButton).removeClass('active');
-
-        $(button).addClass('active');
-        $('#editPanel').collapse('show');
-        $('html, body').animate({
-            scrollTop: $("#editPanel").offset().top
-        }, 500);
-        editedButton = button;
-
-        updateEditList();
-    }
-
-    function stopEdit() {
-        $(editedButton).removeClass('active');
-        $('html, body').animate({
-            scrollTop: 0
-        }, 500);
-        $('#editPanel').collapse('hide');
-        editedButton = null;
-    }
-
-    function updateEditList() {
-        $.ajax({
-            url: '/wantList/getList.command',
-            dataType: 'json',
-            method: "POST",
-            data: {
-                itemId: $(editedButton).attr('id'),
-                    [[${_csrf.parameterName}]]
-    :
-        [[${_csrf.token}]]
-    }
-    ,
-    success: function (data) {
-        $('#ourList').empty();
-        for (var i = 0; i < data.length; i++) {
-//            alert(data[i].wantTradeItemTitle);
-            $('#ourList').append('<li id="' + data[i].wantTradeItemId + '" data-id="' + data[i].wantTradeItemId + '" class="list-group-item">' + data[i].wantTradeItemTitle + '<span class="badge" onclick="removeWantItem(' + data[i].wantTradeItemId + ')">X</span></li>');
-        }
-    }
-    ,
-    error: function (data, status, error) {
-        alert(status + '  -  ' + data);
-    }
-    }
-    )
-    ;
-    }
-
-    function removeWantItem(wantTradeItemId) {
-        $('#ourList').children("#" + wantTradeItemId).remove();
-    }
-
-    function showTMtext() {
-        $.ajax({
-            url: '/wantList/getListTM.command',
-            dataType: 'text',
-            method: "POST",
-            data: {
-                    [[${_csrf.parameterName}]]
-    :
-        [[${_csrf.token}]]
-    }
-    ,
-    success: function (data) {
-        alert(data);
-    }
-    ,
-    error: function (data, status, error) {
-        alert(status + '  -  ' + data);
-    }
-    }
-    )
-    ;
-    }
-
-    /*]]>*/
+    $('.list-group-item').click(function () {
+        Want.edit(this);
+    })
 </script>
 </body>
 </html>
