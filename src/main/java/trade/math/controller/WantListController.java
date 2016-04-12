@@ -9,58 +9,82 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
-import trade.math.domain.tradeItem.wantListItem.WantListItemDTO;
-import trade.math.domain.tradeItem.wantListItem.WantListItemService;
+import trade.math.domain.tradeUser.TradeUserService;
+import trade.math.domain.wantList.WantListDTO;
+import trade.math.domain.wantList.WantListEntryDTO;
+import trade.math.domain.wantList.WantListService;
+import trade.math.model.TradeUser;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by daniel on 25.03.16.
- */
+import static java.util.stream.Collectors.toList;
+
 @Controller
 public class WantListController {
 
-    private TradeItemService tradeItemService;
-    private WantListItemService wantListItemService;
+    private final TradeItemService tradeItemService;
 
+    private final WantListService wantListService;
+
+    private final TradeUserService tradeUserService;
 
     @Autowired
-    public WantListController(TradeItemService tradeItemService, WantListItemService wantListItemService) {
+    public WantListController(
+            TradeItemService tradeItemService,
+            WantListService wantListService,
+            TradeUserService tradeUserService
+    ) {
         this.tradeItemService = tradeItemService;
-        this.wantListItemService = wantListItemService;
+        this.wantListService = wantListService;
+        this.tradeUserService = tradeUserService;
     }
 
     @RequestMapping(value = "/wantList", method = RequestMethod.GET)
     public String wantListComposer(Model model, Principal principal) {
-        model.addAttribute("myGames", tradeItemService.findByRecentTradeListAndOwner(principal.getName()));
+        TradeUser user = tradeUserService.findByUsername(principal.getName());
+        List<TradeItem> items = tradeItemService.findByOwner(user);
+        List<WantListDTO> dtos = wantListService.findByItems(items).stream().map(WantListDTO::new).collect(toList());
+        model.addAttribute("wantLists", dtos);
 
         return "wantList";
     }
 
-    @RequestMapping(value = "/wantList/getList.command", method = RequestMethod.POST)
+    @RequestMapping(value = "/wantList/entries", method = RequestMethod.GET)
     @ResponseBody
-    public List<WantListItemDTO> getWantListItems(@RequestParam Long itemId) {
-        return wantListItemService.findWantListByOfferTradeItem(tradeItemService.findById(itemId));
+    public List<WantListEntryDTO> getWantListItems(@RequestParam Long id) {
+        //TODO: trzeba się upewnić, że użytkownik przegląda tylko swoje listy
+        return wantListService.findEntries(tradeItemService.findById(id)).stream().map(WantListEntryDTO::new)
+                .collect(toList());
     }
 
     @RequestMapping(value = "/wantList/saveList.command", method = RequestMethod.POST)
     @ResponseBody
-    public boolean saveWantListItems(@RequestParam Long itemId, @RequestParam(value = "wantIds[]", required = false) Long[] wantIds) {
-        return tradeItemService.updateWantList(itemId, (wantIds == null ? new Long[0] : wantIds));
+    public boolean saveWantListItems(
+            @RequestParam
+            Long itemId,
+            @RequestParam(value = "wantIds[]", required = false)
+            Long[] wantIds
+    ) {
+        TradeItem item = tradeItemService.findById(itemId);
+        List<TradeItem> offers = tradeItemService.findByIds(Arrays.asList(wantIds));
+        wantListService.setWants(item, offers);
+        return true;
     }
 
 
     @RequestMapping("/wantList/findItemById")
     @ResponseBody
-    public WantListItemDTO findItemById(@RequestParam long id){
-        return tradeItemService.findByIdWantItem(id);
+    public WantListEntryDTO findItemById(@RequestParam long id) {
+        TradeItem item = tradeItemService.findById(id);
+        return null;
     }
 
     @RequestMapping("/wantList/getListTM.command")
     @ResponseBody
-    public String getWantListTM(Principal principal){
-        return tradeItemService.generateTradeWantListTM(principal.getName());
+    public String getWantListTM(Principal principal) {
+        TradeUser user = tradeUserService.findByUsername(principal.getName());
+        return tradeItemService.generateTradeWantListTM(user);
     }
 }

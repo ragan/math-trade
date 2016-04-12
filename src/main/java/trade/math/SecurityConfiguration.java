@@ -25,7 +25,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf()
-                .ignoringAntMatchers("/admin/**")
+                .ignoringAntMatchers("/admin/**", "/wantList/**")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/addItem/**").hasRole("USER")

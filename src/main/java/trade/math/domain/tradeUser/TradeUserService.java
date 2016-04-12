@@ -1,4 +1,4 @@
-package trade.math.service;
+package trade.math.domain.tradeUser;
 
 import trade.math.TradeUserRole;
 import trade.math.form.NewTradeUserForm;
@@ -27,5 +27,5 @@ public interface TradeUserService {
      */
     void deleteAll(TradeUserRole tradeUserRole);
 
-    Optional<TradeUser> findByUsername(String username);
+    TradeUser findByUsername(String username);
 }

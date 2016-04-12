@@ -1,55 +1,49 @@
 package trade.math.domain.tradeItem;
 
 import org.springframework.data.domain.Pageable;
-import trade.math.domain.tradeItem.wantListItem.WantListItemDTO;
-import trade.math.form.NewTradeItemForm;
 import trade.math.domain.tradeList.TradeList;
+import trade.math.form.NewTradeItemForm;
+import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Created by karol on 17.02.16.
- */
 public interface TradeItemService {
 
-    TradeItem save(NewTradeItemForm newTradeItemForm, String username);
+    TradeItem save(NewTradeItemForm newTradeItemForm, TradeUser user);
 
-    TradeItem save(NewTradeItemForm newTradeItemForm, String username, TradeList tradeList);
+    TradeItem save(NewTradeItemForm newTradeItemForm, TradeUser user, TradeList tradeList);
 
     List<TradeItem> findByTradeList(TradeList tradeList);
 
-    List<TradeItem> findByTradeList(Long tradeListId);
-
-    List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName);
+    List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, TradeUser user);
 
     List<TradeItem> findByRecentTradeList();
 
-    List<TradeItem> findByRecentTradeListAndOwner(String userName);
-
-    TradeItem update(TradeItem item);
-
-    boolean updateWantList(Long tradeItemId, Long[] wantIds);
+    List<TradeItem> findByRecentTradeListAndOwner(TradeUser user);
 
     List<TradeItem> findAll();
 
     TradeItem findById(Long itemId);
 
-    WantListItemDTO findByIdWantItem(Long itemId);
+    List<TradeItem> findByIds(List<Long> ids);
+
+    List<TradeItem> findByOwner(TradeUser owner);
 
     PageWrapper<TradeItemDTO> findAll(Pageable pageable);
 
-    PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName);
+    PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, TradeUser user);
 
-    PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName);
+    PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, TradeUser user);
+
+    void deleteById(Long itemId);
 
     void deleteAll();
 
-    void deleteAll(boolean isAdmin);
+    boolean canDelete(TradeItem item, TradeUser user);
 
-    boolean deleteById(Long itemId, boolean isAdmin, String userName);
+    boolean canDelete(TradeItem item, Optional<TradeUser> user);
 
-    void makeGroupLists();
-
-    String generateTradeWantListTM(String userName);
+    String generateTradeWantListTM(TradeUser user);
 }

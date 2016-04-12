@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,22 +12,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import trade.math.TradeUserRole;
 import trade.math.bgsearch.BoardGameSearchResult;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
-import trade.math.form.NewTradeItemForm;
-import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemDTO;
-import trade.math.service.TradeBoardGameService;
 import trade.math.domain.tradeItem.TradeItemService;
-import trade.math.service.TradeUserService;
+import trade.math.domain.tradeUser.TradeUserService;
+import trade.math.form.NewTradeItemForm;
+import trade.math.form.NewTradeUserForm;
+import trade.math.model.TradeUser;
+import trade.math.service.TradeBoardGameService;
 
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by danielpietrzak on 15.02.2016.
@@ -41,6 +43,7 @@ public class MainController {
     private TradeBoardGameService tradeBoardGameService;
 
     public MainController() {
+        //
     }
 
     @Autowired
@@ -51,9 +54,21 @@ public class MainController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String main(Model model, Authentication authentication, @RequestParam(value = "page", required = false) Optional<Integer> pageNum) {
-        model.addAttribute("mainList", tradeItemService.findAllByRecentTradeList(new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), getUserName(authentication)));
-
+    public String main(
+            Model model,
+            Authentication authentication,
+            @RequestParam(value = "page", required = false)
+            Optional<Integer> pageNum
+    ) {
+        TradeUser user = null;
+        if (authentication != null) {
+            try {
+                user = tradeUserService.findByUsername(authentication.getName());
+            } catch (UsernameNotFoundException ignored) {
+            }
+        }
+        model.addAttribute("mainList", tradeItemService.findAllByRecentTradeList(
+                new PageRequest(pageNum.orElse(1) - 1, 10), isAdmin(authentication), user));
         return "index";
     }
 
@@ -64,8 +79,17 @@ public class MainController {
 
     @RequestMapping(value = "/deleteItem", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteTradeItem(@RequestParam(value = "deleteId") Integer deleteId, Authentication authentication) {
-        return tradeItemService.deleteById(deleteId.longValue(), isAdmin(authentication), getUserName(authentication)) ? "success" : "failure";
+    public String deleteTradeItem(
+            @RequestParam(value = "deleteId")
+            Integer deleteId, Authentication auth
+    ) {
+        TradeUser user = tradeUserService.findByUsername(auth.getName());
+        TradeItem item = tradeItemService.findById(deleteId.longValue());
+        if (tradeItemService.canDelete(item, user)) {
+            tradeItemService.deleteById(deleteId.longValue());
+            return "success";
+        }
+        return "failure";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
@@ -86,14 +110,16 @@ public class MainController {
     }
 
     @RequestMapping(value = "/addItem", method = RequestMethod.POST)
-    public String doAddTradeItem(@Valid NewTradeItemForm newTradeItemForm,
-                                 BindingResult bindingResult,
-                                 RedirectAttributes redirectAttributes,
-                                 Principal principal) {
+    public String doAddTradeItem(
+            @Valid
+            NewTradeItemForm newTradeItemForm,
+            BindingResult bindingResult,
+            Principal principal
+    ) {
         if (bindingResult.hasErrors())
             return "addItem";
-        tradeItemService.save(newTradeItemForm, principal.getName());
-//        redirectAttributes.addAttribute("success");
+        TradeUser user = tradeUserService.findByUsername(principal.getName());
+        tradeItemService.save(newTradeItemForm, user);
         return "redirect:/addItem?success";
     }
 
@@ -105,8 +131,11 @@ public class MainController {
 
     @RequestMapping("/searchOnTradeList")
     @ResponseBody
-    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal){
-        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, principal.getName());
+    public List<TradeItemDTO> searchItemsOnTradeList(@RequestParam String title, Principal principal) {
+        TradeUser user = tradeUserService.findByUsername(principal.getName());
+        return tradeItemService.findByRecentTradeListAndNameAndNotOwner(title, user).stream()
+                .map(item -> new TradeItemDTO(item, false))
+                .collect(toList());
     }
 
 
@@ -118,10 +147,9 @@ public class MainController {
     }
 
     private boolean isAdmin(Authentication authentication) {
-
         if (authentication != null)
             for (GrantedAuthority authority : authentication.getAuthorities())
-                if (authority.getAuthority().equals(TradeUserRole.ROLE_ADMIN.name()))
+                if (authority.getAuthority().equals(TradeUserRole.ROLE_ADMIN.name())) //TODO: może mieć kilka...
                     return true;
 
         return false;

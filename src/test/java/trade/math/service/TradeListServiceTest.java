@@ -11,11 +11,13 @@ import trade.math.MtApplication;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeList.IllegalTradeListStateChange;
 import trade.math.domain.tradeList.TradeListService;
+import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListState;
+import trade.math.model.TradeUser;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -36,7 +38,7 @@ public class TradeListServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        tradeItemService.deleteAll(true);
+        tradeItemService.deleteAll();
         tradeUserService.deleteAll();
         tradeListService.deleteAll();
 
@@ -52,6 +54,8 @@ public class TradeListServiceTest {
 
     @Test
     public void testFindMostRecentList() throws Exception {
+        //TODO: ten test raz mi nie przeszedł.
+        //TODO: a nawet więcej razy... czasem działa, czasem nie (za szybko?).
         TradeList list0 = tradeListService.createNewList();
         TradeList list1 = tradeListService.createNewList();
         TradeList mostRecentList = tradeListService.findMostRecentList().get();
@@ -69,7 +73,7 @@ public class TradeListServiceTest {
     public void testAllItemsAreAssignedToCurrentOpenList() throws Exception {
         tradeListService.createNewList();
         NewTradeItemForm itemForm = new NewTradeItemForm("title", "description", "");
-        TradeItem item = tradeItemService.save(itemForm, "username");
+        TradeItem item = tradeItemService.save(itemForm, getUser("username"));
 
         assertThat(item.getTradeList(), is(notNullValue()));
         assertThat(item.getTradeList(), is(instanceOf(TradeList.class)));
@@ -77,10 +81,14 @@ public class TradeListServiceTest {
         assertThat(tradeItemService.findByRecentTradeList(), hasSize(1));
 
         tradeListService.createNewList();
-        tradeItemService.save(itemForm, "username");
-        tradeItemService.save(itemForm, "username");
+        tradeItemService.save(itemForm, getUser("username"));
+        tradeItemService.save(itemForm, getUser("username"));
 
         assertThat(tradeItemService.findByRecentTradeList(), hasSize(2));
+    }
+
+    private TradeUser getUser(String username) {
+        return tradeUserService.findByUsername(username);
     }
 
     @Test
@@ -88,7 +96,7 @@ public class TradeListServiceTest {
         tradeListService.createNewList();
         tradeListService.setState(TradeListState.CLOSED);
 
-        tradeItemService.save(new NewTradeItemForm("title", "description", ""), "username");
+        tradeItemService.save(new NewTradeItemForm("title", "description", ""), getUser("username"));
         assertThat(tradeItemService.findAll(), hasSize(1));
 
         assertThat(tradeItemService.findByRecentTradeList(), is(empty()));

@@ -1,12 +1,7 @@
 package trade.math.domain.tradeItem;
 
-import trade.math.domain.groupList.GroupList;
-import trade.math.model.TradeBoardGameProperties;
+import trade.math.domain.groupList.ItemGroup;
 import trade.math.model.TradeItemCategory;
-
-import java.util.Optional;
-
-import static trade.math.model.TradeItemCategory.*;
 
 public class TradeItemDTO {
 
@@ -24,25 +19,21 @@ public class TradeItemDTO {
 
     private Integer bggId;
 
-    private GroupList groupList;
+    private ItemGroup itemGroup;
 
     public TradeItemDTO() {
         //
     }
 
     public TradeItemDTO(TradeItem tradeItem, boolean deletable) {
-        this(tradeItem, deletable, Optional.empty());
-    }
-
-    public TradeItemDTO(TradeItem tradeItem, boolean deletable, Optional<TradeBoardGameProperties> properties) {
         this.id = tradeItem.getId();
         this.title = tradeItem.getTitle();
         this.description = tradeItem.getDescription();
         this.imgUrl = tradeItem.getImgUrl();
         this.category = tradeItem.getCategory();
         this.deletable = deletable;
-        this.bggId = properties.map(p -> p.getBggId()).orElse(null);
-        this.groupList = tradeItem.getGroupList();
+        this.itemGroup = tradeItem.getItemGroup();
+        this.bggId = tradeItem.getBggId();
     }
 
     public TradeItemDTO(long id, String title, String description, String imgURL, boolean canDelete) {
@@ -51,16 +42,8 @@ public class TradeItemDTO {
         this.description = description;
         this.imgUrl = imgURL;
         this.deletable = canDelete;
+        this.bggId = -1;
     }
-
-//    public TradeItem toTradeItem() {
-//        TradeItem tradeItem = new TradeItem();
-//        tradeItem.setId(getId());
-//        tradeItem.setTitle(getTitle());
-//        tradeItem.setDescription(getDescription());
-//        tradeItem.setImgUrl(getImgUrl());
-//        tradeItem.;
-//    }
 
     public long getId() {
         return id;
@@ -126,12 +109,12 @@ public class TradeItemDTO {
         this.bggId = bggId;
     }
 
-    public GroupList getGroupList() {
-        return groupList;
+    public ItemGroup getItemGroup() {
+        return itemGroup;
     }
 
-    public void setGroupList(GroupList groupList) {
-        this.groupList = groupList;
+    public void setItemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
     }
 
 }

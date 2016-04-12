@@ -1,19 +1,23 @@
 package trade.math.domain.groupList;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+public class ItemGroupDTO {
 
-@Entity
-public class GroupList {
-
-    @Id
-    @GeneratedValue
     private Long id;
 
-    @Column(name = "TITLE")
     private String title;
+
+    public ItemGroupDTO() {
+        //
+    }
+
+    public ItemGroupDTO(String title) {
+        this.title = title;
+    }
+
+    public ItemGroupDTO(ItemGroup itemGroup) {
+        this.id = itemGroup.getId();
+        this.title = itemGroup.getTitle();
+    }
 
     public Long getId() {
         return id;

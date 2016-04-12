@@ -4,81 +4,65 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import trade.math.domain.tradeItem.wantListItem.WantListItem;
-import trade.math.domain.tradeItem.wantListItem.WantListItemDTO;
-import trade.math.domain.tradeItem.wantListItem.WantListItemService;
-import trade.math.GroupListItemWrapper;
-import trade.math.domain.groupList.GroupListItem;
-import trade.math.domain.groupList.GroupListService;
+import trade.math.TradeUserRole;
+import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
+import trade.math.domain.tradeUser.TradeUserService;
+import trade.math.domain.wantList.WantList;
+import trade.math.domain.wantList.WantListEntryDTO;
+import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
-import trade.math.model.*;
-import trade.math.repository.TradeItemRepository;
-import trade.math.repository.TradeUserRepository;
-import trade.math.service.BggIdToTitleService;
-import trade.math.service.TradeBoardGamePropertiesService;
+import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- * Created by karol on 17.02.16.
- */
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
 @Service
 @Transactional
 public class SimpleTradeItemService implements TradeItemService {
 
     private final TradeItemRepository tradeItemRepository;
 
-    private final BggIdToTitleService bggIdToTitleService;
-
-    private final TradeUserRepository tradeUserRepository;
-
     private final TradeListService tradeListService;
 
-    private final TradeBoardGamePropertiesService tradeBoardGamePropertiesService;
+    private final WantListService wantListService;
 
-    private final WantListItemService wantListItemService;
-
-    private final GroupListService groupListService;
+    private final ItemGroupService itemGroupService;
 
     @Autowired
-    public SimpleTradeItemService(TradeItemRepository tradeItemRepository,
-                                  BggIdToTitleService bggIdToTitleService,
-                                  TradeUserRepository tradeUserRepository,
-                                  TradeListService tradeListService,
-                                  TradeBoardGamePropertiesService tradeBoardGamePropertiesService,
-                                  GroupListService groupListService,
-                                  WantListItemService wantListItemService) {
+    public SimpleTradeItemService(
+            TradeItemRepository tradeItemRepository,
+            TradeListService tradeListService,
+            ItemGroupService itemGroupService,
+            WantListService wantListService
+    ) {
         this.tradeItemRepository = tradeItemRepository;
-        this.bggIdToTitleService = bggIdToTitleService;
-        this.tradeUserRepository = tradeUserRepository;
         this.tradeListService = tradeListService;
-        this.tradeBoardGamePropertiesService = tradeBoardGamePropertiesService;
-        this.groupListService = groupListService;
-        this.wantListItemService = wantListItemService;
+        this.itemGroupService = itemGroupService;
+        this.wantListService = wantListService;
     }
 
     @Override
-    public TradeItem save(NewTradeItemForm tradeItemForm, String username) {
+    public TradeItem save(NewTradeItemForm tradeItemForm, TradeUser user) {
         TradeList list = tradeListService.findMostRecentList().orElse(null);
         if (list != null && list.getState() == TradeListState.CLOSED)
             list = null;
-        return save(tradeItemForm, username, list);
+        return save(tradeItemForm, user, list);
     }
 
     @Override
-    public TradeItem save(NewTradeItemForm newTradeItemForm, String username, TradeList tradeList) {
+    public TradeItem save(NewTradeItemForm newTradeItemForm, TradeUser user, TradeList tradeList) {
         TradeItem tradeItem = new TradeItem();
 
-        tradeItem.setOwner(tradeUserRepository.findOneByUsername(username));
+        tradeItem.setOwner(user);
 
         tradeItem.setDescription(newTradeItemForm.getDescription());
         tradeItem.setForTrade(false);
@@ -86,66 +70,15 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeItem.setImgUrl(newTradeItemForm.getImageUrl());
         tradeItem.setTradeList(tradeList);
         tradeItem.setCategory(newTradeItemForm.getCategory());
+        tradeItem.setBggId(newTradeItemForm.getBggId());
 
         tradeItem = tradeItemRepository.save(tradeItem);
 
-        handleSaveProperties(tradeItem, newTradeItemForm);
+        WantList wantList = new WantList();
+        wantList.setItem(tradeItem);
+        wantListService.save(wantList);
 
         return tradeItem;
-    }
-
-    @Override
-    public TradeItem update(TradeItem item) {
-        return tradeItemRepository.save(item);
-    }
-
-    @Override
-    public boolean updateWantList(Long tradeItemId, Long[] wantIds) {
-        TradeItem tradeItem = tradeItemRepository.findOne(tradeItemId);
-
-        if (tradeItem == null)
-            return false;
-
-        List<WantListItem> wantList = tradeItem.getWantList();
-
-        if (wantList == null)
-            wantList = new ArrayList<>();
-
-
-        //Remove unused
-        List<WantListItem> toRemove = new ArrayList<>();
-
-        for (WantListItem wantListItem : wantList)
-            if (wantListItem.getOfferTradeItem().getId() != tradeItemId ||
-                    !Stream.of(wantIds).anyMatch(value -> value.equals(wantListItem.getWantTradeItem().getId())))
-                toRemove.add(wantListItem);
-
-        for (int i = 0; i < toRemove.size(); i++)
-            wantListItemService.delete(toRemove.get(i), this);
-        toRemove.clear();
-
-        //Update and create new
-        for (int i = 0; i < wantIds.length; i++) {
-            int priority = i;
-            WantListItem item = wantList.stream().filter(wantListItem -> wantListItem.getWantTradeItem().getId().equals(wantIds[priority])).findFirst().orElse(null);
-
-            if (item != null) {
-                item.setPriority(i + 1);
-                wantListItemService.update(item);
-            } else {
-                TradeItem wantItem = tradeItemRepository.findOne(wantIds[i]);
-                if (wantItem == null)
-                    continue;
-
-                item = new WantListItem();
-                item.setWantTradeItem(tradeItemRepository.findOne(wantIds[i]));
-                item.setPriority(i + 1);
-                item.setOfferTradeItem(tradeItem);
-                wantListItemService.save(item);
-            }
-        }
-
-        return true;
     }
 
     @Override
@@ -154,33 +87,18 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public List<TradeItem> findByTradeList(Long tradeListId) {
-        return findByTradeList(tradeListService.findById(tradeListId));
-    }
-
-    @Override
-    public List<TradeItemDTO> findByRecentTradeListAndNameAndNotOwner(String name, String userName) {
+    public List<TradeItem> findByRecentTradeListAndNameAndNotOwner(String name, TradeUser user) {
         TradeList recentList = tradeListService.findMostRecentList().orElse(null);
-        TradeUser owner = tradeUserRepository.findOneByUsername(userName);
 
-        if (owner == null)
+        if (user == null)
             return null;
 
-        List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), owner);
+        List<TradeItem> exact = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), user);
 
-        List<TradeItem> containing = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseContainingAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), owner);
+        List<TradeItem> containing = tradeItemRepository.findByTradeListAndTitleAllIgnoreCaseContainingAndOwnerNotOrderByTitleAsc(recentList, name.toLowerCase(), user);
         exact.addAll(containing);
 
-        return exact.stream()
-                .distinct()
-                .limit(10)
-                .map(tradeItem -> new TradeItemDTO(
-                        tradeItem.getId(),
-                        tradeItem.getTitle(),
-                        tradeItem.getDescription(),
-                        tradeItem.getImgUrl(),
-                        false
-                )).collect(Collectors.toList());
+        return exact;
     }
 
     @Override
@@ -189,8 +107,8 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public List<TradeItem> findByRecentTradeListAndOwner(String userName) {
-        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), tradeUserRepository.findOneByUsername(userName));
+    public List<TradeItem> findByRecentTradeListAndOwner(TradeUser user) {
+        return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), user);
     }
 
     @Override
@@ -199,153 +117,102 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public void deleteById(Long itemId) {
+        TradeItem item = tradeItemRepository.findOne(itemId);
+        wantListService.deleteWantList(item);
+        tradeItemRepository.delete(itemId);
+    }
+
+    @Override
     public void deleteAll() {
-        deleteAll(true);
-    }
-
-    @Override
-    public void deleteAll(boolean isAdmin) { //TODO: WTF?
-        if (isAdmin) {
-            tradeBoardGamePropertiesService.deleteAll();
-            tradeItemRepository.deleteAll();
-        }
-    }
-
-    @Override
-    public boolean deleteById(Long itemId, boolean isAdmin, String userName) {
-        TradeItem item = findById(itemId);
-        if (item == null || !checkPermission(item.getOwner(), isAdmin, userName))
-            return false;
-
-        handleDeleteProperties(item);
-
-        try {
-            tradeItemRepository.delete(itemId);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
+        wantListService.deleteAll();
+        tradeItemRepository.deleteAll();
     }
 
     @Override
     public TradeItem findById(Long itemId) {
-        return tradeItemRepository.findOne(itemId);
+        TradeItem item = tradeItemRepository.findOne(itemId);
+        if (item == null)
+            throw new IllegalArgumentException("Item not found.");
+        return item;
     }
 
     @Override
-    public WantListItemDTO findByIdWantItem(Long itemId) {
-        TradeItem item = tradeItemRepository.findOne(itemId);
-        return item != null ? new WantListItemDTO(item.getId(), item.getTitle(), 0) : new WantListItemDTO(0L, "", 0);
+    public List<TradeItem> findByIds(List<Long> ids) {
+        return ids.stream().map(tradeItemRepository::findOne).collect(toList());
+    }
+
+    @Override
+    public List<TradeItem> findByOwner(TradeUser owner) {
+        return tradeItemRepository.findByOwner(owner);
     }
 
     @Override
     public PageWrapper<TradeItemDTO> findAll(Pageable pageable) {
-        return findAll(pageable, false, "");
+        return findAll(pageable, false, null);
     }
 
     @Override
-    public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, String userName) {
-        return new TradeItemPageWrapper(
-                tradeItemRepository.findAll(pageable)
-                        .getContent()
-                        .stream()
-                        .parallel()
-                        .map(ti -> new TradeItemDTO(
-                                ti, checkPermission(ti.getOwner(), isAdmin, userName), Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
-                        .collect(Collectors.toList()),
-                pageable,
+    public PageWrapper<TradeItemDTO> findAll(Pageable pageable, boolean isAdmin, TradeUser user) {
+        return toPageWrapper(pageable, getItemsWithCanDelete(pageable, user), tradeItemRepository.count());
+    }
+
+    private Map<TradeItem, Boolean> getItemsWithCanDelete(Pageable pageable, TradeUser user) {
+        return getItemsWithCanDelete(tradeItemRepository.findAll(pageable).getContent(), user);
+    }
+
+    private Map<TradeItem, Boolean> getItemsWithCanDelete(List<TradeItem> items, TradeUser user) {
+        return items.stream().collect(toMap(i -> i, i -> canDelete(i, user)));
+    }
+
+    private PageWrapper<TradeItemDTO> toPageWrapper(Pageable pageable, Map<TradeItem, Boolean> items, long itemCount) {
+        List<TradeItemDTO> dtos = items.entrySet()
+                .stream()
+                .map(e -> new TradeItemDTO(e.getKey(), e.getValue()))
+                .collect(toList());
+        return new TradeItemPageWrapper(dtos, pageable, itemCount);
+    }
+
+    @Override
+    public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, TradeUser user) {
+        TradeList tradeList = tradeListService.findMostRecentList().orElse(null);
+        return toPageWrapper(pageable, getItemsWithCanDelete(tradeItemRepository.findByTradeList(tradeList), user),
                 tradeItemRepository.count());
     }
 
     @Override
-    public PageWrapper<TradeItemDTO> findAllByRecentTradeList(Pageable pageable, boolean isAdmin, String userName) {
-        TradeList tradeList = tradeListService.findMostRecentList().orElse(null);
-        return new TradeItemPageWrapper(
-                tradeItemRepository.findByTradeList(tradeList, pageable)
-                        .getContent()
-                        .stream()
-                        .parallel()
-                        .map(ti -> new TradeItemDTO(ti, checkPermission(ti.getOwner(), isAdmin, userName), Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
-                        .collect(Collectors.toList()),
-                pageable,
-                tradeItemRepository.findByTradeList(tradeList).size());
-    }
-
-    private boolean checkPermission(TradeUser owner, boolean isAdmin, String userName) {
-        return isAdmin || owner != null && userName.equals(owner.getUsername());
-    }
-
-    private void handleSaveProperties(TradeItem tradeItem, NewTradeItemForm newTradeItemForm) {
-        if (tradeItem == null)
-            return;
-
-        switch (newTradeItemForm.getCategory()) {
-            case BOARD_GAME:
-                tradeBoardGamePropertiesService.save(new TradeBoardGameProperties(tradeItem, newTradeItemForm.getBggId()));
-                break;
-        }
-    }
-
-    private void handleDeleteProperties(TradeItem item) {
-        tradeBoardGamePropertiesService.deleteByTradeItem(item);
+    public boolean canDelete(TradeItem item, TradeUser user) {
+        return canDelete(item, Optional.ofNullable(user));
     }
 
     @Override
-    public void makeGroupLists() {
-        makeGroupLists(findByRecentTradeList().stream()
-                .map(ti -> new TradeItemDTO(ti,
-                        false,
-                        Optional.ofNullable(tradeBoardGamePropertiesService.findByTradeItem(ti))))
-                .collect(Collectors.toList()));
+    public boolean canDelete(TradeItem item, Optional<TradeUser> user) {
+        if (!user.isPresent()) {
+            return false;
+        }
+        TradeUser tradeUser = user.get();
+        return tradeUser.getRole() == TradeUserRole.ROLE_ADMIN ||
+                item.getOwner().getUsername().equals(tradeUser.getUsername());
     }
 
     @Override
-    public String generateTradeWantListTM(String userName) {
-        String tmText = "";
-        List<TradeItem> tradeItems = findByRecentTradeListAndOwner(userName);
-
-        if(tradeItems == null)
-            return tmText;
-
-
-        for(TradeItem tradeItem : tradeItems){
-            if(tradeItem.getWantList() == null || tradeItem.getWantList().size() == 0)
-                continue;
-            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
-            for(WantListItemDTO wantItem : wantListItemService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
-                tmText += wantItem.getWantTradeItemId() + " ";
-        }
-
-        return tmText;
+    public String generateTradeWantListTM(TradeUser user) {
+        return "";
+//        String tmText = "";
+//        List<TradeItem> tradeItems = findByRecentTradeListAndOwner(userName);
+//
+//        if (tradeItems == null)
+//            return tmText;
+//
+//
+//        for (TradeItem tradeItem : tradeItems) {
+//            if (tradeItem.getWantList() == null || tradeItem.getWantList().getWant().size() == 0)
+//                continue;
+//            tmText += "\n(" + userName + ") " + tradeItem.getId() + " : ";
+//            for (WantListEntryDTO wantItem : wantListService.findWantListByOfferTradeItem(tradeItem).stream().sorted((o1, o2) -> Integer.compare(o1.getPriority(), o2.getPriority())).collect(Collectors.toList()))
+//                tmText += wantItem.getWantTradeItemId() + " ";
+//        }
+//        return tmText;
     }
 
-    private void makeGroupLists(List<TradeItemDTO> tradeItemDTOs) {
-//        Map<TradeItemCategory, List<TradeItemDTO>> collect = tradeItemDTOs.stream()
-//                .collect(Collectors.groupingBy(dto -> dto.getCategory()));
-//        collect.entrySet().forEach(entry -> {
-//            Map<GroupListDTO, List<GroupListItem>> map =
-//                    groupListService.makeGroupLists(makeGroupListItems(entry.getValue()));
-//            map.forEach((k, v) -> {
-//                v.forEach(ti -> );
-//            });
-//        });
-    }
-
-    private List<GroupListItem> makeGroupListItems(List<TradeItemDTO> tradeItemDTOs) {
-        return tradeItemDTOs.stream().map(this::makeGroupListItem).collect(Collectors.toList());
-    }
-
-    private GroupListItem makeGroupListItem(TradeItemDTO tradeItemDTO) {
-        switch (tradeItemDTO.getCategory()) {
-            case NONE:
-                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getCategory);
-            case BOARD_GAME:
-                return new GroupListItemWrapper<>(tradeItemDTO, TradeItemDTO::getBggId);
-            default:
-                throw new IllegalArgumentException(String.format("Unknown category: %s. Don't know what to do.",
-                        tradeItemDTO.getCategory()));
-        }
-    }
 }

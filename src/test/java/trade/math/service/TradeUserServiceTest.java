@@ -1,19 +1,18 @@
 package trade.math.service;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.TradeUserRole;
+import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.form.NewTradeUserForm;
 import trade.math.model.TradeUser;
-
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -36,21 +35,21 @@ public class TradeUserServiceTest {
 
     @Test
     public void testIfAdminIsPresent() throws Exception {
-        assertThat(tradeUserService.findByUsername("admin").isPresent(), is(true));
+        assertThat(tradeUserService.findByUsername("admin"), is(notNullValue()));
     }
 
-    @Test
+    @Test(expected = UsernameNotFoundException.class)
     public void testWhenUsernameIsNotFound() throws Exception {
-        assertThat(tradeUserService.findByUsername("illegal username").isPresent(), is(false));
+        assertThat(tradeUserService.findByUsername("illegal username"), is(nullValue()));
     }
 
     @Test
     public void testPersistUserWithAdminRole() throws Exception {
         assertThat(tradeUserService.save(makeNewUserForm("admin_username", "admin@email.com", "password"),
                 TradeUserRole.ROLE_ADMIN), is(notNullValue()));
-        Optional<TradeUser> username = tradeUserService.findByUsername("admin_username");
-        assertThat(username.isPresent(), is(true));
-        assertThat(username.get().getRole(), is(TradeUserRole.ROLE_ADMIN));
+        TradeUser user = tradeUserService.findByUsername("admin_username");
+        assertThat(user, is(notNullValue()));
+        assertThat(user.getRole(), is(TradeUserRole.ROLE_ADMIN));
     }
 
     @Test
@@ -59,7 +58,7 @@ public class TradeUserServiceTest {
         assertNotNull(tradeUserService.save(newTradeUserForm)); //jest w bazie admin z tym mailem
 
         assertNotNull(tradeUserService.findByUsername(newTradeUserForm.getUsername()));
-        assertTrue(tradeUserService.findByUsername(newTradeUserForm.getUsername()).get().getUsername()
+        assertTrue(tradeUserService.findByUsername(newTradeUserForm.getUsername()).getUsername()
                 .equals(newTradeUserForm.getUsername()));
     }
 
@@ -76,7 +75,7 @@ public class TradeUserServiceTest {
         newTradeUserForm.setPassword("");
         tradeUserService.save(newTradeUserForm);
 
-        assertFalse(tradeUserService.findByUsername(newTradeUserForm.getUsername()).get().getPassword().equals(""));
+        assertFalse(tradeUserService.findByUsername(newTradeUserForm.getUsername()).getPassword().equals(""));
     }
 
     @Test(expected = Exception.class)
