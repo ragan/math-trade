@@ -84,6 +84,10 @@ public class WantListControllerTest {
                 .andExpect(status().is3xxRedirection());
         mockMvc.perform(get("/wantList/entries"))
                 .andExpect(status().is3xxRedirection());
+        mockMvc.perform(put("/wantList/entries"))
+                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(get("/wantList/items"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
