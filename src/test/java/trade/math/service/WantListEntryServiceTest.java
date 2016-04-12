@@ -159,15 +159,16 @@ public class WantListEntryServiceTest {
 
     @Test
     public void saveWantListItemTest() {
-//        List<TradeItem> list1 = generateArrayItems(10, "test", "username");
-//        List<TradeItem> list2 = generateArrayItems(15, "want", "username1");
-
+//        List<TradeItem> list1 = makeItems(10, "test", "username");
+//        List<TradeItem> list2 = makeItems(15, "want", "username1");
+//
 //        WantList item = new WantList();
-
+//
 //        item.setItem(list1.get(0));
+//        item.se
 //        item.setWant(list2.get(0));
 //        item.setPriority(1);
-
+//
 //        item = wantListItemService.save(item);
 //
 //        assertNotNull(item);

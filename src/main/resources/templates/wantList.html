@@ -21,7 +21,7 @@
 
                     <p class="list-group-item-text">
                         <th:block th:each="entry : ${wantList.entries}">
-                            <span th:text="entry.shortTitle"></span>
+                            <span th:text="${entry.shortTitle}"></span>
                         </th:block>
                     </p>
                 </a>
@@ -36,25 +36,23 @@
         <div class="panel-body">
             <ul class="list-group" id="ourList"></ul>
             <div class="input-group">
-                <label>
-                    <select class="form-control" id="selector">
+                    <select class="form-control" id="selector" style="width: 100%">
                         <option selected="selected"></option>
                     </select>
-                </label>
 
                 <div class="input-group-btn">
                     <button id="add-game-button" type="button" class="btn btn-default">Add</button>
                 </div>
             </div>
             <div class="text-right" style="padding-top: 20px">
-                <button type="button" class="btn btn-success">Save</button> <!-- onclick="save()" -->
+                <button id="save-edit-button" type="button" class="btn btn-success">Save</button> <!-- onclick="save()" -->
                 <button id="stop-edit-button" type="button" class="btn btn-danger">Cancel</button>
                 <!--stopedit-->
             </div>
         </div>
     </div>
     <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-primary">Generate TM text</button>
+        <button id="generate-tm-button" type="button" class="btn btn-primary">Generate TM text</button>
     </div>
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -65,17 +63,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
 <script th:src="@{/js/wantList.js}" src="../static/js/wantList.js"></script>
 <script type="text/javascript">
+    /*<![CDATA[*/
     $(function () {
         Want.editPanel = $('#editPanel');
         Want.entriesList = $('#ourList');
 
-        Want.onGetEntries = function (data) {
-            $(Want.entriesList).empty();
-            for (var i = 0; i < data.length; i++) {
-                $('#ourList')
-                        .append('<li id="' + data[i].wantTradeItemId + '" data-id="' + data[i].wantTradeItemId + '" class="list-group-item">' + data[i].wantTradeItemTitle + '<span class="badge" onclick="removeWantItem(' + data[i].wantTradeItemId + ')">X</span></li>');
-            }
-        }
+        Want.enableSorting();
     });
 
 
@@ -83,9 +76,12 @@
         Want.edit(this);
     });
 
-    /*
+    $('#add-game-button').click(Want.addGame);
+    $('#save-edit-button').click(Want.save);
+    $('#stop-edit-button').click(Want.stopEdit);
+    $('#generate-tm-button').click(Want.showTMtext);
 
-     */
+    /*]]>*/
 </script>
 </body>
 </html>
