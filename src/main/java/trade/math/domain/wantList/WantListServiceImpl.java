@@ -52,7 +52,6 @@ public class WantListServiceImpl implements WantListService {
         });
         WantListEntry entry = new WantListEntry();
         entry.setItem(want);
-        entry.setPriority(PRIORITY_MIN);
         entry.setWantList(wantList);
         wantListEntryRepository.save(entry);
 
@@ -62,14 +61,14 @@ public class WantListServiceImpl implements WantListService {
         return entry;
     }
 
-    @Override
-    public void setPriority(TradeItem offer, TradeItem want, int p) {
-        if (p < PRIORITY_MIN || p > PRIORITY_MAX)
-            throw new IllegalArgumentException("Priority not between bounds.");
-        WantListEntry entry = findEntry(offer, want);
-        entry.setPriority(p);
-        wantListEntryRepository.save(entry);
-    }
+//    @Override
+//    public void setPriority(TradeItem offer, TradeItem want, int p) {
+//        if (p < PRIORITY_MIN || p > PRIORITY_MAX)
+//            throw new IllegalArgumentException("Priority not between bounds.");
+//        WantListEntry entry = findEntry(offer, want);
+//        entry.setPriority(p);
+//        wantListEntryRepository.save(entry);
+//    }
 
     @Override
     public void deleteAll() {
@@ -110,6 +109,7 @@ public class WantListServiceImpl implements WantListService {
         setWants(offer, wants.stream().collect(Collectors.toMap(item -> item, item -> PRIORITY_MIN)));
     }
 
+/*
     @Override
     public void setWants(TradeItem offer, Map<TradeItem, Integer> wantsAndPriorities) {
         WantList wantList = findByItem(offer);
@@ -127,4 +127,5 @@ public class WantListServiceImpl implements WantListService {
         wantList.setEntries(entries);
         wantListRepository.save(wantList);
     }
+*/
 }
