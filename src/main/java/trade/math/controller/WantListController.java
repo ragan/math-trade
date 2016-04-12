@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import trade.math.domain.tradeItem.TradeItem;
+import trade.math.domain.tradeItem.TradeItemDTO;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.domain.wantList.WantListDTO;
@@ -59,7 +60,7 @@ public class WantListController {
                 .collect(toList());
     }
 
-    @RequestMapping(value = "/wantList/saveList.command", method = RequestMethod.POST)
+    @RequestMapping(value = "/wantList/entries", method = RequestMethod.PUT)
     @ResponseBody
     public boolean saveWantListItems(
             @RequestParam
@@ -74,14 +75,17 @@ public class WantListController {
     }
 
 
-    @RequestMapping("/wantList/findItemById")
+    @RequestMapping(value = "/wantList/items", method = RequestMethod.GET)
     @ResponseBody
-    public WantListEntryDTO findItemById(@RequestParam long id) {
+    public TradeItemDTO findItemById(@RequestParam long id) {
         TradeItem item = tradeItemService.findById(id);
-        return null;
+        if (item == null)
+            return null;
+
+        return new TradeItemDTO(item, false);
     }
 
-    @RequestMapping("/wantList/getListTM.command")
+    @RequestMapping(value = "/wantList/tradeMaximizer", method = RequestMethod.GET)
     @ResponseBody
     public String getWantListTM(Principal principal) {
         TradeUser user = tradeUserService.findByUsername(principal.getName());

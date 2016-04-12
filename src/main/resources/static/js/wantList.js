@@ -4,6 +4,18 @@ var Want = {};
 Want.editedButton = null;
 Want.editPanel = null;
 Want.entriesList = null;
+Want.sortableList = null;
+
+Want.templateResult = function (item) {
+    if (item.loading) return item.text;
+
+    return $('<div/>').attr({class: 'media'})
+        .append($('<div/>').attr({class: 'media-left'})
+            .append($('<a/>').attr({href: '#'})
+                .append($('<img/>').attr({src: item.imgUrl, width: 100}))))
+        .append($('<div/>').attr({class: 'media-body'})
+            .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
+};
 
 $('#selector').select2({
     ajax: {
@@ -33,50 +45,41 @@ $('#selector').select2({
     theme: "bootstrap"
 });
 
-Want.templateResult = function (item) {
-    if (item.loading) return item.text;
 
-    return $('<div/>').attr({class: 'media'})
-        .append($('<div/>').attr({class: 'media-left'})
-            .append($('<a/>').attr({href: '#'})
-                .append($('<img/>').attr({src: item.imgUrl, width: 100}))))
-        .append($('<div/>').attr({class: 'media-body'})
-            .append($('<h3/>').attr({class: 'media-heading'}).text(item.title)))
-};
-
-Want.sort = function () {
-    Sortable.create($('#ourList')[0], {
+Want.enableSorting = function () {
+    Want.sortableList = Sortable.create($(Want.entriesList)[0], {
         ghostClass: 'ghost',
         animation: 150
     });
 };
 
-Want.addGame = function (success) {
+Want.addGameToList = function(data){
+    if (data)
+        $(Want.entriesList)
+            .append('<li id="' + data.id + '" data-id="' + data.id + '" class="list-group-item">' + data.title + '<span class="badge" onclick="removeWantItem(' + data.id + ')">X</span></li>');
+        //$(Want.entriesList).append('<li data-id="' + data.id + '" class="list-group-item">' + data.title + '</li>');
+}
+
+Want.addGame = function () {
     $.ajax({
-        url: '/wantList/findItemById',
+        url: '/wantList/items',
         dataType: 'json',
+        method: "GET",
         data: {
             id: $('#selector').val()
         },
-        success: success
+        success: Want.addGameToList
     });
 };
-/*
- to było na success
- function (data) {
- if (data)
- $('#ourList').append('<li data-id="' + data.wantTradeItemId + '" class="list-group-item">' + data.wantTradeItemTitle + '</li>');
- }
-*/
 
-Want.save = function (id, wantIds) {
+Want.save = function () {
     $.ajax({
-            url: '/wantList/saveList.command',
+            url: '/wantList/entries',
             dataType: 'json',
-            method: "POST",
+            method: "PUT",
             data: {
-                'itemId': id, //$(editedButton).attr('id'),
-                'wantIds': wantIds
+                'itemId': $(Want.editedButton).attr('id'),
+                'wantIds': Want.sortableList.toArray()
             },
             success: function (data, status) {
                 location.reload();
@@ -120,7 +123,33 @@ Want.stopEdit = function () {
     Want.editedButton = null;
 };
 
+Want.onGetEntries = function (data) {
+    if(data == null)
+        return;
+
+    $(Want.entriesList).empty();
+    for (var i = 0; i < data.length; i++) {
+        $(Want.entriesList)
+            .append('<li id="' + data[i].id + '" data-id="' + data[i].id + '" class="list-group-item">' + data[i].title + '<span class="badge" onclick="Want.removeWantItem(' + data[i].id + ')">X</span></li>');
+    }
+}
+
 Want.updateEditList = function (id) {
+    $.ajax({
+            url: '/wantList/entries',
+            dataType: 'json',
+            method: "GET",
+            data: {
+                'id': id
+            },
+            success: function (data) {
+                Want.onGetEntries(data);
+            },
+            error: function (data, status, error) {
+                alert(status + ' - ' + error);
+            }
+        }
+    );
 };
 /*
  function (data) {
@@ -131,17 +160,14 @@ Want.updateEditList = function (id) {
  }
  */
 Want.removeWantItem = function (wantId) {
-    $('#ourList').children("#" + wantId).remove();
+    $(Want.entriesList).children("#" + wantId).remove();
 };
 
-Want.showTMtext = function (csrf) {
+Want.showTMtext = function () {
     $.ajax({
-            url: '/wantList/getListTM.command',
+            url: '/wantList/tradeMaximizer',
             dataType: 'text',
-            method: "POST",
-            data: {
-                'csrf': csrf
-            },
+            method: "GET",
             success: function (data) {
                 alert(data);
             },
