@@ -27,6 +27,8 @@ public interface TradeItemService {
 
     TradeItem findById(Long itemId);
 
+    List<TradeItem> findByIdsRetainOrder(List<Long> ids);
+
     List<TradeItem> findByIds(List<Long> ids);
 
     List<TradeItem> findByOwner(TradeUser owner);

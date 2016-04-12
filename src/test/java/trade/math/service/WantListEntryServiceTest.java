@@ -19,6 +19,7 @@ import trade.math.domain.tradeItem.TradeItem;
 import trade.math.model.TradeUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,14 +90,29 @@ public class WantListEntryServiceTest {
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
         assertThat(wantListService.findByItem(want0).getEntries(), is(empty()));
 
-        wantListService.setWant(offer, want0);
+        wantListService.addWant(offer, want0);
         wantList = wantListService.findByItem(offer);
         assertThat(wantList.getEntries(), hasSize(1));
         assertThat(wantList.getEntries().get(0).getPriority(), is(equalTo(1)));
 
+        wantListService.addWant(offer, want1);
         wantList = wantListService.findByItem(offer);
         assertThat(wantList.getEntries(), hasSize(2));
-        assertThat(wantList.getEntries().get(0).getPriority(), is(equalTo(2)));
+        assertThat(wantList.getEntries().get(1).getPriority(), is(equalTo(2)));
+
+        wantListService.setWants(offer, Arrays.asList(want0, want1));
+        wantList = wantListService.findByItem(offer);
+        assertThat(wantList.getEntries().get(0).getItem().getTitle(), is(equalToIgnoringCase("want_0")));
+        assertThat(wantList.getEntries().get(0).getPriority(), is(1));
+        assertThat(wantList.getEntries().get(1).getItem().getTitle(), is(equalToIgnoringCase("want_1")));
+        assertThat(wantList.getEntries().get(1).getPriority(), is(2));
+
+        wantListService.setWants(offer, Arrays.asList(want1, want0));
+        wantList = wantListService.findByItem(offer);
+        assertThat(wantList.getEntries().get(0).getItem().getTitle(), is(equalToIgnoringCase("want_1")));
+        assertThat(wantList.getEntries().get(0).getPriority(), is(1));
+        assertThat(wantList.getEntries().get(1).getItem().getTitle(), is(equalToIgnoringCase("want_0")));
+        assertThat(wantList.getEntries().get(1).getPriority(), is(2));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -104,7 +120,7 @@ public class WantListEntryServiceTest {
         TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
         TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_0));
 
-        wantListService.setWant(offer, want);
+        wantListService.addWant(offer, want);
 
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
         assertThat(wantListService.findByItem(want).getEntries(), is(empty()));
@@ -126,7 +142,7 @@ public class WantListEntryServiceTest {
         TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
         TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
-        wantListService.setWant(offer, want);
+        wantListService.addWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), hasSize(1));
         assertThat(wantListService.findEntry(offer, want), is(notNullValue()));
 
@@ -139,7 +155,7 @@ public class WantListEntryServiceTest {
         TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
         TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
-        wantListService.setWant(offer, want);
+        wantListService.addWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), is(not(empty())));
         wantListService.deleteWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));

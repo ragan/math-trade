@@ -131,7 +131,7 @@ Want.onGetEntries = function (data) {
         $(Want.entriesList)
             .append('<li id="' + data[i].id + '" data-id="' + data[i].id + '" class="list-group-item">' + data[i].title + '<span class="badge" onclick="Want.removeWantItem(' + data[i].id + ')">X</span></li>');
     }
-}
+};
 
 Want.updateEditList = function (id) {
     $.ajax({

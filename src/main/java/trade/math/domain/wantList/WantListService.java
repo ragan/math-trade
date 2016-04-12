@@ -15,7 +15,11 @@ public interface WantListService {
 
     WantList save(WantList wantList);
 
-    WantListEntry setWant(TradeItem offer, TradeItem want);
+    void addWant(TradeItem offer, TradeItem want);
+
+    void setWants(TradeItem offer, List<TradeItem> wants);
+
+    void setWants(WantList wantList, List<TradeItem> wants);
 
     void deleteAll();
 
@@ -26,8 +30,6 @@ public interface WantListService {
     WantListEntry findEntry(TradeItem offer, TradeItem want);
 
     List<WantListEntry> findEntries(TradeItem offer);
-
-    void setWants(TradeItem offer, List<TradeItem> wants);
 
 /*
     void setWants(TradeItem offer, Map<TradeItem, Integer> wantsAndPriorities);

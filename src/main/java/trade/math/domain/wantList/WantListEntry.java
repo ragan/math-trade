@@ -22,6 +22,16 @@ public class WantListEntry {
 
     private int priority;
 
+    public WantListEntry() {
+        //
+    }
+
+    public WantListEntry(WantList wantList, TradeItem item, int priority) {
+        this.wantList = wantList;
+        this.item = item;
+        this.priority = priority;
+    }
+
     public Long getId() {
         return id;
     }

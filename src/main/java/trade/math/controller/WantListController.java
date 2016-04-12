@@ -70,7 +70,7 @@ public class WantListController {
     ) {
         TradeItem item = tradeItemService.findById(itemId);
         if (wantIds == null) wantIds = new Long[]{};
-        List<TradeItem> offers = tradeItemService.findByIds(Arrays.asList(wantIds));
+        List<TradeItem> offers = tradeItemService.findByIdsRetainOrder(Arrays.asList(wantIds));
         wantListService.setWants(item, offers);
         return true;
     }
