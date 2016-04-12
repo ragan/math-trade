@@ -60,7 +60,7 @@ public class WantListController {
                 .collect(toList());
     }
 
-    @RequestMapping(value = "/wantList/entries", method = RequestMethod.PUT)
+    @RequestMapping(value = "/wantList/entries", method = RequestMethod.PUT) //TODO: POST
     @ResponseBody
     public boolean saveWantListItems(
             @RequestParam
