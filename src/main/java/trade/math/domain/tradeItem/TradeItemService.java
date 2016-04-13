@@ -49,5 +49,5 @@ public interface TradeItemService {
 
     String generateTradeWantListTM(TradeUser user);
 
-    void groupAll();
+    void groupAll(TradeList tradeList);
 }

@@ -214,7 +214,7 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public void groupAll() {
+    public void groupAll(TradeList tradeList) {
 
     }
 }
