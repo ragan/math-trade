@@ -57,8 +57,7 @@ Want.addGameToList = function(data){
     if (data)
         $(Want.entriesList)
             .append('<li id="' + data.id + '" data-id="' + data.id + '" class="list-group-item">' + data.title + '<span class="badge" onclick="removeWantItem(' + data.id + ')">X</span></li>');
-        //$(Want.entriesList).append('<li data-id="' + data.id + '" class="list-group-item">' + data.title + '</li>');
-}
+};
 
 Want.addGame = function () {
     $.ajax({
@@ -132,7 +131,7 @@ Want.onGetEntries = function (data) {
         $(Want.entriesList)
             .append('<li id="' + data[i].id + '" data-id="' + data[i].id + '" class="list-group-item">' + data[i].title + '<span class="badge" onclick="Want.removeWantItem(' + data[i].id + ')">X</span></li>');
     }
-}
+};
 
 Want.updateEditList = function (id) {
     $.ajax({
@@ -151,14 +150,7 @@ Want.updateEditList = function (id) {
         }
     );
 };
-/*
- function (data) {
- $(Want.entriesList).empty();
- for (var i = 0; i < data.length; i++) {
- $('#ourList').append('<li id="' + data[i].wantTradeItemId + '" data-id="' + data[i].wantTradeItemId + '" class="list-group-item">' + data[i].wantTradeItemTitle + '<span class="badge" onclick="removeWantItem(' + data[i].wantTradeItemId + ')">X</span></li>');
- }
- }
- */
+
 Want.removeWantItem = function (wantId) {
     $(Want.entriesList).children("#" + wantId).remove();
 };

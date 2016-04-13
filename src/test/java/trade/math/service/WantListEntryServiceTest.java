@@ -19,6 +19,7 @@ import trade.math.domain.tradeItem.TradeItem;
 import trade.math.model.TradeUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,20 +84,35 @@ public class WantListEntryServiceTest {
         WantList wantList;
 
         TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
-        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
+        TradeItem want0 = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
+        TradeItem want1 = tradeItemService.save(new NewTradeItemForm("want_1", "want_1", ""), getUser(USERNAME_1));
 
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
-        assertThat(wantListService.findByItem(want).getEntries(), is(empty()));
+        assertThat(wantListService.findByItem(want0).getEntries(), is(empty()));
 
-        wantListService.setWant(offer, want);
+        wantListService.addWant(offer, want0);
         wantList = wantListService.findByItem(offer);
         assertThat(wantList.getEntries(), hasSize(1));
-        assertThat(wantList.getEntries().get(0).getPriority(), is(equalTo(WantListService.PRIORITY_MIN)));
+        assertThat(wantList.getEntries().get(0).getPriority(), is(equalTo(1)));
 
-        wantListService.setPriority(offer, want, WantListService.PRIORITY_MAX);
+        wantListService.addWant(offer, want1);
         wantList = wantListService.findByItem(offer);
-        assertThat(wantList.getEntries(), hasSize(1));
-        assertThat(wantList.getEntries().get(0).getPriority(), is(equalTo(WantListService.PRIORITY_MAX)));
+        assertThat(wantList.getEntries(), hasSize(2));
+        assertThat(wantList.getEntries().get(1).getPriority(), is(equalTo(2)));
+
+        wantListService.setWants(offer, Arrays.asList(want0, want1));
+        wantList = wantListService.findByItem(offer);
+        assertThat(wantList.getEntries().get(0).getItem().getTitle(), is(equalToIgnoringCase("want_0")));
+        assertThat(wantList.getEntries().get(0).getPriority(), is(1));
+        assertThat(wantList.getEntries().get(1).getItem().getTitle(), is(equalToIgnoringCase("want_1")));
+        assertThat(wantList.getEntries().get(1).getPriority(), is(2));
+
+        wantListService.setWants(offer, Arrays.asList(want1, want0));
+        wantList = wantListService.findByItem(offer);
+        assertThat(wantList.getEntries().get(0).getItem().getTitle(), is(equalToIgnoringCase("want_1")));
+        assertThat(wantList.getEntries().get(0).getPriority(), is(1));
+        assertThat(wantList.getEntries().get(1).getItem().getTitle(), is(equalToIgnoringCase("want_0")));
+        assertThat(wantList.getEntries().get(1).getPriority(), is(2));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -104,22 +120,10 @@ public class WantListEntryServiceTest {
         TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
         TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_0));
 
-        wantListService.setWant(offer, want);
+        wantListService.addWant(offer, want);
 
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
         assertThat(wantListService.findByItem(want).getEntries(), is(empty()));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testPriorityMinMax() throws Exception {
-        TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
-        TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
-
-        WantListEntry entry = wantListService.setWant(offer, want);
-        int priority = entry.getPriority();
-        wantListService.setPriority(offer, want, 101);
-
-        assertThat(entry.getPriority(), is(equalTo(priority)));
     }
 
     @Test
@@ -138,7 +142,7 @@ public class WantListEntryServiceTest {
         TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
         TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
-        wantListService.setWant(offer, want);
+        wantListService.addWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), hasSize(1));
         assertThat(wantListService.findEntry(offer, want), is(notNullValue()));
 
@@ -151,48 +155,10 @@ public class WantListEntryServiceTest {
         TradeItem offer = tradeItemService.save(new NewTradeItemForm("offer_0", "offer_0", ""), getUser(USERNAME_0));
         TradeItem want = tradeItemService.save(new NewTradeItemForm("want_0", "want_0", ""), getUser(USERNAME_1));
 
-        wantListService.setWant(offer, want);
+        wantListService.addWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), is(not(empty())));
         wantListService.deleteWant(offer, want);
         assertThat(wantListService.findByItem(offer).getEntries(), is(empty()));
-    }
-
-    @Test
-    public void saveWantListItemTest() {
-//        List<TradeItem> list1 = makeItems(10, "test", "username");
-//        List<TradeItem> list2 = makeItems(15, "want", "username1");
-//
-//        WantList item = new WantList();
-//
-//        item.setItem(list1.get(0));
-//        item.se
-//        item.setWant(list2.get(0));
-//        item.setPriority(1);
-//
-//        item = wantListItemService.save(item);
-//
-//        assertNotNull(item);
-//
-//        TradeItem tradeItem = tradeItemService.findById(list1.get(0).getId());
-//
-//        List<WantListItem> wantList = tradeItem.getWantList();
-//
-//        assertEquals(1, wantList.size());
-//        assertTrue(wantList.get(0).getWant().getTitle().equals(list2.get(0).getTitle()));
-//
-//
-//        for (int i = 0; i < 4; i++) {
-//            item = new WantListItem();
-//            item.setItem(list1.get(0));
-//            item.setWant(list2.get(i));
-//            item.setPriority(i);
-//
-//            wantListItemService.save(item);
-//        }
-//
-//        tradeItem = tradeItemService.findById(list1.get(0).getId());
-//
-//        assertEquals(4, tradeItem.getWantList().size());
     }
 
     @Test

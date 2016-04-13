@@ -60,7 +60,7 @@ public class WantListController {
                 .collect(toList());
     }
 
-    @RequestMapping(value = "/wantList/entries", method = RequestMethod.PUT)
+    @RequestMapping(value = "/wantList/entries", method = RequestMethod.PUT) //TODO: POST
     @ResponseBody
     public boolean saveWantListItems(
             @RequestParam
@@ -69,7 +69,8 @@ public class WantListController {
             Long[] wantIds
     ) {
         TradeItem item = tradeItemService.findById(itemId);
-        List<TradeItem> offers = tradeItemService.findByIds(Arrays.asList(wantIds));
+        if (wantIds == null) wantIds = new Long[]{};
+        List<TradeItem> offers = tradeItemService.findByIdsRetainOrder(Arrays.asList(wantIds));
         wantListService.setWants(item, offers);
         return true;
     }

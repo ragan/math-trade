@@ -138,8 +138,13 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public List<TradeItem> findByIdsRetainOrder(List<Long> ids) {
+        return ids.stream().map(this::findById).collect(toList());
+    }
+
+    @Override
     public List<TradeItem> findByIds(List<Long> ids) {
-        return ids.stream().map(tradeItemRepository::findOne).collect(toList());
+        return tradeItemRepository.findAll(ids);
     }
 
     @Override

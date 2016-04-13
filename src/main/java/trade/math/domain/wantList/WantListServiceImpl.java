@@ -6,9 +6,12 @@ import trade.math.domain.tradeItem.TradeItem;
 import trade.math.model.TradeUser;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 public class WantListServiceImpl implements WantListService {
@@ -33,7 +36,7 @@ public class WantListServiceImpl implements WantListService {
 
     @Override
     public List<WantList> findByItems(List<TradeItem> items) {
-        return items.stream().map(this::findByItem).collect(Collectors.toList());
+        return items.stream().map(this::findByItem).collect(toList());
     }
 
     @Override
@@ -43,32 +46,33 @@ public class WantListServiceImpl implements WantListService {
     }
 
     @Override
-    public WantListEntry setWant(TradeItem offer, TradeItem want) {
-        if (offer.getOwner().getId().equals(want.getOwner().getId()))
-            throw new IllegalArgumentException("Items have same owner");
+    public void addWant(TradeItem offer, TradeItem want) {
         WantList wantList = findByItem(offer);
-        wantListEntryRepository.findByWantListAndItem(wantList, want).ifPresent(e -> {
-            throw new IllegalStateException("Offer is already present.");
-        });
-        WantListEntry entry = new WantListEntry();
-        entry.setItem(want);
-        entry.setPriority(PRIORITY_MIN);
-        entry.setWantList(wantList);
-        wantListEntryRepository.save(entry);
-
-        wantList.getEntries().add(entry);
-        save(wantList);
-
-        return entry;
+        List<TradeItem> items = wantList.getEntries().stream().map(WantListEntry::getItem).collect(toList());
+        items.add(want);
+        setWants(offer, items);
     }
 
     @Override
-    public void setPriority(TradeItem offer, TradeItem want, int p) {
-        if (p < PRIORITY_MIN || p > PRIORITY_MAX)
-            throw new IllegalArgumentException("Priority not between bounds.");
-        WantListEntry entry = findEntry(offer, want);
-        entry.setPriority(p);
-        wantListEntryRepository.save(entry);
+    public void setWants(TradeItem offer, List<TradeItem> wants) {
+        setWants(findByItem(offer), wants);
+    }
+
+    @Override
+    public void setWants(WantList wantList, List<TradeItem> wants) {
+        if (isSameOwner(wantList.getItem(), wants))
+            throw new IllegalArgumentException("Items have same owner");
+        List<WantListEntry> entries = wants.stream().map(i -> new WantListEntry(wantList, i, wants.indexOf(i) + 1)).collect(toList());
+        wantListEntryRepository.delete(wantList.getEntries());
+        wantListEntryRepository.save(entries);
+    }
+
+    private boolean isSameOwner(TradeItem item, List<TradeItem> items) {
+        return !items.stream().filter(i -> isSameOwner(item, i)).collect(toList()).isEmpty();
+    }
+
+    private boolean isSameOwner(TradeItem item0, TradeItem item1) {
+        return item0.getOwner().getId().equals(item1.getOwner().getId());
     }
 
     @Override
@@ -105,26 +109,4 @@ public class WantListServiceImpl implements WantListService {
                 .orElseThrow(WantListEntryNotFoundException::new);
     }
 
-    @Override
-    public void setWants(TradeItem offer, List<TradeItem> wants) {
-        setWants(offer, wants.stream().collect(Collectors.toMap(item -> item, item -> PRIORITY_MIN)));
-    }
-
-    @Override
-    public void setWants(TradeItem offer, Map<TradeItem, Integer> wantsAndPriorities) {
-        WantList wantList = findByItem(offer);
-        wantListEntryRepository.delete(wantList.getEntries());
-
-        List<WantListEntry> entries = wantsAndPriorities.entrySet().stream().map(ip -> {
-            WantListEntry entry = new WantListEntry();
-            entry.setWantList(wantList);
-            entry.setItem(ip.getKey());
-            entry.setPriority(ip.getValue());
-            return entry;
-        }).collect(Collectors.toList());
-
-        wantListEntryRepository.save(entries);
-        wantList.setEntries(entries);
-        wantListRepository.save(wantList);
-    }
 }
