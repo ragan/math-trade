@@ -25,9 +25,6 @@ import java.util.Objects;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-/**
- * Created by karol on 17.02.16.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MtApplication.class)
 @ActiveProfiles("test")

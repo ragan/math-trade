@@ -7,6 +7,7 @@ import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface TradeItemService {
@@ -49,5 +50,5 @@ public interface TradeItemService {
 
     String generateTradeWantListTM(TradeUser user);
 
-    void groupAll(TradeList tradeList);
+    Map<String, List<TradeItem>> groupAll(TradeList tradeList);
 }

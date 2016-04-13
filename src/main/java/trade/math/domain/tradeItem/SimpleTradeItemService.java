@@ -11,6 +11,7 @@ import trade.math.domain.tradeList.TradeListState;
 import trade.math.domain.wantList.WantList;
 import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -214,7 +216,21 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public void groupAll(TradeList tradeList) {
+    public Map<String, List<TradeItem>> groupAll(TradeList tradeList) {
+        List<TradeItem> items = tradeItemRepository.findByCategoryAndTradeList(TradeItemCategory.BOARD_GAME, tradeList);
+        return items.stream().collect(groupingBy(this::getSortingPropertyValue));
+    }
 
+    private String getSortingPropertyValue(TradeItem item) {
+        switch (item.getCategory()) {
+            case NONE:
+                return item.getTitle();
+            case BOARD_GAME:
+                return String.valueOf(item.getBggId());
+            case GROUP_ITEM:
+                throw new IllegalArgumentException("Cannot group group items.");
+            default:
+                throw new IllegalArgumentException("Unknown item category");
+        }
     }
 }
