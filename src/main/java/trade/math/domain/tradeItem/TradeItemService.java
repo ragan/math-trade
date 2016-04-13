@@ -48,4 +48,6 @@ public interface TradeItemService {
     boolean canDelete(TradeItem item, Optional<TradeUser> user);
 
     String generateTradeWantListTM(TradeUser user);
+
+    void groupAll();
 }

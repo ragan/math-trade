@@ -213,4 +213,8 @@ public class SimpleTradeItemService implements TradeItemService {
 //        return tmText;
     }
 
+    @Override
+    public void groupAll() {
+
+    }
 }
