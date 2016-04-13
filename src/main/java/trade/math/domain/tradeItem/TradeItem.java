@@ -1,8 +1,6 @@
 package trade.math.domain.tradeItem;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import trade.math.domain.groupList.GroupListItem;
-import trade.math.domain.groupList.ItemGroup;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
@@ -12,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "TRADE_ITEM")
-public class TradeItem implements GroupListItem<String> {
+public class TradeItem {
 
     @Id
     @GeneratedValue
@@ -42,10 +40,6 @@ public class TradeItem implements GroupListItem<String> {
     @Column(name = "CATEGORY")
     @Enumerated(EnumType.STRING)
     private TradeItemCategory category;
-
-    @ManyToOne
-    @JoinColumn(name = "ITEM_GROUP_ID")
-    private ItemGroup itemGroup;
 
     @Column(name = "BGG_ID")
     private int bggId;
@@ -114,14 +108,6 @@ public class TradeItem implements GroupListItem<String> {
         this.category = category;
     }
 
-    public ItemGroup getItemGroup() {
-        return itemGroup;
-    }
-
-    public void setItemGroup(ItemGroup itemGroup) {
-        this.itemGroup = itemGroup;
-    }
-
     public int getBggId() {
         return bggId;
     }
@@ -130,15 +116,4 @@ public class TradeItem implements GroupListItem<String> {
         this.bggId = bggId;
     }
 
-    @Override
-    public String getProperty() {
-        switch (getCategory()) {
-            case NONE:
-                return getTitle();
-            case BOARD_GAME:
-                return String.valueOf(getBggId());
-            default:
-                throw new IllegalArgumentException("Unknown category.");
-        }
-    }
 }

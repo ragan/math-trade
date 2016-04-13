@@ -5,13 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.TradeUserRole;
-import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
-import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.domain.wantList.WantList;
-import trade.math.domain.wantList.WantListEntryDTO;
 import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.model.TradeUser;
@@ -35,18 +32,14 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final WantListService wantListService;
 
-    private final ItemGroupService itemGroupService;
-
     @Autowired
     public SimpleTradeItemService(
             TradeItemRepository tradeItemRepository,
             TradeListService tradeListService,
-            ItemGroupService itemGroupService,
             WantListService wantListService
     ) {
         this.tradeItemRepository = tradeItemRepository;
         this.tradeListService = tradeListService;
-        this.itemGroupService = itemGroupService;
         this.wantListService = wantListService;
     }
 
