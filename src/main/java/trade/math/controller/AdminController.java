@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import trade.math.domain.tradeItem.GroupItemDTO;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeList.TradeList;
@@ -18,6 +19,7 @@ import trade.math.service.TradeBoardGameService;
 import trade.math.domain.tradeList.TradeListService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -60,9 +62,10 @@ public class AdminController {
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
     @ResponseBody
-    public List<TradeItem> makeGroups() {
+    public List<GroupItemDTO> makeGroups() {
         tradeItemService.updateGroupItems(tradeListService.findMostRecentList().orElse(null));
-        return tradeItemService.getItemsByCategory(TradeItemCategory.GROUP_ITEM);
+        List<TradeItem> groups = tradeItemService.getItemsByCategory(TradeItemCategory.GROUP_ITEM);
+        return groups.stream().map(GroupItemDTO::new).collect(Collectors.toList());
     }
 
 }
