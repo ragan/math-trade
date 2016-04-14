@@ -176,7 +176,9 @@ public class TradeItemServiceTest {
         TradeList list = tradeListService.findMostRecentList().get();
         tradeItemService.updateGroupItems(list);
 
-        assertThat(tradeItemService.getAllGroups(), hasSize(2));
+        assertThat(tradeItemService.getItemsByCategory(GROUP_ITEM), hasSize(2));
+        List<TradeItem> games = tradeItemService.getItemsByCategory(BOARD_GAME);
+        games.forEach(g -> assertThat(g.getGroup(), is(notNullValue())));
     }
 
     @Test

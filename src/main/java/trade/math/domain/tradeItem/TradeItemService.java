@@ -3,6 +3,7 @@ package trade.math.domain.tradeItem;
 import org.springframework.data.domain.Pageable;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.form.NewTradeItemForm;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 
@@ -23,6 +24,8 @@ public interface TradeItemService {
     List<TradeItem> findByRecentTradeList();
 
     List<TradeItem> findByRecentTradeListAndOwner(TradeUser user);
+
+    List<TradeItem> getItemsByCategory(TradeItemCategory category);
 
     List<TradeItem> findAll();
 
@@ -57,5 +60,4 @@ public interface TradeItemService {
      */
     void updateGroupItems(TradeList tradeList);
 
-    List<TradeItem> getAllGroups();
 }

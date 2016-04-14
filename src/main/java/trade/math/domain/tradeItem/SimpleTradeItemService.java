@@ -107,6 +107,11 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
+    public List<TradeItem> getItemsByCategory(TradeItemCategory category) {
+        return tradeItemRepository.findByCategory(category);
+    }
+
+    @Override
     public List<TradeItem> findAll() {
         return tradeItemRepository.findAll();
     }
@@ -220,12 +225,12 @@ public class SimpleTradeItemService implements TradeItemService {
         List<TradeItem> items = tradeItemRepository.findByCategoryAndTradeList(TradeItemCategory.BOARD_GAME, tradeList);
         Map<String, List<TradeItem>> map = items.stream().collect(groupingBy(this::getSortingPropertyValue));
         List<TradeItem> groups = map.entrySet().stream().map(e -> new TradeItem(e.getKey(), e.getValue())).collect(toList());
-        tradeItemRepository.save(groups);
-    }
 
-    @Override
-    public List<TradeItem> getAllGroups() {
-        return tradeItemRepository.findByCategory(TradeItemCategory.GROUP_ITEM);
+        tradeItemRepository.save(groups);
+        groups.forEach(g -> {
+            g.getGroupItems().forEach(gi -> gi.setGroup(g));
+            tradeItemRepository.save(g);
+        });
     }
 
     private String getSortingPropertyValue(TradeItem item) {
