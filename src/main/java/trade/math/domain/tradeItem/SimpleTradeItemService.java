@@ -60,7 +60,7 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeItem.setOwner(user);
 
         tradeItem.setDescription(newTradeItemForm.getDescription());
-        tradeItem.setForTrade(false);
+//        tradeItem.setForTrade(false);
         tradeItem.setTitle(newTradeItemForm.getTitle());
         tradeItem.setImgUrl(newTradeItemForm.getImageUrl());
         tradeItem.setTradeList(tradeList);
@@ -216,9 +216,16 @@ public class SimpleTradeItemService implements TradeItemService {
     }
 
     @Override
-    public Map<String, List<TradeItem>> groupAll(TradeList tradeList) {
+    public void updateGroupItems(TradeList tradeList) {
         List<TradeItem> items = tradeItemRepository.findByCategoryAndTradeList(TradeItemCategory.BOARD_GAME, tradeList);
-        return items.stream().collect(groupingBy(this::getSortingPropertyValue));
+        Map<String, List<TradeItem>> map = items.stream().collect(groupingBy(this::getSortingPropertyValue));
+        List<TradeItem> groups = map.entrySet().stream().map(e -> new TradeItem(e.getKey(), e.getValue())).collect(toList());
+        tradeItemRepository.save(groups);
+    }
+
+    @Override
+    public List<TradeItem> getAllGroups() {
+        return tradeItemRepository.findByCategory(TradeItemCategory.GROUP_ITEM);
     }
 
     private String getSortingPropertyValue(TradeItem item) {

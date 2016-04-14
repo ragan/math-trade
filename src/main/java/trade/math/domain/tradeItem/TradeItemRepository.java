@@ -24,4 +24,6 @@ interface TradeItemRepository extends JpaRepository<TradeItem, Long> {
 
     List<TradeItem> findByCategoryAndTradeList(TradeItemCategory category, TradeList tradeList);
 
+    List<TradeItem> findByCategory(TradeItemCategory category);
+
 }

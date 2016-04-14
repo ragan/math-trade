@@ -50,5 +50,12 @@ public interface TradeItemService {
 
     String generateTradeWantListTM(TradeUser user);
 
-    Map<String, List<TradeItem>> groupAll(TradeList tradeList);
+    /**
+     * Deletes all group items on tradeList and creates new ones.
+     *
+     * @param tradeList
+     */
+    void updateGroupItems(TradeList tradeList);
+
+    List<TradeItem> getAllGroups();
 }

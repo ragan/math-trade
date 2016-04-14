@@ -17,7 +17,6 @@ import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 
 import java.util.Arrays;
@@ -175,8 +174,9 @@ public class TradeItemServiceTest {
         tradeItemService.save(new NewTradeItemForm("title0", "desc0", "", BOARD_GAME, 123), user0);
 
         TradeList list = tradeListService.findMostRecentList().get();
-        Map<String, List<TradeItem>> map = tradeItemService.groupAll(list);
-        assertThat(map.size(), is(equalTo(2)));
+        tradeItemService.updateGroupItems(list);
+
+        assertThat(tradeItemService.getAllGroups(), hasSize(2));
     }
 
     @Test

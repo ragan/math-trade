@@ -7,6 +7,7 @@ import trade.math.model.TradeUser;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "TRADE_ITEM")
@@ -20,16 +21,11 @@ public class TradeItem {
     @NotEmpty
     private String title;
 
-    @Column(nullable = false)
     private String description;
 
     private String imgUrl;
 
-    @Column(nullable = false)
-    private boolean forTrade;
-
     @ManyToOne
-    @JoinColumn(nullable = false)
     private TradeUser owner;
 
     @ManyToOne
@@ -43,6 +39,22 @@ public class TradeItem {
 
     @Column(name = "BGG_ID")
     private int bggId;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    private List<TradeItem> groupItems;
+
+    @ManyToOne
+    private TradeItem group;
+
+    public TradeItem() {
+        //
+    }
+
+    public TradeItem(String title, List<TradeItem> groupItems) {
+        setTitle(title);
+        setCategory(TradeItemCategory.GROUP_ITEM);
+        setGroupItems(groupItems);
+    }
 
     public Long getId() {
         return id;
@@ -74,14 +86,6 @@ public class TradeItem {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
-    }
-
-    public boolean isForTrade() {
-        return forTrade;
-    }
-
-    public void setForTrade(boolean forTrade) {
-        this.forTrade = forTrade;
     }
 
     public TradeUser getOwner() {
@@ -116,4 +120,19 @@ public class TradeItem {
         this.bggId = bggId;
     }
 
+    public List<TradeItem> getGroupItems() {
+        return groupItems;
+    }
+
+    public void setGroupItems(List<TradeItem> groupItems) {
+        this.groupItems = groupItems;
+    }
+
+    public TradeItem getGroup() {
+        return group;
+    }
+
+    public void setGroup(TradeItem group) {
+        this.group = group;
+    }
 }
