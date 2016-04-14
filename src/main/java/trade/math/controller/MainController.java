@@ -30,9 +30,6 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * Created by danielpietrzak on 15.02.2016.
- */
 @Controller
 public class MainController {
 
@@ -137,7 +134,6 @@ public class MainController {
                 .map(item -> new TradeItemDTO(item, false))
                 .collect(toList());
     }
-
 
     //Helpers
     private String getUserName(Authentication authentication) {

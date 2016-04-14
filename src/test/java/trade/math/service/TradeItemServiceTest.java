@@ -179,6 +179,10 @@ public class TradeItemServiceTest {
         assertThat(tradeItemService.getItemsByCategory(GROUP_ITEM), hasSize(2));
         List<TradeItem> games = tradeItemService.getItemsByCategory(BOARD_GAME);
         games.forEach(g -> assertThat(g.getGroup(), is(notNullValue())));
+
+        tradeItemService.updateGroupItems(list);
+        games = tradeItemService.getItemsByCategory(BOARD_GAME);
+        games.forEach(g -> assertThat(g.getGroup(), is(notNullValue())));
     }
 
     @Test

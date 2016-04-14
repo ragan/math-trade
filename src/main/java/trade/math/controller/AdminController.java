@@ -7,8 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import trade.math.domain.tradeItem.TradeItem;
+import trade.math.domain.tradeItem.TradeItemService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListState;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.dto.TradeBoardGameDTO;
 import trade.math.service.TradeBoardGameService;
 import trade.math.domain.tradeList.TradeListService;
@@ -21,6 +25,9 @@ public class AdminController {
 
     @Autowired
     private TradeBoardGameService tradeBoardGameService;
+
+    @Autowired
+    private TradeItemService tradeItemService;
 
     @Autowired
     private TradeListService tradeListService;
@@ -49,6 +56,13 @@ public class AdminController {
     public ResponseEntity openList() {
         tradeListService.setState(TradeListState.OPEN);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/groups", method = RequestMethod.GET)
+    @ResponseBody
+    public List<TradeItem> makeGroups() {
+        tradeItemService.updateGroupItems(tradeListService.findMostRecentList().orElse(null));
+        return tradeItemService.getItemsByCategory(TradeItemCategory.GROUP_ITEM);
     }
 
 }

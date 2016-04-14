@@ -21,11 +21,14 @@ public class TradeItem {
     @NotEmpty
     private String title;
 
+    @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "IMG_URL")
     private String imgUrl;
 
     @ManyToOne
+    @JoinColumn(name = "OWNER_ID")
     private TradeUser owner;
 
     @ManyToOne
