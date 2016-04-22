@@ -3,10 +3,12 @@ package trade.math.domain.tradeItem;
 import org.springframework.data.domain.Pageable;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.form.NewTradeItemForm;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface TradeItemService {
@@ -22,6 +24,8 @@ public interface TradeItemService {
     List<TradeItem> findByRecentTradeList();
 
     List<TradeItem> findByRecentTradeListAndOwner(TradeUser user);
+
+    List<TradeItem> getItemsByCategory(TradeItemCategory category);
 
     List<TradeItem> findAll();
 
@@ -48,4 +52,12 @@ public interface TradeItemService {
     boolean canDelete(TradeItem item, Optional<TradeUser> user);
 
     String generateTradeWantListTM(TradeUser user);
+
+    /**
+     * Deletes all group items on tradeList and creates new ones.
+     *
+     * @param tradeList
+     */
+    void updateGroupItems(TradeList tradeList);
+
 }

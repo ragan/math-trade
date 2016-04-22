@@ -5,15 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trade.math.TradeUserRole;
-import trade.math.domain.groupList.ItemGroupService;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeList.TradeListState;
-import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.domain.wantList.WantList;
-import trade.math.domain.wantList.WantListEntryDTO;
 import trade.math.domain.wantList.WantListService;
 import trade.math.form.NewTradeItemForm;
+import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 import trade.math.wrappers.PageWrapper;
 import trade.math.wrappers.TradeItemPageWrapper;
@@ -22,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -35,18 +34,14 @@ public class SimpleTradeItemService implements TradeItemService {
 
     private final WantListService wantListService;
 
-    private final ItemGroupService itemGroupService;
-
     @Autowired
     public SimpleTradeItemService(
             TradeItemRepository tradeItemRepository,
             TradeListService tradeListService,
-            ItemGroupService itemGroupService,
             WantListService wantListService
     ) {
         this.tradeItemRepository = tradeItemRepository;
         this.tradeListService = tradeListService;
-        this.itemGroupService = itemGroupService;
         this.wantListService = wantListService;
     }
 
@@ -65,7 +60,7 @@ public class SimpleTradeItemService implements TradeItemService {
         tradeItem.setOwner(user);
 
         tradeItem.setDescription(newTradeItemForm.getDescription());
-        tradeItem.setForTrade(false);
+//        tradeItem.setForTrade(false);
         tradeItem.setTitle(newTradeItemForm.getTitle());
         tradeItem.setImgUrl(newTradeItemForm.getImageUrl());
         tradeItem.setTradeList(tradeList);
@@ -109,6 +104,11 @@ public class SimpleTradeItemService implements TradeItemService {
     @Override
     public List<TradeItem> findByRecentTradeListAndOwner(TradeUser user) {
         return tradeItemRepository.findByTradeListAndOwner(tradeListService.findMostRecentList().orElse(null), user);
+    }
+
+    @Override
+    public List<TradeItem> getItemsByCategory(TradeItemCategory category) {
+        return tradeItemRepository.findByCategory(category);
     }
 
     @Override
@@ -220,4 +220,29 @@ public class SimpleTradeItemService implements TradeItemService {
 //        return tmText;
     }
 
+    @Override
+    public void updateGroupItems(TradeList tradeList) {
+        List<TradeItem> items = tradeItemRepository.findByCategoryAndTradeList(TradeItemCategory.BOARD_GAME, tradeList);
+        Map<String, List<TradeItem>> map = items.stream().collect(groupingBy(this::getSortingPropertyValue));
+        List<TradeItem> groups = map.entrySet().stream().map(e -> new TradeItem(e.getKey(), e.getValue())).collect(toList());
+        tradeItemRepository.delete(getItemsByCategory(TradeItemCategory.GROUP_ITEM));
+        tradeItemRepository.save(groups);
+        groups.forEach(g -> {
+            g.getGroupItems().forEach(gi -> gi.setGroup(g));
+            tradeItemRepository.save(g);
+        });
+    }
+
+    private String getSortingPropertyValue(TradeItem item) {
+        switch (item.getCategory()) {
+            case NONE:
+                return item.getTitle();
+            case BOARD_GAME:
+                return String.valueOf(item.getBggId());
+            case GROUP_ITEM:
+                throw new IllegalArgumentException("Cannot group group items.");
+            default:
+                throw new IllegalArgumentException("Unknown item category");
+        }
+    }
 }

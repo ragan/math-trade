@@ -1,18 +1,17 @@
 package trade.math.domain.tradeItem;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import trade.math.domain.groupList.GroupListItem;
-import trade.math.domain.groupList.ItemGroup;
 import trade.math.domain.tradeList.TradeList;
 import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "TRADE_ITEM")
-public class TradeItem implements GroupListItem<String> {
+public class TradeItem {
 
     @Id
     @GeneratedValue
@@ -22,16 +21,14 @@ public class TradeItem implements GroupListItem<String> {
     @NotEmpty
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "IMG_URL")
     private String imgUrl;
 
-    @Column(nullable = false)
-    private boolean forTrade;
-
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "OWNER_ID")
     private TradeUser owner;
 
     @ManyToOne
@@ -43,12 +40,24 @@ public class TradeItem implements GroupListItem<String> {
     @Enumerated(EnumType.STRING)
     private TradeItemCategory category;
 
-    @ManyToOne
-    @JoinColumn(name = "ITEM_GROUP_ID")
-    private ItemGroup itemGroup;
-
     @Column(name = "BGG_ID")
     private int bggId;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    private List<TradeItem> groupItems;
+
+    @ManyToOne
+    private TradeItem group;
+
+    public TradeItem() {
+        //
+    }
+
+    public TradeItem(String title, List<TradeItem> groupItems) {
+        setTitle(title);
+        setCategory(TradeItemCategory.GROUP_ITEM);
+        setGroupItems(groupItems);
+    }
 
     public Long getId() {
         return id;
@@ -82,14 +91,6 @@ public class TradeItem implements GroupListItem<String> {
         this.imgUrl = imgUrl;
     }
 
-    public boolean isForTrade() {
-        return forTrade;
-    }
-
-    public void setForTrade(boolean forTrade) {
-        this.forTrade = forTrade;
-    }
-
     public TradeUser getOwner() {
         return owner;
     }
@@ -114,14 +115,6 @@ public class TradeItem implements GroupListItem<String> {
         this.category = category;
     }
 
-    public ItemGroup getItemGroup() {
-        return itemGroup;
-    }
-
-    public void setItemGroup(ItemGroup itemGroup) {
-        this.itemGroup = itemGroup;
-    }
-
     public int getBggId() {
         return bggId;
     }
@@ -130,15 +123,19 @@ public class TradeItem implements GroupListItem<String> {
         this.bggId = bggId;
     }
 
-    @Override
-    public String getProperty() {
-        switch (getCategory()) {
-            case NONE:
-                return getTitle();
-            case BOARD_GAME:
-                return String.valueOf(getBggId());
-            default:
-                throw new IllegalArgumentException("Unknown category.");
-        }
+    public List<TradeItem> getGroupItems() {
+        return groupItems;
+    }
+
+    public void setGroupItems(List<TradeItem> groupItems) {
+        this.groupItems = groupItems;
+    }
+
+    public TradeItem getGroup() {
+        return group;
+    }
+
+    public void setGroup(TradeItem group) {
+        this.group = group;
     }
 }

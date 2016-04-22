@@ -12,22 +12,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import trade.math.MtApplication;
 import trade.math.domain.tradeItem.TradeItem;
 import trade.math.domain.tradeItem.TradeItemService;
+import trade.math.domain.tradeList.TradeList;
+import trade.math.domain.tradeList.TradeListService;
 import trade.math.domain.tradeUser.TradeUserService;
 import trade.math.form.NewTradeItemForm;
 import trade.math.form.NewTradeUserForm;
-import trade.math.model.TradeItemCategory;
 import trade.math.model.TradeUser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static trade.math.model.TradeItemCategory.*;
 
-/**
- * Created by karol on 17.02.16.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MtApplication.class)
 @ActiveProfiles("test")
@@ -42,6 +42,9 @@ public class TradeItemServiceTest {
     @Autowired
     private TradeUserService tradeUserService;
 
+    @Autowired
+    private TradeListService tradeListService;
+
     @Before
     public void setUp() throws Exception {
         tradeItemService.deleteAll();
@@ -53,14 +56,14 @@ public class TradeItemServiceTest {
 
     @Test
     public void testSaveAndDeleteNewBoardGame() throws Exception {
-        NewTradeItemForm form = new NewTradeItemForm("Title", "Description", "", TradeItemCategory.BOARD_GAME, 123);
+        NewTradeItemForm form = new NewTradeItemForm("Title", "Description", "", BOARD_GAME, 123);
         Long id = tradeItemService.save(form, getUser(USERNAME)).getId();
         assertThat(tradeItemService.findAll(), hasSize(1));
 
         assertThat(tradeItemService.findById(id).getTitle(), is(equalToIgnoringCase("Title")));
         assertThat(tradeItemService.findById(id).getDescription(), is(equalToIgnoringCase("Description")));
         assertThat(tradeItemService.findById(id).getImgUrl(), is(equalToIgnoringCase("")));
-        assertThat(tradeItemService.findById(id).getCategory(), is(TradeItemCategory.BOARD_GAME));
+        assertThat(tradeItemService.findById(id).getCategory(), is(BOARD_GAME));
         assertThat(tradeItemService.findById(id).getBggId(), is(123));
     }
 
@@ -149,7 +152,6 @@ public class TradeItemServiceTest {
 
         Long deletedItemId = allItems.get(4).getId();
 
-//        assertTrue(tradeItemService.deleteById(deletedItemId));
         tradeItemService.deleteById(deletedItemId);
 
         allItems = tradeItemService.findAll();
@@ -158,18 +160,30 @@ public class TradeItemServiceTest {
 
         for (TradeItem item : allItems) assertFalse(Objects.equals(item.getId(), deletedItemId));
 
-//        assertFalse(tradeItemService.deleteById(deletedItemId));
-//        tradeItemService.deleteById(deletedItemId);
     }
 
-//    @Test
-//    public void testDeleteCheckOwner() {
-//        prepareTradeList(10, USERNAME);
-//
-//        assertFalse(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, "anotherUser"));
-//        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), false, USERNAME));
-//        assertTrue(tradeItemService.deleteById(tradeItemService.findAll().get(0).getId(), true, "anotherUser"));
-//    }
+    @Test
+    public void testGroupAll() throws Exception {
+        TradeUser user0 = tradeUserService.findByUsername(USERNAME);
+        TradeUser user1 = tradeUserService.findByUsername(USERNAME_1);
+
+        tradeListService.createNewList();
+
+        tradeItemService.save(new NewTradeItemForm("title0", "desc0", "", BOARD_GAME, 12), user0);
+        tradeItemService.save(new NewTradeItemForm("title0", "desc0", "", BOARD_GAME, 12), user1);
+        tradeItemService.save(new NewTradeItemForm("title0", "desc0", "", BOARD_GAME, 123), user0);
+
+        TradeList list = tradeListService.findMostRecentList().get();
+        tradeItemService.updateGroupItems(list);
+
+        assertThat(tradeItemService.getItemsByCategory(GROUP_ITEM), hasSize(2));
+        List<TradeItem> games = tradeItemService.getItemsByCategory(BOARD_GAME);
+        games.forEach(g -> assertThat(g.getGroup(), is(notNullValue())));
+
+        tradeItemService.updateGroupItems(list);
+        games = tradeItemService.getItemsByCategory(BOARD_GAME);
+        games.forEach(g -> assertThat(g.getGroup(), is(notNullValue())));
+    }
 
     @Test
     public void testFindByRecentTradeListAndNameAndNotOwner() {

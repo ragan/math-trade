@@ -5,5 +5,6 @@ package trade.math.model;
  */
 public enum TradeItemCategory {
     NONE,
-    BOARD_GAME
+    BOARD_GAME,
+    GROUP_ITEM
 }
