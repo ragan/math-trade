@@ -1,26 +1,6 @@
 - Tade Maximizer: http://boardgamegeek.com/wiki/page/TradeMaximizer
 - Polski Math Trade: https://boardgamegeek.com/geeklist/196357/22-polski-mathandel-polish-math-trade
 
-### TODO:
-- po rejestracji uzytkownik powinien być już zalogowany
-- po dodaniu gry może by przenosić na stronę główną(???)
-- formularz signup nie informuje, że hasło nie jest takie samo
-- ~~model gry (jako TRADE_ITEM)~~
-- ~~lista gier~~
-- ~~usuń grę~~
-- ~~model użytkownika~~
-- ~~rejestracja~~
-- ~~logowanie~~
-- ~~dodawanie gry~~
-- definicja etapu - encja TRADE_STATUS z enumem
-- administrator (menu widoczne tylko dla administratora)
-- zamknięcie listy
-- STOP - strona preferencji
-- generowanie listy wymian
-- rozpoczęcie nowej listy
-- STOP - wyszukiwarka na stronie preferencji
-- moje gry
-
 __GRA__:
 - tytuł
 - opis
